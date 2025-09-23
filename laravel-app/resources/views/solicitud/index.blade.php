@@ -542,17 +542,29 @@
 
                 try {
                     this.setSubmitState(true);
-                    
+
                     console.log('Enviando formulario...');
                     console.log('Endpoint:', CONFIG.endpoints.submit);
-                    
+
+                    // Create FormData and ensure CSRF token is included
+                    const formData = new FormData(this.form);
+
+                    // Add CSRF token to FormData if not already present
+                    if (!formData.has('_token')) {
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
+                                         document.querySelector('input[name="_token"]')?.value || '';
+                        if (csrfToken) {
+                            formData.append('_token', csrfToken);
+                        }
+                    }
+
                     const response = await fetch(CONFIG.endpoints.submit, {
                         method: 'POST',
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                         },
-                        body: new FormData(this.form)
+                        body: formData
                     });
 
                     const result = await response.json();
