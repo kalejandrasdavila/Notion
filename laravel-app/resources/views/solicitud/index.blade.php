@@ -537,9 +537,7 @@
                             <i class="fas fa-calendar-alt"></i>
                             Fecha Planeada <span class="required">*</span>
                         </label>
-                        <input type="date" id="fecha_planeada" name="fecha_planeada" class="form-input" required>
-                        <div id="fecha_planeada_display" class="form-text text-muted" style="margin-top: 5px; font-style: italic;">
-                        </div>
+                        <input type="datetime-local" id="fecha_planeada" name="fecha_planeada" class="form-input" required>
                     </div>
 
                     <!-- Prioridad -->
@@ -652,64 +650,36 @@
                 const fechaInput = document.getElementById('fecha_planeada');
                 const fechaDisplay = document.getElementById('fecha_planeada_display');
                 
-                // Establecer fecha mínima como hoy
-                const today = new Date();
-                const todayString = today.toISOString().slice(0, 10); // Formato para date (YYYY-MM-DD)
-                fechaInput.min = todayString;
+                // Establecer fecha y hora mínima como ahora
+                const now = new Date();
+                const nowString = now.toISOString().slice(0, 16); // Formato para datetime-local (YYYY-MM-DDTHH:MM)
+                fechaInput.min = nowString;
                 
-                // Establecer fecha actual por defecto
-                fechaInput.value = todayString;
+                // Establecer fecha y hora actual por defecto
+                fechaInput.value = nowString;
                 this.updateDateTimeDisplay();
                 
-                // Evento cuando el usuario cambia la fecha
+                // Evento cuando el usuario cambia la fecha/hora
                 fechaInput.addEventListener('change', () => {
                     this.updateDateTimeDisplay();
                     this.validateField(fechaInput);
                 });
-                
-                // Actualizar la hora cada minuto si hay una fecha seleccionada
-                setInterval(() => {
-                    if (fechaInput.value) {
-                        this.updateDateTimeDisplay();
-                    }
-                }, 60000); // 60 segundos
             }
 
             updateDateTimeDisplay() {
-                const fechaDisplay = document.getElementById('fecha_planeada_display');
                 const fechaInput = document.getElementById('fecha_planeada');
                 
                 if (fechaInput.value) {
-                    // Crear la fecha usando la zona horaria local para evitar problemas de UTC
-                    const [year, month, day] = fechaInput.value.split('-').map(Number);
-                    const now = new Date();
-                    
-                    // Usar la fecha seleccionada pero con la hora actual en zona horaria local
-                    const displayDate = new Date(year, month - 1, day, now.getHours(), now.getMinutes(), now.getSeconds());
-                    
-                    // Formatear fecha y hora en español para mostrar al usuario
-                    const options = {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: false
-                    };
-                    
-                    const formattedDateTime = displayDate.toLocaleDateString('es-ES', options);
-                    fechaDisplay.textContent = `Se enviará como: ${formattedDateTime}`;
+                    // Crear la fecha desde el valor del input datetime-local
+                    const selectedDateTime = new Date(fechaInput.value);
                     
                     // Crear un input oculto con el valor formateado correctamente para el envío
-                    this.updateHiddenDateTimeValue(displayDate);
-                } else {
-                    fechaDisplay.textContent = 'Seleccione una fecha para ver la hora actual';
+                    this.updateHiddenDateTimeValue(selectedDateTime);
                 }
             }
 
             updateHiddenDateTimeValue(dateTime) {
-                // Crear o actualizar un input oculto con el formato YYYY-MM-DD (solo fecha)
+                // Crear o actualizar un input oculto con el formato YYYY-MM-DDTHH:MM:SS.FFF-HH:MM
                 let hiddenInput = document.getElementById('fecha_planeada_formatted');
                 if (!hiddenInput) {
                     hiddenInput = document.createElement('input');
@@ -719,13 +689,33 @@
                     document.getElementById('fecha_planeada').parentNode.appendChild(hiddenInput);
                 }
                 
-                // Formatear al formato YYYY-MM-DD (solo fecha, sin hora)
-                const formattedValue = dateTime.toISOString().split('T')[0];
+                // Formatear al formato YYYY-MM-DDTHH:MM:SS.FFF-HH:MM
+                const formattedValue = this.formatDateTimeForNotion(dateTime);
                 hiddenInput.value = formattedValue;
                 
                 // Remover el name del input original para evitar duplicados
                 const originalInput = document.getElementById('fecha_planeada');
                 originalInput.removeAttribute('name');
+            }
+
+            formatDateTimeForNotion(dateTime) {
+                // Obtener la zona horaria local en formato -HH:MM
+                const timezoneOffset = -dateTime.getTimezoneOffset();
+                const timezoneHours = Math.floor(Math.abs(timezoneOffset) / 60);
+                const timezoneMinutes = Math.abs(timezoneOffset) % 60;
+                const sign = timezoneOffset >= 0 ? '+' : '-';
+                const timezoneString = `${sign}${timezoneHours.toString().padStart(2, '0')}:${timezoneMinutes.toString().padStart(2, '0')}`;
+                
+                // Formatear la fecha y hora
+                const year = dateTime.getFullYear();
+                const month = (dateTime.getMonth() + 1).toString().padStart(2, '0');
+                const day = dateTime.getDate().toString().padStart(2, '0');
+                const hours = dateTime.getHours().toString().padStart(2, '0');
+                const minutes = dateTime.getMinutes().toString().padStart(2, '0');
+                const seconds = dateTime.getSeconds().toString().padStart(2, '0');
+                
+                // Formato: YYYY-MM-DDTHH:MM:SS.FFF-HH:MM
+                return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000${timezoneString}`;
             }
 
             // Cargar datos para los selects

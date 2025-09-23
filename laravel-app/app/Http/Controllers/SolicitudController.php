@@ -90,7 +90,7 @@ class SolicitudController extends Controller
             'tipo' => 'required|string|max:255',
             'solicitante' => 'required|string|max:255',
             'indicaciones' => 'required|string|max:1000',
-            'fecha_planeada' => 'required|date',
+            'fecha_planeada' => 'required|string',
             'prioridad' => 'required|string|max:255',
             'medio' => 'required|array|min:1',
             'medio.*' => 'required|string|max:255',
