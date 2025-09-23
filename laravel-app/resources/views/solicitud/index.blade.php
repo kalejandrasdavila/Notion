@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- CSRF token disabled for iframe embedding -->
     <title>{{ config('app.name') }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -491,7 +491,7 @@
             </div>
             
             <form id="solicitudForm" class="form">
-                @csrf
+                <!-- CSRF disabled for iframe embedding -->
                 <div class="form-grid">
                     <!-- Status (oculto) -->
                     <input type="hidden" id="status" name="status" value="PENDIENTE">
@@ -936,8 +936,7 @@
                     const response = await fetch(endpoint, {
                         method: 'GET',
                         headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                            'Content-Type': 'application/json'
                         },
                     });
 
@@ -1135,16 +1134,9 @@
                     // Preparar los datos del formulario
                     const formData = new FormData(this.form);
                     
-                    // Convertir la fecha al formato ISO completo
-                    const fechaValue = formData.get('fecha_planeada');
-                    if (fechaValue) {
-                        const selectedDate = new Date(fechaValue);
-                        formData.set('fecha_planeada', selectedDate.toISOString());
-                    }
-                    
                     console.log('Enviando formulario...');
                     console.log('Endpoint:', CONFIG.endpoints.submit);
-                    
+
                     const response = await fetch(CONFIG.endpoints.submit, {
                         method: 'POST',
                         headers: {

@@ -11,7 +11,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->validateCsrfTokens(except: [
+            'solicitud',
+            'solicitud/*',
+            'api/*',
+            'api/options/*',
+            'api/notion/*'
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
