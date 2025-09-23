@@ -78,18 +78,30 @@ class SolicitudController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
+        $data = $request->all();
+        
+        // Procesar el campo medio si viene como JSON string
+        if (isset($data['medio']) && is_string($data['medio'])) {
+            $data['medio'] = json_decode($data['medio'], true) ?? [];
+        }
+        
+        $validator = Validator::make($data, [
             'status' => 'sometimes|string|max:255',
             'tipo' => 'required|string|max:255',
             'solicitante' => 'required|string|max:255',
             'indicaciones' => 'required|string|max:1000',
-            'fecha_planeada' => 'required|date|after_or_equal:today',
+            'fecha_planeada' => 'required|date',
             'prioridad' => 'required|string|max:255',
             'medio' => 'required|array|min:1',
             'medio.*' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
+            Log::error('Errores de validación', [
+                'errors' => $validator->errors(),
+                'data' => $request->all()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Datos de validación incorrectos',
@@ -98,8 +110,6 @@ class SolicitudController extends Controller
         }
 
         try {
-            $data = $request->all();
-            
             // Establecer status por defecto si no se proporciona
             if (!isset($data['status']) || empty($data['status'])) {
                 $data['status'] = 'PENDIENTE';
