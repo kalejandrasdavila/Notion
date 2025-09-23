@@ -19,41 +19,176 @@ Este es un sistema de solicitudes desarrollado en Laravel que se integra con la 
 - SQLite (incluido por defecto)
 - Conexión a internet para la API de Notion
 
-## Instalación
+## 🚀 Cómo Ejecutar el Proyecto
 
-1. **Clonar el repositorio**:
-   ```bash
-   git clone <repository-url>
-   cd laravel-app
-   ```
+### Requisitos Previos
 
-2. **Instalar dependencias**:
-   ```bash
-   composer install
-   ```
+Antes de comenzar, asegúrate de tener instalado:
 
-3. **Configurar variables de entorno**:
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
+- **PHP 8.2 o superior** (recomendado PHP 8.4)
+- **Composer** (gestor de dependencias de PHP)
+- **Git** (control de versiones)
+- **Conexión a internet** (para la API de Notion)
 
-4. **Configurar credenciales de Notion** en el archivo `.env`:
-   ```env
-   NOTION_API_TOKEN=tu_token_de_notion
-   NOTION_DATABASE_ID=tu_database_id
-   NOTION_VERSION=2022-06-28
-   ```
+### Verificar Requisitos
 
-5. **Ejecutar migraciones**:
-   ```bash
-   php artisan migrate
-   ```
+```bash
+# Verificar versión de PHP
+php --version
 
-6. **Iniciar el servidor**:
-   ```bash
-   php artisan serve
-   ```
+# Verificar Composer
+composer --version
+
+# Verificar Git
+git --version
+```
+
+### Instalación Paso a Paso
+
+#### 1. **Clonar el Repositorio**
+```bash
+git clone <repository-url>
+cd laravel-app
+```
+
+#### 2. **Instalar Dependencias de PHP**
+```bash
+composer install
+```
+
+#### 3. **Configurar Variables de Entorno**
+```bash
+# Copiar archivo de configuración
+cp .env.example .env
+
+# Generar clave de aplicación
+php artisan key:generate
+```
+
+#### 4. **Configurar Credenciales de Notion**
+
+Edita el archivo `.env` y configura las siguientes variables:
+
+```env
+# Configuración de Notion
+NOTION_API_TOKEN=tu_token_de_notion_aqui
+NOTION_DATABASE_ID=tu_database_id_aqui
+NOTION_VERSION=2022-06-28
+
+# Configuración de la aplicación
+APP_NAME="Sistema de Solicitudes Notion"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+
+# Base de datos (SQLite por defecto)
+DB_CONNECTION=sqlite
+```
+
+#### 5. **Configurar Base de Datos**
+```bash
+# Crear archivo de base de datos SQLite
+touch database/database.sqlite
+
+# Ejecutar migraciones
+php artisan migrate
+```
+
+#### 6. **Iniciar el Servidor de Desarrollo**
+```bash
+php artisan serve
+```
+
+### ✅ Verificación de la Instalación
+
+Una vez completados todos los pasos, deberías ver:
+
+```
+INFO  Server running on [http://127.0.0.1:8000].
+Press Ctrl+C to stop the server
+```
+
+### 🌐 Acceder a la Aplicación
+
+Abre tu navegador y ve a:
+```
+http://localhost:8000
+```
+
+Deberías ver el formulario de solicitudes funcionando correctamente.
+
+## 📋 Instalación Rápida (Script Automatizado)
+
+Si prefieres una instalación más rápida, puedes usar este script:
+
+```bash
+#!/bin/bash
+# Script de instalación automática
+
+echo "🚀 Instalando Sistema de Solicitudes Notion..."
+
+# Instalar dependencias
+echo "📦 Instalando dependencias..."
+composer install
+
+# Configurar entorno
+echo "⚙️ Configurando entorno..."
+cp .env.example .env
+php artisan key:generate
+
+# Configurar base de datos
+echo "🗄️ Configurando base de datos..."
+touch database/database.sqlite
+php artisan migrate
+
+echo "✅ Instalación completada!"
+echo "🌐 Inicia el servidor con: php artisan serve"
+echo "🔗 Luego ve a: http://localhost:8000"
+```
+
+## 🔧 Comandos Útiles
+
+### Desarrollo
+```bash
+# Iniciar servidor
+php artisan serve
+
+# Limpiar cache
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+# Ver rutas disponibles
+php artisan route:list
+
+# Ver logs en tiempo real
+php artisan pail
+```
+
+### Base de Datos
+```bash
+# Ejecutar migraciones
+php artisan migrate
+
+# Revertir migraciones
+php artisan migrate:rollback
+
+# Recrear base de datos
+php artisan migrate:fresh
+
+# Ver estado de migraciones
+php artisan migrate:status
+```
+
+### Testing
+```bash
+# Ejecutar tests
+php artisan test
+
+# Ejecutar tests con coverage
+php artisan test --coverage
+```
 
 ## Uso
 
