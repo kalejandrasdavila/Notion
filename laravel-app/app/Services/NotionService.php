@@ -191,10 +191,31 @@ class NotionService
 
         // Fecha planeada
         if (isset($data['fecha_planeada'])) {
+            // Convertir fecha a formato UTC sin offset para usar con timezone
+            $startDate = $this->convertToUTCFormat($data['fecha_planeada']);
+            $dateConfig = [
+                'start' => $startDate,
+                'time_zone' => 'America/Mexico_City'
+            ];
+            
+            // Si también se proporciona fecha de fin, agregarla
+            if (isset($data['fecha_fin']) && !empty($data['fecha_fin'])) {
+                $endDate = $this->convertToUTCFormat($data['fecha_fin']);
+                $dateConfig['end'] = $endDate;
+                Log::info('Fecha de fin procesada', [
+                    'fecha_fin_original' => $data['fecha_fin'],
+                    'fecha_fin_convertida' => $endDate
+                ]);
+            } else {
+                Log::info('No se encontró fecha de fin', [
+                    'fecha_fin_exists' => isset($data['fecha_fin']),
+                    'fecha_fin_value' => $data['fecha_fin'] ?? 'not_set',
+                    'all_data_keys' => array_keys($data)
+                ]);
+            }
+            
             $properties['FECHA PLANEADA'] = [
-                'date' => [
-                    'start' => $data['fecha_planeada']
-                ]
+                'date' => $dateConfig
             ];
         }
 
@@ -241,5 +262,27 @@ class NotionService
         }
 
         return $properties;
+    }
+
+    /**
+     * Convertir fecha a formato UTC sin offset para usar con timezone
+     */
+    protected function convertToUTCFormat($dateString)
+    {
+        try {
+            // Si la fecha ya tiene offset, convertirla a UTC
+            if (strpos($dateString, '+') !== false || strpos($dateString, '-') !== false) {
+                $date = new \DateTime($dateString);
+                return $date->format('Y-m-d\TH:i:s.000\Z');
+            }
+            
+            // Si no tiene offset, asumir que es local y convertir a UTC
+            $date = new \DateTime($dateString, new \DateTimeZone('America/Mexico_City'));
+            return $date->format('Y-m-d\TH:i:s.000\Z');
+            
+        } catch (\Exception $e) {
+            // Si hay error, devolver la fecha original
+            return $dateString;
+        }
     }
 }

@@ -474,6 +474,461 @@
                 font-size: 1rem;
             }
         }
+
+        /* Estilos para el selector de fecha personalizado */
+        .date-time-picker {
+            position: relative;
+            width: 100%;
+        }
+
+        .date-time-inputs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .date-time-inputs:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .date-input-container,
+        .time-input-container {
+            position: relative;
+            flex: 1;
+        }
+
+        .date-display,
+        .time-display {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            color: #374151;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .date-display::placeholder,
+        .time-display::placeholder {
+            color: #9ca3af;
+        }
+
+        .date-picker-toggle,
+        .time-picker-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #667eea;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .date-picker-toggle:hover,
+        .time-picker-toggle:hover {
+            background: #e2e8f0;
+            color: #4f46e5;
+        }
+
+        /* Calendario */
+        .calendar-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 1000;
+            padding: 16px;
+            display: none;
+            margin-top: 8px;
+            min-width: 280px;
+        }
+
+        .calendar-container.show {
+            display: block;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-nav {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+
+        .calendar-nav:hover {
+            background: #f1f5f9;
+            color: #374151;
+        }
+
+        .calendar-month-year {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1f2937;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #6b7280;
+            padding: 8px 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+            color: #374151;
+            min-height: 32px;
+        }
+
+        .calendar-day:hover {
+            background: #f1f5f9;
+            color: #1f2937;
+        }
+
+        .calendar-day.other-month {
+            color: #d1d5db;
+        }
+
+        .calendar-day.today {
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+
+        .calendar-day.selected {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+        }
+
+        .calendar-day.disabled {
+            color: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .calendar-day.disabled:hover {
+            background: none;
+            color: #d1d5db;
+        }
+
+        /* Selector de hora */
+        .time-picker-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 1000;
+            padding: 16px;
+            display: none;
+            margin-top: 8px;
+            min-width: 200px;
+        }
+
+        .time-picker-container.show {
+            display: block;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .time-picker {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .time-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .time-section label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .time-select {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: #f8fafc;
+            cursor: pointer;
+            min-width: 70px;
+            transition: all 0.2s ease;
+        }
+
+        .time-select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .time-separator {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin-top: 16px;
+        }
+
+        /* Opciones adicionales */
+        .date-options {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        .option-row:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #374151;
+            flex: 1;
+        }
+
+        .option-checkbox {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            cursor: pointer;
+            accent-color: #667eea;
+            transform: scale(1.3);
+            border-radius: 4px;
+            border: 2px solid #d1d5db;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .option-checkbox:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+        }
+
+        .option-checkbox:checked {
+            background: #667eea;
+            border-color: #667eea;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+        }
+
+        .checkmark {
+            display: none;
+        }
+
+        .option-text {
+            font-weight: 500;
+        }
+
+        .option-select {
+            padding: 6px 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: white;
+            cursor: pointer;
+            min-width: 120px;
+            transition: all 0.2s ease;
+        }
+
+        .option-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        }
+
+        .clear-date-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .clear-date-btn:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Fecha de finalización */
+        .end-date-section {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f0f9ff;
+            border-radius: 12px;
+            border: 1px solid #bae6fd;
+        }
+
+        .end-date-section .form-label {
+            margin-bottom: 8px;
+            color: #0369a1;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .date-time-inputs {
+                flex-direction: column;
+                gap: 6px;
+            }
+            
+            .time-picker {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .time-separator {
+                display: none;
+            }
+            
+            .calendar-container,
+            .time-picker-container {
+                left: -5px;
+                right: -5px;
+                min-width: calc(100% + 10px);
+            }
+            
+            .calendar-days {
+                gap: 2px;
+            }
+            
+            .calendar-day {
+                min-height: 28px;
+                font-size: 0.8rem;
+            }
+            
+            .option-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .clear-date-btn {
+                align-self: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .date-time-inputs {
+                padding: 6px;
+            }
+            
+            .date-display,
+            .time-display {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+            
+            .calendar-container {
+                padding: 12px;
+            }
+            
+            .time-picker-container {
+                padding: 12px;
+            }
+            
+            .date-options {
+                padding: 10px;
+            }
+            
+            .end-date-section {
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -537,7 +992,114 @@
                             <i class="fas fa-calendar-alt"></i>
                             Fecha Planeada <span class="required">*</span>
                         </label>
-                        <input type="datetime-local" id="fecha_planeada" name="fecha_planeada" class="form-input" required>
+                        <div class="date-time-picker">
+                            <div class="date-time-inputs">
+                                <div class="date-input-container">
+                                    <input type="text" id="fecha_planeada_display" class="form-input date-display" readonly placeholder="Seleccionar fecha">
+                                    <button type="button" class="date-picker-toggle" id="datePickerToggle">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </button>
+                                </div>
+                                <div class="time-input-container" id="timeInputContainer" style="display: none;">
+                                    <input type="text" id="hora_planeada_display" class="form-input time-display" readonly placeholder="11:00">
+                                    <button type="button" class="time-picker-toggle" id="timePickerToggle">
+                                        <i class="fas fa-clock"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Calendario -->
+                            <div class="calendar-container" id="calendarContainer">
+                                <div class="calendar-header">
+                                    <button type="button" class="calendar-nav" id="prevMonth">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <div class="calendar-month-year" id="calendarMonthYear">Sept 2025</div>
+                                    <button type="button" class="calendar-nav" id="nextMonth">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="calendar-weekdays">
+                                    <div class="weekday">Do</div>
+                                    <div class="weekday">Lu</div>
+                                    <div class="weekday">Ma</div>
+                                    <div class="weekday">Mi</div>
+                                    <div class="weekday">Ju</div>
+                                    <div class="weekday">Vi</div>
+                                    <div class="weekday">Sá</div>
+                                </div>
+                                <div class="calendar-days" id="calendarDays">
+                                    <!-- Los días se generarán dinámicamente -->
+                                </div>
+                            </div>
+
+                            <!-- Selector de hora -->
+                            <div class="time-picker-container" id="timePickerContainer">
+                                <div class="time-picker">
+                                    <div class="time-section">
+                                        <label>Hora</label>
+                                        <select id="hourSelect" class="time-select">
+                                            <!-- Las horas se generarán dinámicamente -->
+                                        </select>
+                                    </div>
+                                    <div class="time-separator">:</div>
+                                    <div class="time-section">
+                                        <label>Minutos</label>
+                                        <select id="minuteSelect" class="time-select">
+                                            <!-- Los minutos se generarán dinámicamente -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Fecha de finalización -->
+                            <div class="end-date-section" id="endDateSection" style="display: none;">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar-times"></i>
+                                    Fecha de Finalización
+                                </label>
+                                <div class="date-time-inputs">
+                                    <div class="date-input-container">
+                                        <input type="text" id="fecha_finalizacion_display" class="form-input date-display" readonly placeholder="Seleccionar fecha">
+                                        <button type="button" class="date-picker-toggle" id="endDatePickerToggle">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </button>
+                                    </div>
+                                    <div class="time-input-container" style="display: none;">
+                                        <input type="text" id="hora_finalizacion_display" class="form-input time-display" readonly placeholder="11:00">
+                                        <button type="button" class="time-picker-toggle" id="endTimePickerToggle">
+                                            <i class="fas fa-clock"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Opciones adicionales -->
+                            <div class="date-options" id="dateOptions" style="display: none;">
+                                <div class="option-row">
+                                    <label class="option-label">
+                                        <input type="checkbox" id="fechaFinalizacionToggle" class="option-checkbox">
+                                        Agregar fecha de finalización
+                                    </label>
+                                </div>
+                                <div class="option-row">
+                                    <label class="option-label">
+                                        <input type="checkbox" id="incluirHoraToggle" class="option-checkbox">
+                                        Incluir hora
+                                    </label>
+                                </div>
+                                <div class="option-row">
+                                    <button type="button" class="clear-date-btn" id="clearDateBtn">
+                                        <i class="fas fa-trash"></i>
+                                        Borrar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Inputs ocultos para el envío -->
+                        <input type="hidden" id="fecha_planeada" name="fecha_planeada" required>
+                        <input type="hidden" id="fecha_finalizacion" name="fecha_finalizacion">
                     </div>
 
                     <!-- Prioridad -->
@@ -647,23 +1209,544 @@
             }
 
             setupDateValidation() {
-                const fechaInput = document.getElementById('fecha_planeada');
-                const fechaDisplay = document.getElementById('fecha_planeada_display');
+                this.initializeDatePicker();
+                this.initializeTimePicker();
+                this.initializeDateOptions();
+                this.setDefaultDateTime();
+            }
+
+            initializeDatePicker() {
+                this.currentDate = new Date();
+                this.selectedDate = new Date();
+                this.calendarContainer = document.getElementById('calendarContainer');
+                this.calendarMonthYear = document.getElementById('calendarMonthYear');
+                this.calendarDays = document.getElementById('calendarDays');
+                this.datePickerToggle = document.getElementById('datePickerToggle');
+                this.fechaDisplay = document.getElementById('fecha_planeada_display');
                 
-                // Establecer fecha y hora mínima como ahora
-                const now = new Date();
-                const nowString = now.toISOString().slice(0, 16); // Formato para datetime-local (YYYY-MM-DDTHH:MM)
-                fechaInput.min = nowString;
+                // Variables de modo
+                this.isEndDateMode = false;
+                this.isEndTimeMode = false;
                 
-                // Establecer fecha y hora actual por defecto
-                fechaInput.value = nowString;
-                this.updateDateTimeDisplay();
+                // Eventos del calendario
+                this.datePickerToggle.addEventListener('click', () => this.toggleCalendar());
+                document.getElementById('prevMonth').addEventListener('click', () => this.changeMonth(-1));
+                document.getElementById('nextMonth').addEventListener('click', () => this.changeMonth(1));
                 
-                // Evento cuando el usuario cambia la fecha/hora
-                fechaInput.addEventListener('change', () => {
-                    this.updateDateTimeDisplay();
-                    this.validateField(fechaInput);
+                // Cerrar calendario al hacer clic fuera
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.date-time-picker')) {
+                        this.closeCalendar();
+                    }
                 });
+                
+                this.renderCalendar();
+            }
+
+            initializeTimePicker() {
+                this.timePickerContainer = document.getElementById('timePickerContainer');
+                this.timePickerToggle = document.getElementById('timePickerToggle');
+                this.horaDisplay = document.getElementById('hora_planeada_display');
+                this.hourSelect = document.getElementById('hourSelect');
+                this.minuteSelect = document.getElementById('minuteSelect');
+                
+                // Eventos del selector de hora
+                this.timePickerToggle.addEventListener('click', () => this.toggleTimePicker());
+                
+                // Cerrar selector de hora al hacer clic fuera
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.time-picker-container') && !e.target.closest('.time-picker-toggle')) {
+                        this.closeTimePicker();
+                    }
+                });
+                
+                this.populateTimeSelects();
+            }
+
+            initializeDateOptions() {
+                this.fechaFinalizacionToggle = document.getElementById('fechaFinalizacionToggle');
+                this.incluirHoraToggle = document.getElementById('incluirHoraToggle');
+                this.clearDateBtn = document.getElementById('clearDateBtn');
+                this.endDateSection = document.getElementById('endDateSection');
+                this.timeInputContainer = document.getElementById('timeInputContainer');
+                this.dateOptions = document.getElementById('dateOptions');
+                
+                // Eventos de las opciones
+                this.fechaFinalizacionToggle.addEventListener('change', () => this.toggleEndDate());
+                this.incluirHoraToggle.addEventListener('change', () => this.toggleTimeInclusion());
+                this.clearDateBtn.addEventListener('click', () => this.clearDate());
+                
+                // Inicializar fecha de finalización
+                this.initializeEndDatePicker();
+            }
+
+            initializeEndDatePicker() {
+                this.endDatePickerToggle = document.getElementById('endDatePickerToggle');
+                this.endTimePickerToggle = document.getElementById('endTimePickerToggle');
+                this.fechaFinalizacionDisplay = document.getElementById('fecha_finalizacion_display');
+                this.horaFinalizacionDisplay = document.getElementById('hora_finalizacion_display');
+                
+                // Eventos para fecha de finalización
+                this.endDatePickerToggle.addEventListener('click', () => this.toggleEndDateCalendar());
+                this.endTimePickerToggle.addEventListener('click', () => this.toggleEndTimePicker());
+                
+                // Eventos para los inputs de fecha de finalización
+                this.fechaFinalizacionDisplay.addEventListener('click', () => this.toggleEndDateCalendar());
+                this.horaFinalizacionDisplay.addEventListener('click', () => this.toggleEndTimePicker());
+            }
+
+            setDefaultDateTime() {
+                // No establecer valores por defecto, el usuario debe seleccionar
+                this.selectedDate = null;
+                this.selectedTime = null;
+                this.updateHiddenInputs();
+            }
+
+            // Funciones de control del calendario
+            toggleCalendar() {
+                if (this.calendarContainer.classList.contains('show')) {
+                    this.closeCalendar();
+                } else {
+                    this.isEndDateMode = false; // Modo fecha principal
+                    this.openCalendar();
+                }
+            }
+
+            openCalendar() {
+                this.calendarContainer.classList.add('show');
+                this.closeTimePicker();
+                // Mostrar opciones cuando se abre el calendario
+                this.showDateOptions();
+            }
+
+            closeCalendar() {
+                this.calendarContainer.classList.remove('show');
+                this.isEndDateMode = false;
+            }
+
+            showDateOptions() {
+                this.dateOptions.style.display = 'block';
+            }
+
+            hideDateOptions() {
+                this.dateOptions.style.display = 'none';
+            }
+
+            toggleTimePicker() {
+                if (this.timePickerContainer.classList.contains('show')) {
+                    this.closeTimePicker();
+                } else {
+                    this.isEndTimeMode = false; // Modo hora principal
+                    this.openTimePicker();
+                }
+            }
+
+            openTimePicker() {
+                this.timePickerContainer.classList.add('show');
+                this.closeCalendar();
+            }
+
+            closeTimePicker() {
+                this.timePickerContainer.classList.remove('show');
+                this.isEndTimeMode = false;
+            }
+
+            changeMonth(direction) {
+                this.currentDate.setMonth(this.currentDate.getMonth() + direction);
+                this.renderCalendar();
+            }
+
+            renderCalendar() {
+                const year = this.currentDate.getFullYear();
+                const month = this.currentDate.getMonth();
+                
+                // Actualizar header del calendario
+                const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 
+                                  'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                this.calendarMonthYear.textContent = `${monthNames[month]} ${year}`;
+                
+                // Limpiar días del calendario
+                this.calendarDays.innerHTML = '';
+                
+                // Obtener primer día del mes y cuántos días tiene
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const daysInMonth = lastDay.getDate();
+                const startingDayOfWeek = firstDay.getDay();
+                
+                // Días del mes anterior
+                const prevMonth = new Date(year, month - 1, 0);
+                const daysInPrevMonth = prevMonth.getDate();
+                
+                for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+                    const day = daysInPrevMonth - i;
+                    const dayElement = this.createDayElement(day, true, false);
+                    this.calendarDays.appendChild(dayElement);
+                }
+                
+                // Días del mes actual
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayDate = new Date(year, month, day);
+                    const isToday = this.isToday(dayDate);
+                    const isSelected = this.isSelectedDate(dayDate);
+                    const isDisabled = this.isDateDisabled(dayDate);
+                    
+                    const dayElement = this.createDayElement(day, false, isToday, isSelected, isDisabled);
+                    this.calendarDays.appendChild(dayElement);
+                }
+                
+                // Días del mes siguiente para completar la grilla
+                const totalCells = this.calendarDays.children.length;
+                const remainingCells = 42 - totalCells; // 6 filas x 7 días
+                
+                for (let day = 1; day <= remainingCells; day++) {
+                    const dayElement = this.createDayElement(day, true, false);
+                    this.calendarDays.appendChild(dayElement);
+                }
+            }
+
+            createDayElement(day, isOtherMonth, isToday = false, isSelected = false, isDisabled = false) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                if (isOtherMonth) {
+                    dayElement.classList.add('other-month');
+                }
+                if (isToday) {
+                    dayElement.classList.add('today');
+                }
+                if (isSelected) {
+                    dayElement.classList.add('selected');
+                }
+                if (isDisabled) {
+                    dayElement.classList.add('disabled');
+                }
+                
+                if (!isOtherMonth && !isDisabled) {
+                    dayElement.addEventListener('click', () => this.selectDate(day));
+                }
+                
+                return dayElement;
+            }
+
+            selectDate(day) {
+                const year = this.currentDate.getFullYear();
+                const month = this.currentDate.getMonth();
+                const selectedDate = new Date(year, month, day);
+                
+                if (this.isEndDateMode) {
+                    // Modo fecha de finalización
+                    this.endSelectedDate = selectedDate;
+                    this.updateEndDateDisplay();
+                } else {
+                    // Modo fecha principal
+                    this.selectedDate = selectedDate;
+                    this.updateDateDisplay();
+                }
+                
+                this.updateHiddenInputs();
+                this.closeCalendar();
+                // Mantener las opciones visibles después de seleccionar fecha
+                this.showDateOptions();
+                this.validateDateField();
+            }
+
+            isToday(date) {
+                const today = new Date();
+                return date.toDateString() === today.toDateString();
+            }
+
+            isSelectedDate(date) {
+                if (this.isEndDateMode) {
+                    return this.endSelectedDate && date.toDateString() === this.endSelectedDate.toDateString();
+                } else {
+                    return this.selectedDate && date.toDateString() === this.selectedDate.toDateString();
+                }
+            }
+
+            isDateDisabled(date) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return date < today;
+            }
+
+            // Funciones de actualización de display
+            updateDateDisplay() {
+                if (this.selectedDate) {
+                    const day = this.selectedDate.getDate().toString().padStart(2, '0');
+                    const month = (this.selectedDate.getMonth() + 1).toString().padStart(2, '0');
+                    const year = this.selectedDate.getFullYear();
+                    this.fechaDisplay.value = `${day}/${month}/${year}`;
+                }
+            }
+
+            updateTimeDisplay() {
+                if (this.selectedTime) {
+                    const hour = this.selectedTime.hour.toString().padStart(2, '0');
+                    const minute = this.selectedTime.minute.toString().padStart(2, '0');
+                    this.horaDisplay.value = `${hour}:${minute}`;
+                }
+            }
+
+            populateTimeSelects() {
+                // Poblar horas (0-23)
+                for (let hour = 0; hour < 24; hour++) {
+                    const option = document.createElement('option');
+                    option.value = hour;
+                    option.textContent = hour.toString().padStart(2, '0');
+                    this.hourSelect.appendChild(option);
+                }
+                
+                // Poblar minutos (0, 15, 30, 45)
+                const minuteOptions = [0, 15, 30, 45];
+                minuteOptions.forEach(minute => {
+                    const option = document.createElement('option');
+                    option.value = minute;
+                    option.textContent = minute.toString().padStart(2, '0');
+                    this.minuteSelect.appendChild(option);
+                });
+                
+                // Eventos para actualizar la hora
+                this.hourSelect.addEventListener('change', () => this.updateTimeFromSelects());
+                this.minuteSelect.addEventListener('change', () => this.updateTimeFromSelects());
+            }
+
+            setTimeSelectsValues(time) {
+                if (time) {
+                    this.hourSelect.value = time.hour;
+                    this.minuteSelect.value = time.minute;
+                }
+            }
+
+            updateTimeFromSelects() {
+                const time = {
+                    hour: parseInt(this.hourSelect.value),
+                    minute: parseInt(this.minuteSelect.value)
+                };
+                
+                if (this.isEndTimeMode) {
+                    // Modo hora de finalización
+                    this.endSelectedTime = time;
+                    this.updateEndTimeDisplay();
+                } else {
+                    // Modo hora principal
+                    this.selectedTime = time;
+                    this.updateTimeDisplay();
+                }
+                
+                this.updateHiddenInputs();
+                this.validateDateField();
+            }
+
+            // Funciones de control de opciones
+            toggleEndDate() {
+                if (this.fechaFinalizacionToggle.checked) {
+                    this.endDateSection.style.display = 'block';
+                    this.initializeEndDate();
+                } else {
+                    this.endDateSection.style.display = 'none';
+                    this.clearEndDate();
+                }
+                
+                // Actualizar la visibilidad de la hora según el estado de "Incluir hora"
+                this.updateTimeVisibility();
+            }
+
+            initializeEndDate() {
+                if (!this.endSelectedDate) {
+                    this.endSelectedDate = new Date(this.selectedDate);
+                    this.updateEndDateDisplay();
+                }
+                // Solo establecer hora si "Incluir hora" está marcado
+                if (this.incluirHoraToggle.checked) {
+                    if (!this.endSelectedTime) {
+                        this.endSelectedTime = this.selectedTime ? { ...this.selectedTime } : { hour: 0, minute: 0 };
+                        this.updateEndTimeDisplay();
+                    }
+                }
+            }
+
+            toggleEndDateCalendar() {
+                // Cerrar selector de hora si está abierto
+                this.closeTimePicker();
+                
+                // Si el calendario principal está abierto, cerrarlo
+                if (this.calendarContainer.classList.contains('show')) {
+                    this.closeCalendar();
+                }
+                
+                // Cambiar el modo a fecha de finalización
+                this.isEndDateMode = true;
+                this.openCalendar();
+            }
+
+            toggleEndTimePicker() {
+                // Cerrar calendario si está abierto
+                this.closeCalendar();
+                
+                // Si el selector de hora principal está abierto, cerrarlo
+                if (this.timePickerContainer.classList.contains('show')) {
+                    this.closeTimePicker();
+                }
+                
+                // Cambiar el modo a hora de finalización
+                this.isEndTimeMode = true;
+                
+                // Establecer los valores actuales en los selects
+                if (this.endSelectedTime) {
+                    this.setTimeSelectsValues(this.endSelectedTime);
+                } else {
+                    this.setTimeSelectsValues(this.selectedTime);
+                }
+                
+                this.openTimePicker();
+            }
+
+            updateEndDateDisplay() {
+                if (this.endSelectedDate) {
+                    const day = this.endSelectedDate.getDate().toString().padStart(2, '0');
+                    const month = (this.endSelectedDate.getMonth() + 1).toString().padStart(2, '0');
+                    const year = this.endSelectedDate.getFullYear();
+                    this.fechaFinalizacionDisplay.value = `${day}/${month}/${year}`;
+                }
+            }
+
+            updateEndTimeDisplay() {
+                if (this.endSelectedTime) {
+                    const hour = this.endSelectedTime.hour.toString().padStart(2, '0');
+                    const minute = this.endSelectedTime.minute.toString().padStart(2, '0');
+                    this.horaFinalizacionDisplay.value = `${hour}:${minute}`;
+                }
+            }
+
+            toggleTimeInclusion() {
+                this.updateTimeVisibility();
+                this.updateHiddenInputs();
+            }
+
+            updateTimeVisibility() {
+                const includeTime = this.incluirHoraToggle.checked;
+                
+                // Controlar visibilidad de hora en fecha principal
+                if (includeTime) {
+                    this.timeInputContainer.style.display = 'block';
+                    // Si no hay hora seleccionada, establecer una por defecto
+                    if (!this.selectedTime) {
+                        this.selectedTime = { hour: 0, minute: 0 };
+                        this.updateTimeDisplay();
+                    }
+                } else {
+                    this.timeInputContainer.style.display = 'none';
+                    this.selectedTime = null;
+                    this.horaDisplay.value = '';
+                }
+                
+                // Controlar visibilidad de hora en fecha de finalización
+                if (this.endDateSection && this.endDateSection.style.display !== 'none') {
+                    const endTimeContainer = this.endDateSection.querySelector('.time-input-container');
+                    if (endTimeContainer) {
+                        if (includeTime) {
+                            endTimeContainer.style.display = 'block';
+                            // Si no hay hora de finalización seleccionada, establecer una por defecto
+                            if (!this.endSelectedTime) {
+                                this.endSelectedTime = { hour: 0, minute: 0 };
+                                this.updateEndTimeDisplay();
+                            }
+                        } else {
+                            endTimeContainer.style.display = 'none';
+                            this.endSelectedTime = null;
+                            this.horaFinalizacionDisplay.value = '';
+                        }
+                    }
+                }
+            }
+
+
+            clearDate() {
+                // Limpiar fecha principal
+                this.selectedDate = null;
+                this.selectedTime = null;
+                this.fechaDisplay.value = '';
+                this.horaDisplay.value = '';
+                
+                // Limpiar fecha de finalización
+                this.clearEndDate();
+                
+                // Desmarcar todos los checkboxes
+                this.fechaFinalizacionToggle.checked = false;
+                this.incluirHoraToggle.checked = false;
+                
+                // Ocultar secciones
+                this.endDateSection.style.display = 'none';
+                this.timeInputContainer.style.display = 'none';
+                this.hideDateOptions();
+                
+                // Actualizar inputs ocultos
+                this.updateHiddenInputs();
+                this.validateDateField();
+            }
+
+            clearEndDate() {
+                this.endSelectedDate = null;
+                this.endSelectedTime = null;
+                this.fechaFinalizacionDisplay.value = '';
+                this.horaFinalizacionDisplay.value = '';
+                this.updateHiddenInputs();
+            }
+
+            updateHiddenInputs() {
+                const fechaInput = document.getElementById('fecha_planeada');
+                const fechaFinalizacionInput = document.getElementById('fecha_finalizacion');
+                
+                // Actualizar fecha principal
+                if (this.selectedDate) {
+                    const dateTime = new Date(this.selectedDate);
+                    if (this.incluirHoraToggle.checked && this.selectedTime) {
+                        dateTime.setHours(this.selectedTime.hour, this.selectedTime.minute, 0, 0);
+                    } else {
+                        dateTime.setHours(0, 0, 0, 0);
+                    }
+                    fechaInput.value = this.formatDateTimeForNotion(dateTime);
+                } else {
+                    fechaInput.value = '';
+                }
+                
+                // Actualizar fecha de finalización
+                if (this.endSelectedDate) {
+                    const endDateTime = new Date(this.endSelectedDate);
+                    if (this.endSelectedTime) {
+                        endDateTime.setHours(this.endSelectedTime.hour, this.endSelectedTime.minute, 0, 0);
+                    } else {
+                        endDateTime.setHours(0, 0, 0, 0);
+                    }
+                    fechaFinalizacionInput.value = this.formatDateTimeForNotion(endDateTime);
+                } else {
+                    fechaFinalizacionInput.value = '';
+                }
+            }
+
+            validateDateField() {
+                const hasDate = this.selectedDate !== null;
+                const hasTime = this.incluirHoraToggle.checked ? (this.selectedTime !== null) : true;
+                const isValid = hasDate && hasTime;
+                const container = this.fechaDisplay.closest('.form-group');
+                
+                if (isValid) {
+                    this.fechaDisplay.classList.remove('invalid');
+                    this.fechaDisplay.classList.add('valid');
+                    this.hideFieldError(this.fechaDisplay);
+                } else {
+                    this.fechaDisplay.classList.remove('valid');
+                    this.fechaDisplay.classList.add('invalid');
+                    if (!hasDate) {
+                        this.showFieldError(this.fechaDisplay, 'Debe seleccionar una fecha válida.');
+                    } else if (this.incluirHoraToggle.checked && !hasTime) {
+                        this.showFieldError(this.fechaDisplay, 'Debe seleccionar una hora válida.');
+                    }
+                }
+                
+                return isValid;
             }
 
             updateDateTimeDisplay() {
@@ -1084,6 +2167,14 @@
                     }
                 }
                 
+                // Validar componente de fecha personalizado
+                if (!this.validateDateField()) {
+                    isValid = false;
+                    if (!emptyFields.includes('Fecha Planeada')) {
+                        emptyFields.push('Fecha Planeada');
+                    }
+                }
+                
                 // Mostrar mensaje específico si hay campos vacíos
                 if (!isValid && emptyFields.length > 0) {
                     const message = emptyFields.length === 1 
@@ -1187,6 +2278,15 @@
                     this.updateMedioDisplay();
                     this.updateMedioHiddenInput();
                 }
+                
+                // Limpiar componente de fecha
+                this.clearDate();
+                this.clearEndDate();
+                this.fechaFinalizacionToggle.checked = false;
+                this.endDateSection.style.display = 'none';
+                this.incluirHoraToggle.checked = false;
+                this.timeInputContainer.style.display = 'none';
+                this.hideDateOptions();
             }
 
             clearAllValidations() {

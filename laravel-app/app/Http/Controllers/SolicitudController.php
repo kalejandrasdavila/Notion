@@ -115,6 +115,15 @@ class SolicitudController extends Controller
                 $data['status'] = 'PENDIENTE';
             }
             
+            // Mapear fecha_finalizacion a fecha_fin para Notion
+            if (isset($data['fecha_finalizacion']) && !empty($data['fecha_finalizacion'])) {
+                $data['fecha_fin'] = $data['fecha_finalizacion'];
+                Log::info('Fecha de finalización mapeada', [
+                    'fecha_finalizacion' => $data['fecha_finalizacion'],
+                    'fecha_fin' => $data['fecha_fin']
+                ]);
+            }
+            
             // Crear la página en Notion
             $notionResult = $this->notionService->createPage($data);
             
