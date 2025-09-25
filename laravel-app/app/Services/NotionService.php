@@ -219,14 +219,9 @@ class NotionService
 
         // Tipo (campo opcional - solo si se proporciona)
         if (isset($data['tipo']) && !empty($data['tipo'])) {
-            $properties['MOTIVO'] = [
-                'rich_text' => [
-                    [
-                        'type' => 'text',
-                        'text' => [
-                            'content' => $data['tipo']
-                        ]
-                    ]
+            $properties['TIPO'] = [
+                'select' => [
+                    'name' => $data['tipo']
                 ]
             ];
         }
