@@ -27,7 +27,8 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
+            overflow: visible; /* Cambiado para permitir que el datetime picker se extienda */
+            position: relative; /* Añadido para mejor posicionamiento */
         }
 
         .form-wrapper {
@@ -678,6 +679,7 @@
         .datetime-picker-container {
             position: relative;
             width: 100%;
+            z-index: 1000; /* Añadido para mejor control de capas */
         }
 
         .datetime-display {
@@ -730,14 +732,16 @@
             right: 0;
             background: white;
             border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            z-index: 1000;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
             display: none;
             margin-top: 8px;
-            min-width: 600px;
-            max-width: 90vw;
+            min-width: 400px;
+            max-width: 450px;
             width: auto;
+            margin-left: 0;
+            margin-right: 0;
             /* Compatibilidad Safari/Chrome mejorada */
             -webkit-transform: translateZ(0);
             transform: translateZ(0);
@@ -837,7 +841,7 @@
             display: -webkit-flex;
             display: -ms-flexbox;
             display: flex;
-            min-height: 400px;
+            min-height: 280px;
             -webkit-flex-wrap: nowrap;
             -ms-flex-wrap: nowrap;
             flex-wrap: nowrap;
@@ -863,10 +867,10 @@
             -webkit-flex: 1;
             -ms-flex: 1;
             flex: 1;
-            padding: 20px;
+            padding: 12px;
             border-right: 1px solid #e2e8f0;
-            min-width: 300px;
-            max-width: 350px;
+            min-width: 220px;
+            max-width: 250px;
             /* Compatibilidad Safari mejorada */
             -webkit-box-sizing: border-box;
             box-sizing: border-box;
@@ -880,7 +884,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             /* Mejoras de compatibilidad */
             -webkit-box-align: center;
             -webkit-align-items: center;
@@ -914,13 +918,30 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            /* Mejoras de compatibilidad */
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center;
+        }
+
+        .month-year-dropdown {
+            margin-left: 4px;
+            color: #6b7280;
+            font-size: 0.75rem;
+        }
+
+        .calendar-nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
 
         .calendar-weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            margin-bottom: 12px;
+            gap: 2px;
+            margin-bottom: 8px;
         }
 
         .weekday {
@@ -936,7 +957,7 @@
         .calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
+            gap: 2px;
         }
 
         .calendar-day {
@@ -945,12 +966,12 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            border-radius: 8px;
-            font-size: 0.875rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
             font-weight: 500;
             transition: all 0.15s ease;
             color: #374151;
-            min-height: 32px;
+            min-height: 24px;
             -webkit-tap-highlight-color: transparent;
             tap-highlight-color: transparent;
             touch-action: manipulation;
@@ -968,27 +989,31 @@
             transform: translateZ(0);
             contain: layout style;
         }
-
+        
         .calendar-day:hover {
+            cursor: pointer;
             background: #f1f5f9;
             color: #1f2937;
         }
-
-        .calendar-day.other-month {
-            color: #d1d5db;
+        
+        .calendar-day.selected {
+            cursor: pointer;
+            background: #3b82f6;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+            border-radius: 4px;
         }
-
+        
         .calendar-day.today {
+            cursor: pointer;
             background: #dbeafe;
             color: #1d4ed8;
             font-weight: 600;
         }
 
-        .calendar-day.selected {
-            background: #667eea;
-            color: white;
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+        .calendar-day.other-month {
+            color: #d1d5db;
         }
 
         .calendar-day.disabled {
@@ -1003,7 +1028,25 @@
 
         .calendar-footer {
             margin-top: 16px;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .clear-btn {
+            background: none;
+            border: none;
+            color: #6b7280;
+            font-size: 0.875rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .clear-btn:hover {
+            color: #ef4444;
+            background: #fef2f2;
         }
 
         .today-btn {
@@ -1032,16 +1075,17 @@
         /* Sección de tiempo */
         .time-section {
             -webkit-box-flex: 0;
-            -webkit-flex: 0 0 250px;
-            -ms-flex: 0 0 250px;
-            flex: 0 0 250px;
-            padding: 20px;
+            -webkit-flex: 0 0 150px;
+            -ms-flex: 0 0 150px;
+            flex: 0 0 150px;
+            padding: 10px;
             display: -webkit-box;
             display: -webkit-flex;
             display: -ms-flexbox;
             display: flex;
-            gap: 15px;
-            min-width: 250px;
+            gap: 4px;
+            min-width: 150px;
+            max-width: 150px;
             background: #f8fafc;
             /* Compatibilidad Safari mejorada */
             -webkit-box-orient: horizontal;
@@ -1049,6 +1093,14 @@
             -webkit-flex-direction: row;
             -ms-flex-direction: row;
             flex-direction: row;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
             -webkit-box-sizing: border-box;
             box-sizing: border-box;
             /* Mejoras de rendimiento */
@@ -1075,6 +1127,8 @@
             -webkit-align-items: center;
             -ms-flex-align: center;
             align-items: center;
+            min-width: 0;
+            max-width: 50px;
             /* Compatibilidad Safari mejorada */
             -webkit-box-sizing: border-box;
             box-sizing: border-box;
@@ -1091,15 +1145,33 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: 8px;
+            /* Mejoras de compatibilidad */
+            -webkit-text-transform: uppercase;
+            text-transform: uppercase;
+        }
+
+        .time-columns {
+            display: flex;
+            gap: 4px;
+            flex: 1;
+            justify-content: center;
+            align-items: stretch;
+        }
+
+        .ampm-column {
+            flex: 0 0 50px;
+            min-width: 50px;
         }
 
         .time-scroll {
-            height: 250px;
+            height: 150px;
             overflow-y: auto;
             border: 1px solid #d1d5db;
-            border-radius: 8px;
+            border-radius: 6px;
             background: #ffffff;
-            min-height: 250px;
+            min-height: 150px;
+            max-height: 150px;
+            width: 100%;
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
             /* Compatibilidad Safari/Chrome mejorada */
             -webkit-overflow-scrolling: touch;
@@ -1113,19 +1185,20 @@
         }
 
         .time-option {
-            padding: 12px 16px;
+            padding: 4px 6px;
             text-align: center;
             cursor: pointer;
             -webkit-transition: all 0.2s ease;
             -o-transition: all 0.2s ease;
             transition: all 0.2s ease;
-            font-size: 14px;
+            font-size: 0.7rem;
             font-weight: 500;
             color: #374151;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
             border-bottom: 1px solid #f3f4f6;
-            min-height: 40px;
+            min-height: 24px;
+            width: 100%;
             display: -webkit-box;
             display: -webkit-flex;
             display: -ms-flexbox;
@@ -1153,63 +1226,22 @@
         }
 
         .time-option:hover {
+            cursor: pointer;
             background: #f1f5f9 !important;
             color: #1f2937 !important;
         }
 
         .time-option.selected {
+            cursor: pointer;
             background: #3b82f6 !important;
             color: #ffffff !important;
             font-weight: 600 !important;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
         }
 
 
-        .time-apply-section {
-            padding: 15px 20px;
-            border-top: 1px solid #e2e8f0;
-            text-align: center;
-        }
-
-        .time-apply-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 0 auto;
-            -webkit-tap-highlight-color: transparent;
-            tap-highlight-color: transparent;
-            touch-action: manipulation;
-            /* Mejoras de compatibilidad */
-            -webkit-box-align: center;
-            -webkit-align-items: center;
-            -ms-flex-align: center;
-            align-items: center;
-            -webkit-box-pack: center;
-            -webkit-justify-content: center;
-            -ms-flex-pack: center;
-            justify-content: center;
-            /* Mejoras de rendimiento */
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-            contain: layout style;
-        }
-
-        .time-apply-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-
-        .time-apply-btn:active {
-            transform: translateY(0);
-        }
+        /* Botón de aplicar removido - se cierra automáticamente */
 
         .time-section {
             position: relative;
@@ -1394,9 +1426,9 @@
                     <div class="form-group">
                         <label for="tipo" class="form-label">
                             <i class="fas fa-tag"></i>
-                            Area <span class="required">*</span>
+                            Area
                         </label>
-                        <select id="tipo" name="tipo" class="form-select" required>
+                        <select id="tipo" name="tipo" class="form-select">
                             <option value="">Seleccione un tipo...</option>
                         </select>
                         <div class="loading" id="tipoLoading">
@@ -1439,35 +1471,35 @@
                             
                             <!-- DateTime Picker -->
                             <div class="datetime-picker" id="fechaInicioPicker">
-                                <div class="datetime-picker-header">
-                                    <button type="button" class="close-picker-btn" id="closeInicioPicker">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
                                 <div class="datetime-picker-content">
                                     <!-- Calendario -->
                                     <div class="calendar-section">
                                         <div class="calendar-header">
-                                            <button type="button" class="calendar-nav" id="prevMonthInicio">
-                                                <i class="fas fa-chevron-left"></i>
-                                            </button>
                                             <div class="calendar-month-year" id="calendarMonthYearInicio">
                                                 <span class="month"></span>
                                                 <span class="year"></span>
+                                                <div class="month-year-dropdown">
+                                                    <i class="fas fa-chevron-down"></i>
+                                                </div>
                                             </div>
-                                            <button type="button" class="calendar-nav" id="nextMonthInicio">
-                                                <i class="fas fa-chevron-right"></i>
-                                            </button>
+                                            <div class="calendar-nav-group">
+                                                <button type="button" class="calendar-nav" id="prevMonthInicio">
+                                                    <i class="fas fa-chevron-up"></i>
+                                                </button>
+                                                <button type="button" class="calendar-nav" id="nextMonthInicio">
+                                                    <i class="fas fa-chevron-down"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                         
                                         <div class="calendar-weekdays">
-                                            <div class="weekday">Lu</div>
-                                            <div class="weekday">Ma</div>
-                                            <div class="weekday">Mi</div>
-                                            <div class="weekday">Ju</div>
-                                            <div class="weekday">Vi</div>
-                                            <div class="weekday">Sá</div>
-                                            <div class="weekday">Do</div>
+                                            <div class="weekday">L</div>
+                                            <div class="weekday">M</div>
+                                            <div class="weekday">M</div>
+                                            <div class="weekday">J</div>
+                                            <div class="weekday">V</div>
+                                            <div class="weekday">S</div>
+                                            <div class="weekday">D</div>
                                         </div>
                                         
                                         <div class="calendar-days" id="calendarDaysInicio">
@@ -1475,59 +1507,57 @@
                                         </div>
                                         
                                         <div class="calendar-footer">
+                                            <button type="button" class="clear-btn" id="clearInicio">
+                                                Borrar
+                                            </button>
                                             <button type="button" class="today-btn" id="todayBtnInicio">
-                                                <i class="fas fa-calendar-day"></i>
                                                 Hoy
                                             </button>
                                         </div>
                                     </div>
                                     
-                                    <!-- Separador -->
-                                    <div class="datetime-separator"></div>
-                                    
                                     <!-- Selector de hora -->
                                     <div class="time-section">
-                                        <div class="time-column">
-                                            <label>Hora</label>
-                                            <div class="time-scroll" id="hourScrollInicio">
-                                                <div class="time-option" data-value="1">01</div>
-                                                <div class="time-option" data-value="2">02</div>
-                                                <div class="time-option" data-value="3">03</div>
-                                                <div class="time-option" data-value="4">04</div>
-                                                <div class="time-option" data-value="5">05</div>
-                                                <div class="time-option" data-value="6">06</div>
-                                                <div class="time-option" data-value="7">07</div>
-                                                <div class="time-option" data-value="8">08</div>
-                                                <div class="time-option" data-value="9">09</div>
-                                                <div class="time-option" data-value="10">10</div>
-                                                <div class="time-option" data-value="11">11</div>
-                                                <div class="time-option" data-value="12">12</div>
+                                        <div class="time-columns">
+                                            <div class="time-column">
+                                                <div class="time-scroll" id="hourScrollInicio">
+                                                    <div class="time-option" data-value="1">01</div>
+                                                    <div class="time-option" data-value="2">02</div>
+                                                    <div class="time-option" data-value="3">03</div>
+                                                    <div class="time-option" data-value="4">04</div>
+                                                    <div class="time-option" data-value="5">05</div>
+                                                    <div class="time-option" data-value="6">06</div>
+                                                    <div class="time-option" data-value="7">07</div>
+                                                    <div class="time-option" data-value="8">08</div>
+                                                    <div class="time-option" data-value="9">09</div>
+                                                    <div class="time-option" data-value="10">10</div>
+                                                    <div class="time-option" data-value="11">11</div>
+                                                    <div class="time-option" data-value="12">12</div>
+                                                </div>
+                                            </div>
+                                            <div class="time-column">
+                                                <div class="time-scroll" id="minuteScrollInicio">
+                                                    <div class="time-option" data-value="0">00</div>
+                                                    <div class="time-option" data-value="5">05</div>
+                                                    <div class="time-option" data-value="10">10</div>
+                                                    <div class="time-option" data-value="15">15</div>
+                                                    <div class="time-option" data-value="20">20</div>
+                                                    <div class="time-option" data-value="25">25</div>
+                                                    <div class="time-option" data-value="30">30</div>
+                                                    <div class="time-option" data-value="35">35</div>
+                                                    <div class="time-option" data-value="40">40</div>
+                                                    <div class="time-option" data-value="45">45</div>
+                                                    <div class="time-option" data-value="50">50</div>
+                                                    <div class="time-option" data-value="55">55</div>
+                                                </div>
+                                            </div>
+                                            <div class="time-column ampm-column">
+                                                <div class="time-scroll" id="ampmScrollInicio">
+                                                    <div class="time-option" data-value="PM">p.m.</div>
+                                                    <div class="time-option" data-value="AM">a.m.</div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="time-column">
-                                            <label>Minutos</label>
-                                            <div class="time-scroll" id="minuteScrollInicio">
-                                                <div class="time-option" data-value="0">00</div>
-                                                <div class="time-option" data-value="15">15</div>
-                                                <div class="time-option" data-value="30">30</div>
-                                                <div class="time-option" data-value="45">45</div>
-                                            </div>
-                                        </div>
-                                        <div class="time-column">
-                                            <label>AM/PM</label>
-                                            <div class="time-scroll" id="ampmScrollInicio">
-                                                <div class="time-option" data-value="AM">AM</div>
-                                                <div class="time-option" data-value="PM">PM</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Botón de aplicar -->
-                                    <div class="time-apply-section">
-                                        <button type="button" class="time-apply-btn" id="applyTimeInicio">
-                                            <i class="fas fa-check"></i>
-                                            Aplicar Hora
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -1551,35 +1581,35 @@
                             
                             <!-- DateTime Picker -->
                             <div class="datetime-picker" id="fechaFinPicker">
-                                <div class="datetime-picker-header">
-                                    <button type="button" class="close-picker-btn" id="closeFinPicker">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
                                 <div class="datetime-picker-content">
                                     <!-- Calendario -->
                                     <div class="calendar-section">
                                         <div class="calendar-header">
-                                            <button type="button" class="calendar-nav" id="prevMonthFin">
-                                                <i class="fas fa-chevron-left"></i>
-                                            </button>
                                             <div class="calendar-month-year" id="calendarMonthYearFin">
                                                 <span class="month"></span>
                                                 <span class="year"></span>
+                                                <div class="month-year-dropdown">
+                                                    <i class="fas fa-chevron-down"></i>
+                                                </div>
                                             </div>
-                                            <button type="button" class="calendar-nav" id="nextMonthFin">
-                                                <i class="fas fa-chevron-right"></i>
-                                            </button>
+                                            <div class="calendar-nav-group">
+                                                <button type="button" class="calendar-nav" id="prevMonthFin">
+                                                    <i class="fas fa-chevron-up"></i>
+                                                </button>
+                                                <button type="button" class="calendar-nav" id="nextMonthFin">
+                                                    <i class="fas fa-chevron-down"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                         
                                         <div class="calendar-weekdays">
-                                            <div class="weekday">Lu</div>
-                                            <div class="weekday">Ma</div>
-                                            <div class="weekday">Mi</div>
-                                            <div class="weekday">Ju</div>
-                                            <div class="weekday">Vi</div>
-                                            <div class="weekday">Sá</div>
-                                            <div class="weekday">Do</div>
+                                            <div class="weekday">L</div>
+                                            <div class="weekday">M</div>
+                                            <div class="weekday">M</div>
+                                            <div class="weekday">J</div>
+                                            <div class="weekday">V</div>
+                                            <div class="weekday">S</div>
+                                            <div class="weekday">D</div>
                                         </div>
                                         
                                         <div class="calendar-days" id="calendarDaysFin">
@@ -1587,60 +1617,60 @@
                                         </div>
                                         
                                         <div class="calendar-footer">
+                                            <button type="button" class="clear-btn" id="clearFin">
+                                                Borrar
+                                            </button>
                                             <button type="button" class="today-btn" id="todayBtnFin">
-                                                <i class="fas fa-calendar-day"></i>
                                                 Hoy
                                             </button>
                                         </div>
                                     </div>
                                     
-                                    <!-- Separador -->
-                                    <div class="datetime-separator"></div>
-                                    
                                     <!-- Selector de hora -->
                                     <div class="time-section">
-                                        <div class="time-column">
-                                            <label>Hora</label>
-                                            <div class="time-scroll" id="hourScrollFin">
-                                                <div class="time-option" data-value="1">01</div>
-                                                <div class="time-option" data-value="2">02</div>
-                                                <div class="time-option" data-value="3">03</div>
-                                                <div class="time-option" data-value="4">04</div>
-                                                <div class="time-option" data-value="5">05</div>
-                                                <div class="time-option" data-value="6">06</div>
-                                                <div class="time-option" data-value="7">07</div>
-                                                <div class="time-option" data-value="8">08</div>
-                                                <div class="time-option" data-value="9">09</div>
-                                                <div class="time-option" data-value="10">10</div>
-                                                <div class="time-option" data-value="11">11</div>
-                                                <div class="time-option" data-value="12">12</div>
+                                        <div class="time-columns">
+                                            <div class="time-column">
+                                                <div class="time-scroll" id="hourScrollFin">
+                                                    <div class="time-option" data-value="1">01</div>
+                                                    <div class="time-option" data-value="2">02</div>
+                                                    <div class="time-option" data-value="3">03</div>
+                                                    <div class="time-option" data-value="4">04</div>
+                                                    <div class="time-option" data-value="5">05</div>
+                                                    <div class="time-option" data-value="6">06</div>
+                                                    <div class="time-option" data-value="7">07</div>
+                                                    <div class="time-option" data-value="8">08</div>
+                                                    <div class="time-option" data-value="9">09</div>
+                                                    <div class="time-option" data-value="10">10</div>
+                                                    <div class="time-option" data-value="11">11</div>
+                                                    <div class="time-option" data-value="12">12</div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="time-column">
-                                            <label>Minutos</label>
-                                            <div class="time-scroll" id="minuteScrollFin">
-                                                <div class="time-option" data-value="0">00</div>
-                                                <div class="time-option" data-value="15">15</div>
-                                                <div class="time-option" data-value="30">30</div>
-                                                <div class="time-option" data-value="45">45</div>
+                                            <div class="time-column">
+                                                <div class="time-scroll" id="minuteScrollFin">
+                                                    <div class="time-option" data-value="0">00</div>
+                                                    <div class="time-option" data-value="5">05</div>
+                                                    <div class="time-option" data-value="10">10</div>
+                                                    <div class="time-option" data-value="15">15</div>
+                                                    <div class="time-option" data-value="20">20</div>
+                                                    <div class="time-option" data-value="25">25</div>
+                                                    <div class="time-option" data-value="30">30</div>
+                                                    <div class="time-option" data-value="35">35</div>
+                                                    <div class="time-option" data-value="40">40</div>
+                                                    <div class="time-option" data-value="45">45</div>
+                                                    <div class="time-option" data-value="50">50</div>
+                                                    <div class="time-option" data-value="55">55</div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="time-column">
-                                            <label>AM/PM</label>
-                                            <div class="time-scroll" id="ampmScrollFin">
-                                                <div class="time-option" data-value="AM">AM</div>
-                                                <div class="time-option" data-value="PM">PM</div>
+                                            <div class="time-column ampm-column">
+                                                <div class="time-scroll" id="ampmScrollFin">
+                                                    <div class="time-option" data-value="PM">p.m.</div>
+                                                    <div class="time-option" data-value="AM">a.m.</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    <!-- Botón de aplicar -->
-                                    <div class="time-apply-section">
-                                        <button type="button" class="time-apply-btn" id="applyTimeFin">
-                                            <i class="fas fa-check"></i>
-                                            Aplicar Hora
-                                        </button>
-                                    </div>
+                                    <!-- Botón de aplicar removido - se cierra automáticamente -->
                                 </div>
                             </div>
                         </div>
@@ -1782,13 +1812,12 @@
                 this[`${prefixLower}PrevMonth`] = document.getElementById(`prevMonth${prefix}`);
                 this[`${prefixLower}NextMonth`] = document.getElementById(`nextMonth${prefix}`);
                 this[`${prefixLower}TodayBtn`] = document.getElementById(`todayBtn${prefix}`);
-                this[`${prefixLower}CloseBtn`] = document.getElementById(`close${prefix}Picker`);
+                this[`${prefixLower}ClearBtn`] = document.getElementById(`clear${prefix}`);
                 
                 // Elementos del selector de hora
                 this[`${prefixLower}HourScroll`] = document.getElementById(`hourScroll${prefix}`);
                 this[`${prefixLower}MinuteScroll`] = document.getElementById(`minuteScroll${prefix}`);
                 this[`${prefixLower}AmpmScroll`] = document.getElementById(`ampmScroll${prefix}`);
-                this[`${prefixLower}ApplyBtn`] = document.getElementById(`applyTime${prefix}`);
                 
                 // Estado del picker
                 this[`${prefixLower}CurrentDate`] = new Date();
@@ -1797,15 +1826,20 @@
                 
                 // Eventos
                 this[`${prefixLower}Toggle`].addEventListener('click', () => this.toggleDateTimePicker(type));
+                this[`${prefixLower}Display`].addEventListener('click', () => this.openDateTimePicker(type));
                 this[`${prefixLower}PrevMonth`].addEventListener('click', () => this.changeMonth(type, -1));
                 this[`${prefixLower}NextMonth`].addEventListener('click', () => this.changeMonth(type, 1));
                 this[`${prefixLower}TodayBtn`].addEventListener('click', () => this.selectToday(type));
-                this[`${prefixLower}CloseBtn`].addEventListener('click', () => this.closeDateTimePicker(type));
-                this[`${prefixLower}ApplyBtn`].addEventListener('click', () => this.applyTimeSelection(type));
+                this[`${prefixLower}ClearBtn`].addEventListener('click', () => this.clearSelection(type));
+                // Botón de aplicar removido - se cierra automáticamente
                 
-                // Cerrar picker al hacer clic fuera
+                // Cerrar picker al hacer clic fuera (pero no al seleccionar fechas)
                 document.addEventListener('click', (e) => {
-                    if (!e.target.closest(`#fecha${prefix}Picker`) && !e.target.closest(`#fecha${prefix}Toggle`)) {
+                    if (!e.target.closest(`#fecha${prefix}Picker`) && 
+                        !e.target.closest(`#fecha${prefix}Toggle`) && 
+                        !e.target.closest(`#fecha_${prefixLower}_display`) &&
+                        !e.target.closest('.calendar-day') &&
+                        !e.target.closest('.time-option')) {
                         this.closeDateTimePicker(type);
                     }
                 });
@@ -1843,31 +1877,33 @@
                 const prefixLower = type.toLowerCase();
                 const picker = this[`${prefixLower}Picker`];
                 
-                // Cerrar otros pickers
-                if (type === 'inicio') {
-                    this.closeDateTimePicker('fin');
-                } else {
-                    this.closeDateTimePicker('inicio');
-                }
-                
-                // Asegurar que el picker sea visible
-                picker.style.display = 'block';
-                picker.style.visibility = 'visible';
-                picker.style.opacity = '1';
-                picker.classList.add('show');
-                
-                // Forzar repaint en Safari
-                picker.offsetHeight;
-                
-                // Forzar que las opciones de hora sean visibles
-                setTimeout(() => {
-                    this.forceTimeOptionsVisibility(type);
-                }, 50);
-                
-                // En móviles, agregar clase para el overlay
-                if (window.innerWidth <= 850) {
-                    document.body.style.overflow = 'hidden';
-                    picker.classList.add('mobile-picker');
+                if (picker) {
+                    // Cerrar otros pickers
+                    if (type === 'inicio') {
+                        this.closeDateTimePicker('fin');
+                    } else {
+                        this.closeDateTimePicker('inicio');
+                    }
+                    
+                    // Asegurar que el picker sea visible
+                    picker.style.display = 'block';
+                    picker.style.visibility = 'visible';
+                    picker.style.opacity = '1';
+                    picker.classList.add('show');
+                    
+                    // Forzar repaint en Safari
+                    picker.offsetHeight;
+                    
+                    // Forzar que las opciones de hora sean visibles
+                    setTimeout(() => {
+                        this.forceTimeOptionsVisibility(type);
+                    }, 50);
+                    
+                    // En móviles, agregar clase para el overlay
+                    if (window.innerWidth <= 850) {
+                        document.body.style.overflow = 'hidden';
+                        picker.classList.add('mobile-picker');
+                    }
                 }
             }
 
@@ -1876,12 +1912,19 @@
                 const prefixLower = type.toLowerCase();
                 const picker = this[`${prefixLower}Picker`];
                 
-                picker.classList.remove('show');
-                picker.classList.remove('mobile-picker');
-                
-                // Restaurar scroll en móviles
-                if (window.innerWidth <= 850) {
-                    document.body.style.overflow = '';
+                if (picker) {
+                    picker.classList.remove('show');
+                    picker.classList.remove('mobile-picker');
+                    
+                    // Asegurar que el picker se oculte completamente
+                    picker.style.display = 'none';
+                    picker.style.visibility = 'hidden';
+                    picker.style.opacity = '0';
+                    
+                    // Restaurar scroll en móviles
+                    if (window.innerWidth <= 850) {
+                        document.body.style.overflow = '';
+                    }
                 }
             }
 
@@ -1904,6 +1947,25 @@
                 const originalValue = display.value;
                 display.style.color = '#22c55e';
                 display.value = '✓ Fecha de hoy seleccionada';
+                
+                setTimeout(() => {
+                    display.style.color = '';
+                    display.value = originalValue;
+                }, 1500);
+            }
+
+            clearSelection(type) {
+                const prefixLower = type.toLowerCase();
+                this[`${prefixLower}SelectedDate`] = null;
+                this[`${prefixLower}SelectedTime`] = { hour: 12, minute: 0, ampm: 'PM' };
+                this.renderCalendar(type);
+                this.updateDateTimeDisplay(type);
+                
+                // Mostrar mensaje de confirmación
+                const display = this[`${prefixLower}Display`];
+                const originalValue = display.value;
+                display.style.color = '#ef4444';
+                display.value = '✓ Selección borrada';
                 
                 setTimeout(() => {
                     display.style.color = '';
@@ -1995,7 +2057,8 @@
                 
                 this[`${prefixLower}SelectedDate`] = selectedDate;
                 this.updateDateTimeDisplay(type);
-                this.closeDateTimePicker(type);
+                this.renderCalendar(type); // Re-renderizar el calendario para mostrar la selección
+                // El picker permanece abierto para permitir ajustar la hora
             }
 
             setDefaultTimeSelection(type) {
@@ -2069,29 +2132,7 @@
                 console.log(`Forzando visibilidad de opciones de hora para ${type}`);
             }
 
-            applyTimeSelection(type) {
-                const prefixLower = type.toLowerCase();
-                const selectedDate = this[`${prefixLower}SelectedDate`];
-                const selectedTime = this[`${prefixLower}SelectedTime`];
-                
-                // Si no hay fecha seleccionada, usar la fecha actual
-                if (!selectedDate) {
-                    this[`${prefixLower}SelectedDate`] = new Date();
-                }
-                
-                this.updateDateTimeDisplay(type);
-                
-                // Mostrar mensaje de confirmación
-                const display = this[`${prefixLower}Display`];
-                const originalValue = display.value;
-                display.style.color = '#22c55e';
-                display.value = '✓ Hora aplicada correctamente';
-                
-                setTimeout(() => {
-                    display.style.color = '';
-                    display.value = originalValue;
-                }, 1500);
-            }
+            // Función applyTimeSelection removida - se cierra automáticamente
 
             populateTimeScrolls(type) {
                 const prefixLower = type.toLowerCase();
@@ -2145,8 +2186,7 @@
                 this.updateTimeSelection(type, timeType, value);
                 this.updateDateTimeDisplay(type);
                 
-                // Solo cerrar el picker si se selecciona una fecha
-                // La hora se puede cambiar sin cerrar el picker
+                // El picker permanece abierto para permitir múltiples selecciones
             }
 
             updateTimeSelection(type, timeType, value) {

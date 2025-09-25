@@ -166,9 +166,9 @@ class NotionService
     {
         $properties = [];
 
-        // Título
+        // Título (usando el campo correcto de Notion)
         if (isset($data['indicaciones'])) {
-            $properties['title'] = [
+            $properties['INDICACIONES A SEGUIR'] = [
                 'title' => [
                     [
                         'type' => 'text',
@@ -189,29 +189,17 @@ class NotionService
             ];
         }
 
-        // Fecha planeada
+        // Fecha planeada - usando el formato del curl POST
         if (isset($data['fecha_planeada'])) {
-            // Convertir fecha a formato UTC sin offset para usar con timezone
-            $startDate = $this->convertToUTCFormat($data['fecha_planeada']);
+            $startDate = $this->convertToNotionFormat($data['fecha_planeada']);
             $dateConfig = [
-                'start' => $startDate,
-                'time_zone' => 'America/Mexico_City'
+                'start' => $startDate
             ];
             
             // Si también se proporciona fecha de fin, agregarla
             if (isset($data['fecha_fin']) && !empty($data['fecha_fin'])) {
-                $endDate = $this->convertToUTCFormat($data['fecha_fin']);
+                $endDate = $this->convertToNotionFormat($data['fecha_fin']);
                 $dateConfig['end'] = $endDate;
-                Log::info('Fecha de fin procesada', [
-                    'fecha_fin_original' => $data['fecha_fin'],
-                    'fecha_fin_convertida' => $endDate
-                ]);
-            } else {
-                Log::info('No se encontró fecha de fin', [
-                    'fecha_fin_exists' => isset($data['fecha_fin']),
-                    'fecha_fin_value' => $data['fecha_fin'] ?? 'not_set',
-                    'all_data_keys' => array_keys($data)
-                ]);
             }
             
             $properties['FECHA PLANEADA'] = [
@@ -219,11 +207,26 @@ class NotionService
             ];
         }
 
-        // Tipo
-        if (isset($data['tipo'])) {
-            $properties['TIPO'] = [
-                'select' => [
-                    'name' => $data['tipo']
+        // Fecha límite (usando el campo FECHA Y HORA LIMITE)
+        if (isset($data['fecha_fin']) && !empty($data['fecha_fin'])) {
+            $endDate = $this->convertToNotionFormat($data['fecha_fin']);
+            $properties['FECHA Y HORA LIMITE'] = [
+                'date' => [
+                    'start' => $endDate
+                ]
+            ];
+        }
+
+        // Tipo (campo opcional - solo si se proporciona)
+        if (isset($data['tipo']) && !empty($data['tipo'])) {
+            $properties['MOTIVO'] = [
+                'rich_text' => [
+                    [
+                        'type' => 'text',
+                        'text' => [
+                            'content' => $data['tipo']
+                        ]
+                    ]
                 ]
             ];
         }
@@ -265,7 +268,30 @@ class NotionService
     }
 
     /**
-     * Convertir fecha a formato UTC sin offset para usar con timezone
+     * Convertir fecha a formato Notion con offset de México
+     */
+    protected function convertToNotionFormat($dateString)
+    {
+        try {
+            // Crear objeto DateTime con la zona horaria de México
+            $date = new \DateTime($dateString, new \DateTimeZone('America/Mexico_City'));
+            
+            // Formatear con offset de México (-06:00)
+            return $date->format('Y-m-d\TH:i:s.000-06:00');
+            
+        } catch (\Exception $e) {
+            Log::error('Error convirtiendo fecha a formato Notion', [
+                'dateString' => $dateString,
+                'error' => $e->getMessage()
+            ]);
+            
+            // Si hay error, devolver la fecha original
+            return $dateString;
+        }
+    }
+
+    /**
+     * Convertir fecha a formato UTC sin offset para usar con timezone (método legacy)
      */
     protected function convertToUTCFormat($dateString)
     {

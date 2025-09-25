@@ -87,10 +87,11 @@ class SolicitudController extends Controller
         
         $validator = Validator::make($data, [
             'status' => 'sometimes|string|max:255',
-            'tipo' => 'required|string|max:255',
+            'tipo' => 'nullable|string|max:255',
             'solicitante' => 'required|string|max:255',
             'indicaciones' => 'required|string|max:1000',
-            'fecha_planeada' => 'required|string',
+            'fecha_inicio' => 'required|string',
+            'fecha_fin' => 'required|string',
             'prioridad' => 'required|string|max:255',
             'medio' => 'required|array|min:1',
             'medio.*' => 'required|string|max:255',
@@ -115,12 +116,21 @@ class SolicitudController extends Controller
                 $data['status'] = 'PENDIENTE';
             }
             
-            // Mapear fecha_finalizacion a fecha_fin para Notion
-            if (isset($data['fecha_finalizacion']) && !empty($data['fecha_finalizacion'])) {
-                $data['fecha_fin'] = $data['fecha_finalizacion'];
-                Log::info('Fecha de finalización mapeada', [
-                    'fecha_finalizacion' => $data['fecha_finalizacion'],
-                    'fecha_fin' => $data['fecha_fin']
+            // Mapear fecha_inicio a fecha_planeada para la base de datos
+            if (isset($data['fecha_inicio']) && !empty($data['fecha_inicio'])) {
+                $data['fecha_planeada'] = $data['fecha_inicio'];
+                Log::info('Fecha de inicio mapeada a fecha_planeada', [
+                    'fecha_inicio' => $data['fecha_inicio'],
+                    'fecha_planeada' => $data['fecha_planeada']
+                ]);
+            }
+            
+            // Mapear fecha_fin para Notion (si es necesario)
+            if (isset($data['fecha_fin']) && !empty($data['fecha_fin'])) {
+                $data['fecha_finalizacion'] = $data['fecha_fin'];
+                Log::info('Fecha de fin mapeada a fecha_finalizacion', [
+                    'fecha_fin' => $data['fecha_fin'],
+                    'fecha_finalizacion' => $data['fecha_finalizacion']
                 ]);
             }
             
@@ -138,7 +148,7 @@ class SolicitudController extends Controller
             // Guardar en la base de datos local
             $solicitud = Solicitud::create([
                 'status' => $data['status'],
-                'tipo' => $data['tipo'],
+                'tipo' => $data['tipo'] ?? null, // Campo opcional
                 'solicitante' => $data['solicitante'],
                 'indicaciones' => $data['indicaciones'],
                 'fecha_planeada' => $data['fecha_planeada'],
