@@ -1426,9 +1426,9 @@
                     <div class="form-group">
                         <label for="tipo" class="form-label">
                             <i class="fas fa-tag"></i>
-                            Area
+                            Area <span class="required">*</span>
                         </label>
-                        <select id="tipo" name="tipo" class="form-select">
+                        <select id="tipo" name="tipo" class="form-select" required>
                             <option value="">Seleccione un tipo...</option>
                         </select>
                         <div class="loading" id="tipoLoading">
