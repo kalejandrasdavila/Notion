@@ -17,11 +17,12 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
+            margin: 0;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -30,7 +31,7 @@
         }
 
         .form-wrapper {
-            padding: 80px;
+            padding: 40px;
         }
 
         .form-header {
@@ -82,6 +83,7 @@
         .form-group {
             display: flex;
             flex-direction: column;
+            min-width: 0; /* Permite que el contenido se ajuste */
         }
 
         .form-group.full-width {
@@ -110,6 +112,11 @@
             font-size: 16px;
             transition: all 0.3s ease;
             background: #f8f9fa;
+            width: 100%;
+            min-width: 0; /* Permite que se ajuste al contenedor */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
 
         .form-input:focus,
@@ -119,6 +126,13 @@
             border-color: #667eea;
             background: white;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-input:focus-visible,
+        .form-select:focus-visible,
+        .form-textarea:focus-visible {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
         }
 
         .form-textarea {
@@ -153,6 +167,7 @@
             gap: 15px;
             justify-content: center;
             margin-top: 30px;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -167,6 +182,8 @@
             align-items: center;
             gap: 10px;
             text-decoration: none;
+            min-width: 140px;
+            justify-content: center;
         }
 
         .btn-primary {
@@ -193,6 +210,15 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none !important;
+        }
+        
+        .btn:focus-visible {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
         }
 
         .loading {
@@ -436,9 +462,26 @@
             background-color: rgba(255, 255, 255, 0.2);
         }
 
+        /* Tablets y pantallas medianas */
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 95%;
+                margin: 0 auto;
+            }
+            
+            .form-wrapper {
+                padding: 30px;
+            }
+            
+            .datetime-picker {
+                min-width: 350px;
+            }
+        }
+
         @media (max-width: 850px) {
             .form-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
             
             .form-header h1 {
@@ -446,7 +489,7 @@
             }
             
             .form-wrapper {
-                padding: 60px;
+                padding: 25px;
             }
 
             .header-content {
@@ -458,9 +501,60 @@
                 width: 50px;
                 height: 50px;
             }
+            
+            .datetime-picker {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 95vw;
+                max-width: 700px;
+                max-height: 85vh;
+                overflow-y: auto;
+                min-width: 600px;
+            }
+            
+            .datetime-picker-header {
+                display: flex;
+            }
+            
+            .datetime-picker-content {
+                -webkit-box-orient: horizontal;
+                -webkit-box-direction: normal;
+                -webkit-flex-direction: row;
+                -ms-flex-direction: row;
+                flex-direction: row;
+                min-height: 400px;
+            }
+            
+            .calendar-section {
+                border-right: 1px solid #e2e8f0;
+                min-width: 280px;
+                max-width: 320px;
+            }
+            
+            .time-section {
+                flex: 0 0 200px;
+                min-width: 200px;
+                background: #f8fafc;
+            }
         }
 
+        /* Móviles pequeños */
         @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+            
+            .container {
+                border-radius: 15px;
+                max-width: 100%;
+            }
+            
+            .form-wrapper {
+                padding: 20px;
+            }
+            
             .notion-logo {
                 width: 45px;
                 height: 45px;
@@ -473,55 +567,142 @@
             .form-header p {
                 font-size: 1rem;
             }
+            
+            .form-grid {
+                gap: 12px;
+            }
+            
+            .form-input,
+            .form-select,
+            .form-textarea {
+                padding: 10px 12px;
+                font-size: 16px; /* Previene zoom en iOS */
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                min-width: 120px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .datetime-picker {
+                width: 98vw;
+                max-width: none;
+                border-radius: 12px;
+                min-width: 350px;
+            }
+            
+            .datetime-picker-content {
+                -webkit-box-orient: vertical;
+                -webkit-box-direction: normal;
+                -webkit-flex-direction: column;
+                -ms-flex-direction: column;
+                flex-direction: column;
+                min-height: auto;
+            }
+            
+            .calendar-section {
+                padding: 15px;
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+                min-width: auto;
+                max-width: none;
+            }
+            
+            .time-section {
+                padding: 15px;
+                gap: 10px;
+                flex: none;
+                min-width: auto;
+                background: #f8fafc;
+            }
+            
+            .time-scroll {
+                height: 120px;
+                min-height: 120px;
+            }
+            
+            .time-option {
+                padding: 8px 12px;
+                min-height: 32px;
+                font-size: 13px;
+            }
+            
+            .calendar-day {
+                min-height: 28px;
+                font-size: 0.8rem;
+            }
+            
+            .dropdown-menu {
+                max-height: 150px;
+            }
+        }
+        
+        /* Pantallas muy pequeñas (menos de 360px) */
+        @media (max-width: 360px) {
+            .form-wrapper {
+                padding: 15px;
+            }
+            
+            .form-header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .form-header p {
+                font-size: 0.9rem;
+            }
+            
+            .btn {
+                padding: 10px 16px;
+                font-size: 13px;
+                min-width: 100px;
+            }
+            
+            .datetime-picker {
+                width: 98vw;
+                border-radius: 8px;
+            }
+            
+            .calendar-section,
+            .time-section {
+                padding: 10px;
+            }
         }
 
-        /* Estilos para el selector de fecha personalizado */
-        .date-time-picker {
+        /* Estilos para el datetime picker personalizado */
+        .datetime-picker-container {
             position: relative;
             width: 100%;
         }
 
-        .date-time-inputs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .date-time-inputs:focus-within {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .date-input-container,
-        .time-input-container {
-            position: relative;
-            flex: 1;
-        }
-
-        .date-display,
-        .time-display {
+        .datetime-display {
             width: 100%;
             padding: 12px 16px;
-            border: none;
-            background: transparent;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: #f8fafc;
             font-size: 16px;
             color: #374151;
             cursor: pointer;
             outline: none;
+            transition: all 0.3s ease;
         }
 
-        .date-display::placeholder,
-        .time-display::placeholder {
+        .datetime-display:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .datetime-display::placeholder {
             color: #9ca3af;
         }
 
-        .date-picker-toggle,
-        .time-picker-toggle {
+        .datetime-picker-toggle {
             position: absolute;
             right: 12px;
             top: 50%;
@@ -536,14 +717,13 @@
             font-size: 14px;
         }
 
-        .date-picker-toggle:hover,
-        .time-picker-toggle:hover {
+        .datetime-picker-toggle:hover {
             background: #e2e8f0;
             color: #4f46e5;
         }
 
-        /* Calendario */
-        .calendar-container {
+        /* DateTime Picker */
+        .datetime-picker {
             position: absolute;
             top: 100%;
             left: 0;
@@ -553,51 +733,194 @@
             border-radius: 16px;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             z-index: 1000;
-            padding: 16px;
             display: none;
             margin-top: 8px;
-            min-width: 280px;
+            min-width: 600px;
+            max-width: 90vw;
+            width: auto;
+            /* Compatibilidad Safari/Chrome mejorada */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -webkit-perspective: 1000px;
+            perspective: 1000px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            /* Mejoras de rendimiento */
+            will-change: transform, opacity;
+            contain: layout style paint;
         }
 
-        .calendar-container.show {
+        .datetime-picker.show {
             display: block;
+            -webkit-animation: slideDown 0.2s ease-out;
             animation: slideDown 0.2s ease-out;
         }
 
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
+        @-webkit-keyframes slideDown {
+            from {
+                opacity: 0;
+                -webkit-transform: translateY(-10px);
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
         }
 
-        .calendar-nav {
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                -webkit-transform: translateY(-10px);
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
+        }
+        
+        .datetime-picker.mobile-picker {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vw;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 10000;
+        }
+        
+        .datetime-picker.mobile-picker::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+        
+        .datetime-picker-header {
+            display: none;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            justify-content: flex-end;
+        }
+        
+        .close-picker-btn {
             background: none;
             border: none;
             color: #6b7280;
             cursor: pointer;
-            padding: 6px;
-            border-radius: 8px;
+            padding: 8px;
+            border-radius: 50%;
             transition: all 0.2s ease;
             font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        .close-picker-btn:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .datetime-picker-content {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            min-height: 400px;
+            -webkit-flex-wrap: nowrap;
+            -ms-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+            /* Compatibilidad Safari mejorada */
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: row;
+            -ms-flex-direction: row;
+            flex-direction: row;
+            -webkit-box-align: stretch;
+            -webkit-align-items: stretch;
+            -ms-flex-align: stretch;
+            align-items: stretch;
+            /* Mejoras de rendimiento */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            contain: layout;
+        }
+
+        /* Sección del calendario */
+        .calendar-section {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            -ms-flex: 1;
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid #e2e8f0;
+            min-width: 300px;
+            max-width: 350px;
+            /* Compatibilidad Safari mejorada */
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            /* Mejoras de rendimiento */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            contain: layout style;
+        }
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            /* Mejoras de compatibilidad */
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: justify;
+            -webkit-justify-content: space-between;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+        }
+
+        .calendar-nav {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #6b7280;
         }
 
         .calendar-nav:hover {
-            background: #f1f5f9;
+            background: #e2e8f0;
             color: #374151;
         }
 
         .calendar-month-year {
+            font-size: 1.125rem;
             font-weight: 600;
-            font-size: 1rem;
             color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .calendar-weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 4px;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .weekday {
@@ -628,6 +951,22 @@
             transition: all 0.15s ease;
             color: #374151;
             min-height: 32px;
+            -webkit-tap-highlight-color: transparent;
+            tap-highlight-color: transparent;
+            touch-action: manipulation;
+            /* Mejoras de compatibilidad */
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            /* Mejoras de rendimiento */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            contain: layout style;
         }
 
         .calendar-day:hover {
@@ -662,273 +1001,373 @@
             color: #d1d5db;
         }
 
-        /* Selector de hora */
-        .time-picker-container {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            z-index: 1000;
-            padding: 16px;
-            display: none;
-            margin-top: 8px;
-            min-width: 200px;
+        .calendar-footer {
+            margin-top: 16px;
+            text-align: center;
         }
 
-        .time-picker-container.show {
-            display: block;
-            animation: slideDown 0.2s ease-out;
+        .today-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .time-picker {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
+        .today-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
         }
 
+        /* Separador */
+        .datetime-separator {
+            width: 1px;
+            background: #e2e8f0;
+        }
+
+        /* Sección de tiempo */
         .time-section {
+            -webkit-box-flex: 0;
+            -webkit-flex: 0 0 250px;
+            -ms-flex: 0 0 250px;
+            flex: 0 0 250px;
+            padding: 20px;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
+            gap: 15px;
+            min-width: 250px;
+            background: #f8fafc;
+            /* Compatibilidad Safari mejorada */
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: row;
+            -ms-flex-direction: row;
+            flex-direction: row;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            /* Mejoras de rendimiento */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            contain: layout style;
         }
 
-        .time-section label {
+        .time-column {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            -ms-flex: 1;
+            flex: 1;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center;
+            /* Compatibilidad Safari mejorada */
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            /* Mejoras de rendimiento */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            contain: layout style;
+        }
+
+        .time-column label {
             font-size: 0.75rem;
             font-weight: 500;
             color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            margin-bottom: 8px;
         }
 
-        .time-select {
-            padding: 8px 12px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            background: #f8fafc;
-            cursor: pointer;
-            min-width: 70px;
-            transition: all 0.2s ease;
-        }
-
-        .time-select:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .time-separator {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #6b7280;
-            margin-top: 16px;
-        }
-
-        /* Opciones adicionales */
-        .date-options {
-            margin-top: 12px;
-            padding: 12px;
-            background: #f8fafc;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .option-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding: 10px 12px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            transition: all 0.2s ease;
-        }
-
-        .option-row:hover {
-            border-color: #cbd5e1;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .option-row:last-child {
-            margin-bottom: 0;
-        }
-
-        .option-label {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #374151;
-            flex: 1;
-        }
-
-        .option-checkbox {
-            width: 20px;
-            height: 20px;
-            margin: 0;
-            cursor: pointer;
-            accent-color: #667eea;
-            transform: scale(1.3);
-            border-radius: 4px;
-            border: 2px solid #d1d5db;
-            background: white;
-            transition: all 0.2s ease;
-        }
-
-        .option-checkbox:hover {
-            border-color: #667eea;
-            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
-        }
-
-        .option-checkbox:checked {
-            background: #667eea;
-            border-color: #667eea;
-            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
-        }
-
-        .checkmark {
-            display: none;
-        }
-
-        .option-text {
-            font-weight: 500;
-        }
-
-        .option-select {
-            padding: 6px 10px;
+        .time-scroll {
+            height: 250px;
+            overflow-y: auto;
             border: 1px solid #d1d5db;
             border-radius: 8px;
-            font-size: 0.875rem;
-            background: white;
+            background: #ffffff;
+            min-height: 250px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            /* Compatibilidad Safari/Chrome mejorada */
+            -webkit-overflow-scrolling: touch;
+            overflow-scrolling: touch;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            /* Mejoras de rendimiento */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            contain: layout style;
+        }
+
+        .time-option {
+            padding: 12px 16px;
+            text-align: center;
             cursor: pointer;
-            min-width: 120px;
+            -webkit-transition: all 0.2s ease;
+            -o-transition: all 0.2s ease;
             transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            border-bottom: 1px solid #f3f4f6;
+            min-height: 40px;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            background: #ffffff;
+            /* Compatibilidad Safari/Chrome mejorada */
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            /* Mejoras de rendimiento */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            contain: layout style;
         }
 
-        .option-select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        .time-option:hover {
+            background: #f1f5f9 !important;
+            color: #1f2937 !important;
         }
 
-        .clear-date-btn {
-            background: #ef4444;
+        .time-option.selected {
+            background: #3b82f6 !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }
+
+
+        .time-apply-section {
+            padding: 15px 20px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .time-apply-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 6px 12px;
             border-radius: 8px;
+            padding: 10px 20px;
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 4px;
-            transition: all 0.2s ease;
+            gap: 8px;
+            margin: 0 auto;
+            -webkit-tap-highlight-color: transparent;
+            tap-highlight-color: transparent;
+            touch-action: manipulation;
+            /* Mejoras de compatibilidad */
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            /* Mejoras de rendimiento */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            contain: layout style;
         }
 
-        .clear-date-btn:hover {
-            background: #dc2626;
+        .time-apply-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
-        /* Fecha de finalización */
-        .end-date-section {
-            margin-top: 12px;
-            padding: 12px;
-            background: #f0f9ff;
-            border-radius: 12px;
-            border: 1px solid #bae6fd;
+        .time-apply-btn:active {
+            transform: translateY(0);
         }
 
-        .end-date-section .form-label {
-            margin-bottom: 8px;
-            color: #0369a1;
-            font-size: 0.875rem;
+        .time-section {
+            position: relative;
+        }
+
+        .time-section::before {
+            content: '🕐 Selecciona la hora';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background: #f3f4f6;
+            color: #6b7280;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
             font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            -webkit-transition: opacity 0.3s ease;
+            -o-transition: opacity 0.3s ease;
+            transition: opacity 0.3s ease;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .date-time-inputs {
-                flex-direction: column;
-                gap: 6px;
+        .datetime-picker.show .time-section::before {
+            opacity: 1;
+        }
+
+        /* Estilos específicos para Safari y Chrome */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            .datetime-picker {
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+                -webkit-perspective: 1000px;
+                perspective: 1000px;
             }
             
-            .time-picker {
-                flex-direction: column;
-                gap: 8px;
+            .time-scroll {
+                -webkit-overflow-scrolling: touch;
+                overflow-scrolling: touch;
             }
             
-            .time-separator {
-                display: none;
-            }
-            
-            .calendar-container,
-            .time-picker-container {
-                left: -5px;
-                right: -5px;
-                min-width: calc(100% + 10px);
-            }
-            
-            .calendar-days {
-                gap: 2px;
+            .time-option {
+                -webkit-tap-highlight-color: transparent;
+                tap-highlight-color: transparent;
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
             }
             
             .calendar-day {
-                min-height: 28px;
-                font-size: 0.8rem;
+                -webkit-tap-highlight-color: transparent;
+                tap-highlight-color: transparent;
             }
             
-            .option-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
+            .form-input,
+            .form-select,
+            .form-textarea {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                -webkit-border-radius: 12px;
+                border-radius: 12px;
             }
             
-            .clear-date-btn {
-                align-self: flex-start;
+            .form-select {
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: right 12px center;
+                background-size: 16px;
+                padding-right: 40px;
+            }
+            
+            /* Mejoras específicas para el date picker en Safari */
+            .datetime-picker-content {
+                -webkit-box-orient: horizontal;
+                -webkit-box-direction: normal;
+                -webkit-flex-direction: row;
+                -ms-flex-direction: row;
+                flex-direction: row;
+                -webkit-box-align: stretch;
+                -webkit-align-items: stretch;
+                -ms-flex-align: stretch;
+                align-items: stretch;
+            }
+            
+            .calendar-section {
+                -webkit-box-flex: 1;
+                -webkit-flex: 1;
+                -ms-flex: 1;
+                flex: 1;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+            
+            .time-section {
+                -webkit-box-flex: 0;
+                -webkit-flex: 0 0 200px;
+                -ms-flex: 0 0 200px;
+                flex: 0 0 200px;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+        }
+        
+        /* Estilos específicos para Chrome */
+        @supports (-webkit-appearance: none) {
+            .datetime-picker {
+                will-change: transform;
+            }
+            
+            .time-scroll {
+                scroll-behavior: smooth;
+            }
+        }
+        
+        /* Mejoras adicionales para compatibilidad */
+        .form-input,
+        .form-select,
+        .form-textarea {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            -webkit-border-radius: 12px;
+            border-radius: 12px;
+        }
+        
+        .form-select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+        
+        /* Mejoras para el datetime picker en dispositivos táctiles */
+        @media (hover: none) and (pointer: coarse) {
+            .datetime-picker {
+                -webkit-overflow-scrolling: touch;
+                overflow-scrolling: touch;
+            }
+            
+            .time-scroll {
+                -webkit-overflow-scrolling: touch;
+                overflow-scrolling: touch;
+            }
+            
+            .calendar-day,
+            .time-option {
+                min-height: 44px;
+                min-width: 44px;
             }
         }
 
-        @media (max-width: 480px) {
-            .date-time-inputs {
-                padding: 6px;
-            }
-            
-            .date-display,
-            .time-display {
-                padding: 10px 12px;
-                font-size: 14px;
-            }
-            
-            .calendar-container {
-                padding: 12px;
-            }
-            
-            .time-picker-container {
-                padding: 12px;
-            }
-            
-            .date-options {
-                padding: 10px;
-            }
-            
-            .end-date-section {
-                padding: 10px;
-            }
-        }
+
+
     </style>
 </head>
 <body>
@@ -986,120 +1425,228 @@
                                   rows="4" required></textarea>
                     </div>
 
-                    <!-- Fecha planeada -->
+                    <!-- Fecha de Inicio -->
                     <div class="form-group">
-                        <label for="fecha_planeada" class="form-label">
+                        <label for="fecha_inicio" class="form-label">
                             <i class="fas fa-calendar-alt"></i>
-                            Fecha Planeada <span class="required">*</span>
+                            Fecha de Inicio <span class="required">*</span>
                         </label>
-                        <div class="date-time-picker">
-                            <div class="date-time-inputs">
-                                <div class="date-input-container">
-                                    <input type="text" id="fecha_planeada_display" class="form-input date-display" readonly placeholder="Seleccionar fecha">
-                                    <button type="button" class="date-picker-toggle" id="datePickerToggle">
-                                        <i class="fas fa-calendar-alt"></i>
-                                    </button>
-                                </div>
-                                <div class="time-input-container" id="timeInputContainer" style="display: none;">
-                                    <input type="text" id="hora_planeada_display" class="form-input time-display" readonly placeholder="11:00">
-                                    <button type="button" class="time-picker-toggle" id="timePickerToggle">
-                                        <i class="fas fa-clock"></i>
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="datetime-picker-container">
+                            <input type="text" id="fecha_inicio_display" class="form-input datetime-display" readonly placeholder="Seleccionar fecha y hora">
+                            <button type="button" class="datetime-picker-toggle" id="fechaInicioToggle">
+                                <i class="fas fa-calendar-alt"></i>
+                            </button>
                             
-                            <!-- Calendario -->
-                            <div class="calendar-container" id="calendarContainer">
-                                <div class="calendar-header">
-                                    <button type="button" class="calendar-nav" id="prevMonth">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </button>
-                                    <div class="calendar-month-year" id="calendarMonthYear">Sept 2025</div>
-                                    <button type="button" class="calendar-nav" id="nextMonth">
-                                        <i class="fas fa-chevron-right"></i>
+                            <!-- DateTime Picker -->
+                            <div class="datetime-picker" id="fechaInicioPicker">
+                                <div class="datetime-picker-header">
+                                    <button type="button" class="close-picker-btn" id="closeInicioPicker">
+                                        <i class="fas fa-times"></i>
                                     </button>
                                 </div>
-                                <div class="calendar-weekdays">
-                                    <div class="weekday">Do</div>
-                                    <div class="weekday">Lu</div>
-                                    <div class="weekday">Ma</div>
-                                    <div class="weekday">Mi</div>
-                                    <div class="weekday">Ju</div>
-                                    <div class="weekday">Vi</div>
-                                    <div class="weekday">Sá</div>
-                                </div>
-                                <div class="calendar-days" id="calendarDays">
-                                    <!-- Los días se generarán dinámicamente -->
-                                </div>
-                            </div>
-
-                            <!-- Selector de hora -->
-                            <div class="time-picker-container" id="timePickerContainer">
-                                <div class="time-picker">
-                                    <div class="time-section">
-                                        <label>Hora</label>
-                                        <select id="hourSelect" class="time-select">
-                                            <!-- Las horas se generarán dinámicamente -->
-                                        </select>
+                                <div class="datetime-picker-content">
+                                    <!-- Calendario -->
+                                    <div class="calendar-section">
+                                        <div class="calendar-header">
+                                            <button type="button" class="calendar-nav" id="prevMonthInicio">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </button>
+                                            <div class="calendar-month-year" id="calendarMonthYearInicio">
+                                                <span class="month"></span>
+                                                <span class="year"></span>
+                                            </div>
+                                            <button type="button" class="calendar-nav" id="nextMonthInicio">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="calendar-weekdays">
+                                            <div class="weekday">Lu</div>
+                                            <div class="weekday">Ma</div>
+                                            <div class="weekday">Mi</div>
+                                            <div class="weekday">Ju</div>
+                                            <div class="weekday">Vi</div>
+                                            <div class="weekday">Sá</div>
+                                            <div class="weekday">Do</div>
+                                        </div>
+                                        
+                                        <div class="calendar-days" id="calendarDaysInicio">
+                                            <!-- Los días se generan dinámicamente -->
+                                        </div>
+                                        
+                                        <div class="calendar-footer">
+                                            <button type="button" class="today-btn" id="todayBtnInicio">
+                                                <i class="fas fa-calendar-day"></i>
+                                                Hoy
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="time-separator">:</div>
+                                    
+                                    <!-- Separador -->
+                                    <div class="datetime-separator"></div>
+                                    
+                                    <!-- Selector de hora -->
                                     <div class="time-section">
-                                        <label>Minutos</label>
-                                        <select id="minuteSelect" class="time-select">
-                                            <!-- Los minutos se generarán dinámicamente -->
-                                        </select>
+                                        <div class="time-column">
+                                            <label>Hora</label>
+                                            <div class="time-scroll" id="hourScrollInicio">
+                                                <div class="time-option" data-value="1">01</div>
+                                                <div class="time-option" data-value="2">02</div>
+                                                <div class="time-option" data-value="3">03</div>
+                                                <div class="time-option" data-value="4">04</div>
+                                                <div class="time-option" data-value="5">05</div>
+                                                <div class="time-option" data-value="6">06</div>
+                                                <div class="time-option" data-value="7">07</div>
+                                                <div class="time-option" data-value="8">08</div>
+                                                <div class="time-option" data-value="9">09</div>
+                                                <div class="time-option" data-value="10">10</div>
+                                                <div class="time-option" data-value="11">11</div>
+                                                <div class="time-option" data-value="12">12</div>
+                                            </div>
+                                        </div>
+                                        <div class="time-column">
+                                            <label>Minutos</label>
+                                            <div class="time-scroll" id="minuteScrollInicio">
+                                                <div class="time-option" data-value="0">00</div>
+                                                <div class="time-option" data-value="15">15</div>
+                                                <div class="time-option" data-value="30">30</div>
+                                                <div class="time-option" data-value="45">45</div>
+                                            </div>
+                                        </div>
+                                        <div class="time-column">
+                                            <label>AM/PM</label>
+                                            <div class="time-scroll" id="ampmScrollInicio">
+                                                <div class="time-option" data-value="AM">AM</div>
+                                                <div class="time-option" data-value="PM">PM</div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <!-- Fecha de finalización -->
-                            <div class="end-date-section" id="endDateSection" style="display: none;">
-                                <label class="form-label">
-                                    <i class="fas fa-calendar-times"></i>
-                                    Fecha de Finalización
-                                </label>
-                                <div class="date-time-inputs">
-                                    <div class="date-input-container">
-                                        <input type="text" id="fecha_finalizacion_display" class="form-input date-display" readonly placeholder="Seleccionar fecha">
-                                        <button type="button" class="date-picker-toggle" id="endDatePickerToggle">
-                                            <i class="fas fa-calendar-alt"></i>
+                                    
+                                    <!-- Botón de aplicar -->
+                                    <div class="time-apply-section">
+                                        <button type="button" class="time-apply-btn" id="applyTimeInicio">
+                                            <i class="fas fa-check"></i>
+                                            Aplicar Hora
                                         </button>
                                     </div>
-                                    <div class="time-input-container" style="display: none;">
-                                        <input type="text" id="hora_finalizacion_display" class="form-input time-display" readonly placeholder="11:00">
-                                        <button type="button" class="time-picker-toggle" id="endTimePickerToggle">
-                                            <i class="fas fa-clock"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Opciones adicionales -->
-                            <div class="date-options" id="dateOptions" style="display: none;">
-                                <div class="option-row">
-                                    <label class="option-label">
-                                        <input type="checkbox" id="fechaFinalizacionToggle" class="option-checkbox">
-                                        Agregar fecha de finalización
-                                    </label>
-                                </div>
-                                <div class="option-row">
-                                    <label class="option-label">
-                                        <input type="checkbox" id="incluirHoraToggle" class="option-checkbox">
-                                        Incluir hora
-                                    </label>
-                                </div>
-                                <div class="option-row">
-                                    <button type="button" class="clear-date-btn" id="clearDateBtn">
-                                        <i class="fas fa-trash"></i>
-                                        Borrar
-                                    </button>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Inputs ocultos para el envío -->
-                        <input type="hidden" id="fecha_planeada" name="fecha_planeada" required>
-                        <input type="hidden" id="fecha_finalizacion" name="fecha_finalizacion">
+                        <!-- Input oculto para el envío -->
+                        <input type="hidden" id="fecha_inicio" name="fecha_inicio" required>
+                    </div>
+
+                    <!-- Fecha de Fin -->
+                    <div class="form-group">
+                        <label for="fecha_fin" class="form-label">
+                            <i class="fas fa-calendar-times"></i>
+                            Fecha de Fin <span class="required">*</span>
+                        </label>
+                        <div class="datetime-picker-container">
+                            <input type="text" id="fecha_fin_display" class="form-input datetime-display" readonly placeholder="Seleccionar fecha y hora">
+                            <button type="button" class="datetime-picker-toggle" id="fechaFinToggle">
+                                <i class="fas fa-calendar-alt"></i>
+                            </button>
+                            
+                            <!-- DateTime Picker -->
+                            <div class="datetime-picker" id="fechaFinPicker">
+                                <div class="datetime-picker-header">
+                                    <button type="button" class="close-picker-btn" id="closeFinPicker">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="datetime-picker-content">
+                                    <!-- Calendario -->
+                                    <div class="calendar-section">
+                                        <div class="calendar-header">
+                                            <button type="button" class="calendar-nav" id="prevMonthFin">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </button>
+                                            <div class="calendar-month-year" id="calendarMonthYearFin">
+                                                <span class="month"></span>
+                                                <span class="year"></span>
+                                            </div>
+                                            <button type="button" class="calendar-nav" id="nextMonthFin">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="calendar-weekdays">
+                                            <div class="weekday">Lu</div>
+                                            <div class="weekday">Ma</div>
+                                            <div class="weekday">Mi</div>
+                                            <div class="weekday">Ju</div>
+                                            <div class="weekday">Vi</div>
+                                            <div class="weekday">Sá</div>
+                                            <div class="weekday">Do</div>
+                                        </div>
+                                        
+                                        <div class="calendar-days" id="calendarDaysFin">
+                                            <!-- Los días se generan dinámicamente -->
+                                        </div>
+                                        
+                                        <div class="calendar-footer">
+                                            <button type="button" class="today-btn" id="todayBtnFin">
+                                                <i class="fas fa-calendar-day"></i>
+                                                Hoy
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Separador -->
+                                    <div class="datetime-separator"></div>
+                                    
+                                    <!-- Selector de hora -->
+                                    <div class="time-section">
+                                        <div class="time-column">
+                                            <label>Hora</label>
+                                            <div class="time-scroll" id="hourScrollFin">
+                                                <div class="time-option" data-value="1">01</div>
+                                                <div class="time-option" data-value="2">02</div>
+                                                <div class="time-option" data-value="3">03</div>
+                                                <div class="time-option" data-value="4">04</div>
+                                                <div class="time-option" data-value="5">05</div>
+                                                <div class="time-option" data-value="6">06</div>
+                                                <div class="time-option" data-value="7">07</div>
+                                                <div class="time-option" data-value="8">08</div>
+                                                <div class="time-option" data-value="9">09</div>
+                                                <div class="time-option" data-value="10">10</div>
+                                                <div class="time-option" data-value="11">11</div>
+                                                <div class="time-option" data-value="12">12</div>
+                                            </div>
+                                        </div>
+                                        <div class="time-column">
+                                            <label>Minutos</label>
+                                            <div class="time-scroll" id="minuteScrollFin">
+                                                <div class="time-option" data-value="0">00</div>
+                                                <div class="time-option" data-value="15">15</div>
+                                                <div class="time-option" data-value="30">30</div>
+                                                <div class="time-option" data-value="45">45</div>
+                                            </div>
+                                        </div>
+                                        <div class="time-column">
+                                            <label>AM/PM</label>
+                                            <div class="time-scroll" id="ampmScrollFin">
+                                                <div class="time-option" data-value="AM">AM</div>
+                                                <div class="time-option" data-value="PM">PM</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Botón de aplicar -->
+                                    <div class="time-apply-section">
+                                        <button type="button" class="time-apply-btn" id="applyTimeFin">
+                                            <i class="fas fa-check"></i>
+                                            Aplicar Hora
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Input oculto para el envío -->
+                        <input type="hidden" id="fecha_fin" name="fecha_fin" required>
                     </div>
 
                     <!-- Prioridad -->
@@ -1117,7 +1664,7 @@
                     </div>
 
                     <!-- Medio -->
-                    <div class="form-group full-width">
+                    <div class="form-group">
                         <label for="medio" class="form-label">
                             <i class="fas fa-broadcast-tower"></i>
                             Medio <span class="required">*</span>
@@ -1209,164 +1756,177 @@
             }
 
             setupDateValidation() {
-                this.initializeDatePicker();
-                this.initializeTimePicker();
-                this.initializeDateOptions();
-                this.setDefaultDateTime();
+                this.initializeDateTimePickers();
             }
 
-            initializeDatePicker() {
-                this.currentDate = new Date();
-                this.selectedDate = new Date();
-                this.calendarContainer = document.getElementById('calendarContainer');
-                this.calendarMonthYear = document.getElementById('calendarMonthYear');
-                this.calendarDays = document.getElementById('calendarDays');
-                this.datePickerToggle = document.getElementById('datePickerToggle');
-                this.fechaDisplay = document.getElementById('fecha_planeada_display');
+            initializeDateTimePickers() {
+                // Inicializar picker de fecha de inicio
+                this.initializeDateTimePicker('inicio');
+                // Inicializar picker de fecha de fin
+                this.initializeDateTimePicker('fin');
+            }
+
+            initializeDateTimePicker(type) {
+                const prefix = type === 'inicio' ? 'Inicio' : 'Fin';
+                const prefixLower = type.toLowerCase();
                 
-                // Variables de modo
-                this.isEndDateMode = false;
-                this.isEndTimeMode = false;
+                // Elementos del picker
+                this[`${prefixLower}Picker`] = document.getElementById(`fecha${prefix}Picker`);
+                this[`${prefixLower}Toggle`] = document.getElementById(`fecha${prefix}Toggle`);
+                this[`${prefixLower}Display`] = document.getElementById(`fecha_${prefixLower}_display`);
+                this[`${prefixLower}HiddenInput`] = document.getElementById(`fecha_${prefixLower}`);
                 
-                // Eventos del calendario
-                this.datePickerToggle.addEventListener('click', () => this.toggleCalendar());
-                document.getElementById('prevMonth').addEventListener('click', () => this.changeMonth(-1));
-                document.getElementById('nextMonth').addEventListener('click', () => this.changeMonth(1));
+                // Elementos del calendario
+                this[`${prefixLower}CalendarDays`] = document.getElementById(`calendarDays${prefix}`);
+                this[`${prefixLower}CalendarMonthYear`] = document.getElementById(`calendarMonthYear${prefix}`);
+                this[`${prefixLower}PrevMonth`] = document.getElementById(`prevMonth${prefix}`);
+                this[`${prefixLower}NextMonth`] = document.getElementById(`nextMonth${prefix}`);
+                this[`${prefixLower}TodayBtn`] = document.getElementById(`todayBtn${prefix}`);
+                this[`${prefixLower}CloseBtn`] = document.getElementById(`close${prefix}Picker`);
                 
-                // Cerrar calendario al hacer clic fuera
+                // Elementos del selector de hora
+                this[`${prefixLower}HourScroll`] = document.getElementById(`hourScroll${prefix}`);
+                this[`${prefixLower}MinuteScroll`] = document.getElementById(`minuteScroll${prefix}`);
+                this[`${prefixLower}AmpmScroll`] = document.getElementById(`ampmScroll${prefix}`);
+                this[`${prefixLower}ApplyBtn`] = document.getElementById(`applyTime${prefix}`);
+                
+                // Estado del picker
+                this[`${prefixLower}CurrentDate`] = new Date();
+                this[`${prefixLower}SelectedDate`] = null;
+                this[`${prefixLower}SelectedTime`] = { hour: 12, minute: 0, ampm: 'PM' };
+                
+                // Eventos
+                this[`${prefixLower}Toggle`].addEventListener('click', () => this.toggleDateTimePicker(type));
+                this[`${prefixLower}PrevMonth`].addEventListener('click', () => this.changeMonth(type, -1));
+                this[`${prefixLower}NextMonth`].addEventListener('click', () => this.changeMonth(type, 1));
+                this[`${prefixLower}TodayBtn`].addEventListener('click', () => this.selectToday(type));
+                this[`${prefixLower}CloseBtn`].addEventListener('click', () => this.closeDateTimePicker(type));
+                this[`${prefixLower}ApplyBtn`].addEventListener('click', () => this.applyTimeSelection(type));
+                
+                // Cerrar picker al hacer clic fuera
                 document.addEventListener('click', (e) => {
-                    if (!e.target.closest('.date-time-picker')) {
-                        this.closeCalendar();
+                    if (!e.target.closest(`#fecha${prefix}Picker`) && !e.target.closest(`#fecha${prefix}Toggle`)) {
+                        this.closeDateTimePicker(type);
                     }
                 });
                 
-                this.renderCalendar();
+                // Inicializar calendario y selector de hora
+                this.renderCalendar(type);
+                console.log(`Inicializando picker para ${type}`);
+                this.populateTimeScrolls(type);
+                
+                // Establecer hora por defecto y actualizar display
+                this.setDefaultTimeSelection(type);
+                this.updateDateTimeDisplay(type);
+                
+                // Asegurar que las opciones de hora sean visibles
+                setTimeout(() => {
+                    this.ensureTimeOptionsVisible(type);
+                }, 200);
             }
 
-            initializeTimePicker() {
-                this.timePickerContainer = document.getElementById('timePickerContainer');
-                this.timePickerToggle = document.getElementById('timePickerToggle');
-                this.horaDisplay = document.getElementById('hora_planeada_display');
-                this.hourSelect = document.getElementById('hourSelect');
-                this.minuteSelect = document.getElementById('minuteSelect');
+            // Funciones del DateTime Picker
+            toggleDateTimePicker(type) {
+                const prefix = type === 'inicio' ? 'Inicio' : 'Fin';
+                const prefixLower = type.toLowerCase();
+                const picker = this[`${prefixLower}Picker`];
                 
-                // Eventos del selector de hora
-                this.timePickerToggle.addEventListener('click', () => this.toggleTimePicker());
-                
-                // Cerrar selector de hora al hacer clic fuera
-                document.addEventListener('click', (e) => {
-                    if (!e.target.closest('.time-picker-container') && !e.target.closest('.time-picker-toggle')) {
-                        this.closeTimePicker();
-                    }
-                });
-                
-                this.populateTimeSelects();
-            }
-
-            initializeDateOptions() {
-                this.fechaFinalizacionToggle = document.getElementById('fechaFinalizacionToggle');
-                this.incluirHoraToggle = document.getElementById('incluirHoraToggle');
-                this.clearDateBtn = document.getElementById('clearDateBtn');
-                this.endDateSection = document.getElementById('endDateSection');
-                this.timeInputContainer = document.getElementById('timeInputContainer');
-                this.dateOptions = document.getElementById('dateOptions');
-                
-                // Eventos de las opciones
-                this.fechaFinalizacionToggle.addEventListener('change', () => this.toggleEndDate());
-                this.incluirHoraToggle.addEventListener('change', () => this.toggleTimeInclusion());
-                this.clearDateBtn.addEventListener('click', () => this.clearDate());
-                
-                // Inicializar fecha de finalización
-                this.initializeEndDatePicker();
-            }
-
-            initializeEndDatePicker() {
-                this.endDatePickerToggle = document.getElementById('endDatePickerToggle');
-                this.endTimePickerToggle = document.getElementById('endTimePickerToggle');
-                this.fechaFinalizacionDisplay = document.getElementById('fecha_finalizacion_display');
-                this.horaFinalizacionDisplay = document.getElementById('hora_finalizacion_display');
-                
-                // Eventos para fecha de finalización
-                this.endDatePickerToggle.addEventListener('click', () => this.toggleEndDateCalendar());
-                this.endTimePickerToggle.addEventListener('click', () => this.toggleEndTimePicker());
-                
-                // Eventos para los inputs de fecha de finalización
-                this.fechaFinalizacionDisplay.addEventListener('click', () => this.toggleEndDateCalendar());
-                this.horaFinalizacionDisplay.addEventListener('click', () => this.toggleEndTimePicker());
-            }
-
-            setDefaultDateTime() {
-                // No establecer valores por defecto, el usuario debe seleccionar
-                this.selectedDate = null;
-                this.selectedTime = null;
-                this.updateHiddenInputs();
-            }
-
-            // Funciones de control del calendario
-            toggleCalendar() {
-                if (this.calendarContainer.classList.contains('show')) {
-                    this.closeCalendar();
+                if (picker.classList.contains('show')) {
+                    this.closeDateTimePicker(type);
                 } else {
-                    this.isEndDateMode = false; // Modo fecha principal
-                    this.openCalendar();
+                    this.openDateTimePicker(type);
                 }
             }
 
-            openCalendar() {
-                this.calendarContainer.classList.add('show');
-                this.closeTimePicker();
-                // Mostrar opciones cuando se abre el calendario
-                this.showDateOptions();
-            }
-
-            closeCalendar() {
-                this.calendarContainer.classList.remove('show');
-                this.isEndDateMode = false;
-            }
-
-            showDateOptions() {
-                this.dateOptions.style.display = 'block';
-            }
-
-            hideDateOptions() {
-                this.dateOptions.style.display = 'none';
-            }
-
-            toggleTimePicker() {
-                if (this.timePickerContainer.classList.contains('show')) {
-                    this.closeTimePicker();
+            openDateTimePicker(type) {
+                const prefix = type === 'inicio' ? 'Inicio' : 'Fin';
+                const prefixLower = type.toLowerCase();
+                const picker = this[`${prefixLower}Picker`];
+                
+                // Cerrar otros pickers
+                if (type === 'inicio') {
+                    this.closeDateTimePicker('fin');
                 } else {
-                    this.isEndTimeMode = false; // Modo hora principal
-                    this.openTimePicker();
+                    this.closeDateTimePicker('inicio');
+                }
+                
+                // Asegurar que el picker sea visible
+                picker.style.display = 'block';
+                picker.style.visibility = 'visible';
+                picker.style.opacity = '1';
+                picker.classList.add('show');
+                
+                // Forzar repaint en Safari
+                picker.offsetHeight;
+                
+                // Forzar que las opciones de hora sean visibles
+                setTimeout(() => {
+                    this.forceTimeOptionsVisibility(type);
+                }, 50);
+                
+                // En móviles, agregar clase para el overlay
+                if (window.innerWidth <= 850) {
+                    document.body.style.overflow = 'hidden';
+                    picker.classList.add('mobile-picker');
                 }
             }
 
-            openTimePicker() {
-                this.timePickerContainer.classList.add('show');
-                this.closeCalendar();
+            closeDateTimePicker(type) {
+                const prefix = type === 'inicio' ? 'Inicio' : 'Fin';
+                const prefixLower = type.toLowerCase();
+                const picker = this[`${prefixLower}Picker`];
+                
+                picker.classList.remove('show');
+                picker.classList.remove('mobile-picker');
+                
+                // Restaurar scroll en móviles
+                if (window.innerWidth <= 850) {
+                    document.body.style.overflow = '';
+                }
             }
 
-            closeTimePicker() {
-                this.timePickerContainer.classList.remove('show');
-                this.isEndTimeMode = false;
+            changeMonth(type, direction) {
+                const prefixLower = type.toLowerCase();
+                this[`${prefixLower}CurrentDate`].setMonth(this[`${prefixLower}CurrentDate`].getMonth() + direction);
+                this.renderCalendar(type);
             }
 
-            changeMonth(direction) {
-                this.currentDate.setMonth(this.currentDate.getMonth() + direction);
-                this.renderCalendar();
+            selectToday(type) {
+                const prefixLower = type.toLowerCase();
+                const today = new Date();
+                this[`${prefixLower}SelectedDate`] = today;
+                this[`${prefixLower}CurrentDate`] = new Date(today);
+                this.renderCalendar(type);
+                this.updateDateTimeDisplay(type);
+                
+                // Mostrar mensaje de confirmación
+                const display = this[`${prefixLower}Display`];
+                const originalValue = display.value;
+                display.style.color = '#22c55e';
+                display.value = '✓ Fecha de hoy seleccionada';
+                
+                setTimeout(() => {
+                    display.style.color = '';
+                    display.value = originalValue;
+                }, 1500);
             }
 
-            renderCalendar() {
-                const year = this.currentDate.getFullYear();
-                const month = this.currentDate.getMonth();
+            renderCalendar(type) {
+                const prefixLower = type.toLowerCase();
+                const currentDate = this[`${prefixLower}CurrentDate`];
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
                 
                 // Actualizar header del calendario
                 const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 
                                   'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-                this.calendarMonthYear.textContent = `${monthNames[month]} ${year}`;
+                const monthYearElement = this[`${prefixLower}CalendarMonthYear`];
+                monthYearElement.querySelector('.month').textContent = monthNames[month];
+                monthYearElement.querySelector('.year').textContent = year;
                 
                 // Limpiar días del calendario
-                this.calendarDays.innerHTML = '';
+                const calendarDays = this[`${prefixLower}CalendarDays`];
+                calendarDays.innerHTML = '';
                 
                 // Obtener primer día del mes y cuántos días tiene
                 const firstDay = new Date(year, month, 1);
@@ -1380,32 +1940,31 @@
                 
                 for (let i = startingDayOfWeek - 1; i >= 0; i--) {
                     const day = daysInPrevMonth - i;
-                    const dayElement = this.createDayElement(day, true, false);
-                    this.calendarDays.appendChild(dayElement);
+                    const dayElement = this.createDayElement(type, day, true, false);
+                    calendarDays.appendChild(dayElement);
                 }
                 
                 // Días del mes actual
                 for (let day = 1; day <= daysInMonth; day++) {
                     const dayDate = new Date(year, month, day);
                     const isToday = this.isToday(dayDate);
-                    const isSelected = this.isSelectedDate(dayDate);
-                    const isDisabled = this.isDateDisabled(dayDate);
+                    const isSelected = this.isSelectedDate(type, dayDate);
                     
-                    const dayElement = this.createDayElement(day, false, isToday, isSelected, isDisabled);
-                    this.calendarDays.appendChild(dayElement);
+                    const dayElement = this.createDayElement(type, day, false, isToday, isSelected);
+                    calendarDays.appendChild(dayElement);
                 }
                 
                 // Días del mes siguiente para completar la grilla
-                const totalCells = this.calendarDays.children.length;
+                const totalCells = calendarDays.children.length;
                 const remainingCells = 42 - totalCells; // 6 filas x 7 días
                 
                 for (let day = 1; day <= remainingCells; day++) {
-                    const dayElement = this.createDayElement(day, true, false);
-                    this.calendarDays.appendChild(dayElement);
+                    const dayElement = this.createDayElement(type, day, true, false);
+                    calendarDays.appendChild(dayElement);
                 }
             }
 
-            createDayElement(day, isOtherMonth, isToday = false, isSelected = false, isDisabled = false) {
+            createDayElement(type, day, isOtherMonth, isToday = false, isSelected = false) {
                 const dayElement = document.createElement('div');
                 dayElement.className = 'calendar-day';
                 dayElement.textContent = day;
@@ -1419,37 +1978,237 @@
                 if (isSelected) {
                     dayElement.classList.add('selected');
                 }
-                if (isDisabled) {
-                    dayElement.classList.add('disabled');
-                }
                 
-                if (!isOtherMonth && !isDisabled) {
-                    dayElement.addEventListener('click', () => this.selectDate(day));
+                if (!isOtherMonth) {
+                    dayElement.addEventListener('click', () => this.selectDate(type, day));
                 }
                 
                 return dayElement;
             }
 
-            selectDate(day) {
-                const year = this.currentDate.getFullYear();
-                const month = this.currentDate.getMonth();
+            selectDate(type, day) {
+                const prefixLower = type.toLowerCase();
+                const currentDate = this[`${prefixLower}CurrentDate`];
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
                 const selectedDate = new Date(year, month, day);
                 
-                if (this.isEndDateMode) {
-                    // Modo fecha de finalización
-                    this.endSelectedDate = selectedDate;
-                    this.updateEndDateDisplay();
-                } else {
-                    // Modo fecha principal
-                    this.selectedDate = selectedDate;
-                    this.updateDateDisplay();
+                this[`${prefixLower}SelectedDate`] = selectedDate;
+                this.updateDateTimeDisplay(type);
+                this.closeDateTimePicker(type);
+            }
+
+            setDefaultTimeSelection(type) {
+                const prefixLower = type.toLowerCase();
+                const selectedTime = this[`${prefixLower}SelectedTime`];
+                
+                // Establecer selección visual por defecto
+                this.updateTimeSelection(type, 'hour', selectedTime.hour);
+                this.updateTimeSelection(type, 'minute', selectedTime.minute);
+                this.updateTimeSelection(type, 'ampm', selectedTime.ampm);
+            }
+
+            ensureTimeOptionsVisible(type) {
+                const prefixLower = type.toLowerCase();
+                const prefix = prefixLower.charAt(0).toUpperCase() + prefixLower.slice(1);
+                
+                const hourScroll = document.getElementById(`hourScroll${prefix}`);
+                const minuteScroll = document.getElementById(`minuteScroll${prefix}`);
+                const ampmScroll = document.getElementById(`ampmScroll${prefix}`);
+                
+                console.log(`Verificando opciones de hora para ${type}:`, {
+                    hourScroll: hourScroll,
+                    hourOptions: hourScroll?.children.length || 0,
+                    minuteScroll: minuteScroll,
+                    minuteOptions: minuteScroll?.children.length || 0,
+                    ampmScroll: ampmScroll,
+                    ampmOptions: ampmScroll?.children.length || 0
+                });
+                
+                // Forzar visibilidad
+                if (hourScroll) {
+                    hourScroll.style.display = 'block';
+                    hourScroll.style.visibility = 'visible';
+                }
+                if (minuteScroll) {
+                    minuteScroll.style.display = 'block';
+                    minuteScroll.style.visibility = 'visible';
+                }
+                if (ampmScroll) {
+                    ampmScroll.style.display = 'block';
+                    ampmScroll.style.visibility = 'visible';
+                }
+            }
+
+            forceTimeOptionsVisibility(type) {
+                const prefixLower = type.toLowerCase();
+                const prefix = prefixLower.charAt(0).toUpperCase() + prefixLower.slice(1);
+                
+                const hourScroll = document.getElementById(`hourScroll${prefix}`);
+                const minuteScroll = document.getElementById(`minuteScroll${prefix}`);
+                const ampmScroll = document.getElementById(`ampmScroll${prefix}`);
+                
+                // Forzar visibilidad de todos los elementos
+                [hourScroll, minuteScroll, ampmScroll].forEach(scroll => {
+                    if (scroll) {
+                        scroll.style.display = 'block';
+                        scroll.style.visibility = 'visible';
+                        scroll.style.opacity = '1';
+                        scroll.style.height = '250px';
+                        scroll.style.minHeight = '250px';
+                        
+                        // Asegurar que las opciones sean visibles
+                        scroll.querySelectorAll('.time-option').forEach(option => {
+                            option.style.display = 'flex';
+                            option.style.visibility = 'visible';
+                            option.style.opacity = '1';
+                        });
+                    }
+                });
+                
+                console.log(`Forzando visibilidad de opciones de hora para ${type}`);
+            }
+
+            applyTimeSelection(type) {
+                const prefixLower = type.toLowerCase();
+                const selectedDate = this[`${prefixLower}SelectedDate`];
+                const selectedTime = this[`${prefixLower}SelectedTime`];
+                
+                // Si no hay fecha seleccionada, usar la fecha actual
+                if (!selectedDate) {
+                    this[`${prefixLower}SelectedDate`] = new Date();
                 }
                 
-                this.updateHiddenInputs();
-                this.closeCalendar();
-                // Mantener las opciones visibles después de seleccionar fecha
-                this.showDateOptions();
-                this.validateDateField();
+                this.updateDateTimeDisplay(type);
+                
+                // Mostrar mensaje de confirmación
+                const display = this[`${prefixLower}Display`];
+                const originalValue = display.value;
+                display.style.color = '#22c55e';
+                display.value = '✓ Hora aplicada correctamente';
+                
+                setTimeout(() => {
+                    display.style.color = '';
+                    display.value = originalValue;
+                }, 1500);
+            }
+
+            populateTimeScrolls(type) {
+                const prefixLower = type.toLowerCase();
+                const prefix = prefixLower.charAt(0).toUpperCase() + prefixLower.slice(1);
+                
+                // Configurar eventos para las opciones de hora (ya están en el HTML)
+                const hourScroll = document.getElementById(`hourScroll${prefix}`);
+                const minuteScroll = document.getElementById(`minuteScroll${prefix}`);
+                const ampmScroll = document.getElementById(`ampmScroll${prefix}`);
+                
+                if (hourScroll) {
+                    hourScroll.querySelectorAll('.time-option').forEach(option => {
+                        option.addEventListener('click', () => {
+                            const value = parseInt(option.dataset.value);
+                            this.selectTime(type, 'hour', value);
+                        });
+                    });
+                }
+                
+                if (minuteScroll) {
+                    minuteScroll.querySelectorAll('.time-option').forEach(option => {
+                        option.addEventListener('click', () => {
+                            const value = parseInt(option.dataset.value);
+                            this.selectTime(type, 'minute', value);
+                        });
+                    });
+                }
+                
+                if (ampmScroll) {
+                    ampmScroll.querySelectorAll('.time-option').forEach(option => {
+                        option.addEventListener('click', () => {
+                            this.selectTime(type, 'ampm', option.dataset.value);
+                        });
+                    });
+                }
+                
+                console.log(`Opciones de hora configuradas para ${type}`);
+            }
+
+            selectTime(type, timeType, value) {
+                const prefixLower = type.toLowerCase();
+                
+                if (timeType === 'hour') {
+                    this[`${prefixLower}SelectedTime`].hour = value;
+                } else if (timeType === 'minute') {
+                    this[`${prefixLower}SelectedTime`].minute = value;
+                } else if (timeType === 'ampm') {
+                    this[`${prefixLower}SelectedTime`].ampm = value;
+                }
+                
+                this.updateTimeSelection(type, timeType, value);
+                this.updateDateTimeDisplay(type);
+                
+                // Solo cerrar el picker si se selecciona una fecha
+                // La hora se puede cambiar sin cerrar el picker
+            }
+
+            updateTimeSelection(type, timeType, value) {
+                const prefixLower = type.toLowerCase();
+                const prefix = prefixLower.charAt(0).toUpperCase() + prefixLower.slice(1);
+                let scrollElement;
+                
+                if (timeType === 'hour') {
+                    scrollElement = document.getElementById(`hourScroll${prefix}`);
+                } else if (timeType === 'minute') {
+                    scrollElement = document.getElementById(`minuteScroll${prefix}`);
+                } else if (timeType === 'ampm') {
+                    scrollElement = document.getElementById(`ampmScroll${prefix}`);
+                }
+                
+                if (!scrollElement) return;
+                
+                // Remover selección anterior
+                scrollElement.querySelectorAll('.time-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                // Seleccionar nueva opción
+                const selectedOption = scrollElement.querySelector(`[data-value="${value}"]`);
+                if (selectedOption) {
+                    selectedOption.classList.add('selected');
+                }
+            }
+
+            updateDateTimeDisplay(type) {
+                const prefixLower = type.toLowerCase();
+                const selectedDate = this[`${prefixLower}SelectedDate`];
+                const selectedTime = this[`${prefixLower}SelectedTime`];
+                const display = this[`${prefixLower}Display`];
+                const hiddenInput = this[`${prefixLower}HiddenInput`];
+                
+                if (selectedDate) {
+                    const day = selectedDate.getDate().toString().padStart(2, '0');
+                    const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+                    const year = selectedDate.getFullYear();
+                    const hour = selectedTime.hour.toString().padStart(2, '0');
+                    const minute = selectedTime.minute.toString().padStart(2, '0');
+                    const ampm = selectedTime.ampm;
+                    
+                    display.value = `${day}/${month}/${year} ${hour}:${minute} ${ampm}`;
+                    
+                    // Crear fecha completa para el input oculto
+                    const fullDate = new Date(selectedDate);
+                    fullDate.setHours(selectedTime.ampm === 'PM' && selectedTime.hour !== 12 ? selectedTime.hour + 12 : 
+                                     selectedTime.ampm === 'AM' && selectedTime.hour === 12 ? 0 : selectedTime.hour);
+                    fullDate.setMinutes(selectedTime.minute);
+                    
+                    hiddenInput.value = fullDate.toISOString();
+                } else {
+                    // Si no hay fecha seleccionada, solo mostrar la hora
+                    const hour = selectedTime.hour.toString().padStart(2, '0');
+                    const minute = selectedTime.minute.toString().padStart(2, '0');
+                    const ampm = selectedTime.ampm;
+                    
+                    display.value = `Seleccionar fecha y hora - ${hour}:${minute} ${ampm}`;
+                    hiddenInput.value = '';
+                }
             }
 
             isToday(date) {
@@ -1457,349 +2216,62 @@
                 return date.toDateString() === today.toDateString();
             }
 
-            isSelectedDate(date) {
-                if (this.isEndDateMode) {
-                    return this.endSelectedDate && date.toDateString() === this.endSelectedDate.toDateString();
-                } else {
-                    return this.selectedDate && date.toDateString() === this.selectedDate.toDateString();
-                }
+            isSelectedDate(type, date) {
+                const prefixLower = type.toLowerCase();
+                const selectedDate = this[`${prefixLower}SelectedDate`];
+                return selectedDate && date.toDateString() === selectedDate.toDateString();
             }
 
-            isDateDisabled(date) {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                return date < today;
-            }
-
-            // Funciones de actualización de display
-            updateDateDisplay() {
-                if (this.selectedDate) {
-                    const day = this.selectedDate.getDate().toString().padStart(2, '0');
-                    const month = (this.selectedDate.getMonth() + 1).toString().padStart(2, '0');
-                    const year = this.selectedDate.getFullYear();
-                    this.fechaDisplay.value = `${day}/${month}/${year}`;
-                }
-            }
-
-            updateTimeDisplay() {
-                if (this.selectedTime) {
-                    const hour = this.selectedTime.hour.toString().padStart(2, '0');
-                    const minute = this.selectedTime.minute.toString().padStart(2, '0');
-                    this.horaDisplay.value = `${hour}:${minute}`;
-                }
-            }
-
-            populateTimeSelects() {
-                // Poblar horas (0-23)
-                for (let hour = 0; hour < 24; hour++) {
-                    const option = document.createElement('option');
-                    option.value = hour;
-                    option.textContent = hour.toString().padStart(2, '0');
-                    this.hourSelect.appendChild(option);
-                }
+            validateDateTimeField(type) {
+                const prefixLower = type.toLowerCase();
+                const selectedDate = this[`${prefixLower}SelectedDate`];
+                const selectedTime = this[`${prefixLower}SelectedTime`];
+                const display = this[`${prefixLower}Display`];
+                const hiddenInput = this[`${prefixLower}HiddenInput`];
                 
-                // Poblar minutos (0, 15, 30, 45)
-                const minuteOptions = [0, 15, 30, 45];
-                minuteOptions.forEach(minute => {
-                    const option = document.createElement('option');
-                    option.value = minute;
-                    option.textContent = minute.toString().padStart(2, '0');
-                    this.minuteSelect.appendChild(option);
-                });
-                
-                // Eventos para actualizar la hora
-                this.hourSelect.addEventListener('change', () => this.updateTimeFromSelects());
-                this.minuteSelect.addEventListener('change', () => this.updateTimeFromSelects());
-            }
-
-            setTimeSelectsValues(time) {
-                if (time) {
-                    this.hourSelect.value = time.hour;
-                    this.minuteSelect.value = time.minute;
-                }
-            }
-
-            updateTimeFromSelects() {
-                const time = {
-                    hour: parseInt(this.hourSelect.value),
-                    minute: parseInt(this.minuteSelect.value)
-                };
-                
-                if (this.isEndTimeMode) {
-                    // Modo hora de finalización
-                    this.endSelectedTime = time;
-                    this.updateEndTimeDisplay();
-                } else {
-                    // Modo hora principal
-                    this.selectedTime = time;
-                    this.updateTimeDisplay();
-                }
-                
-                this.updateHiddenInputs();
-                this.validateDateField();
-            }
-
-            // Funciones de control de opciones
-            toggleEndDate() {
-                if (this.fechaFinalizacionToggle.checked) {
-                    this.endDateSection.style.display = 'block';
-                    this.initializeEndDate();
-                } else {
-                    this.endDateSection.style.display = 'none';
-                    this.clearEndDate();
-                }
-                
-                // Actualizar la visibilidad de la hora según el estado de "Incluir hora"
-                this.updateTimeVisibility();
-            }
-
-            initializeEndDate() {
-                if (!this.endSelectedDate) {
-                    this.endSelectedDate = new Date(this.selectedDate);
-                    this.updateEndDateDisplay();
-                }
-                // Solo establecer hora si "Incluir hora" está marcado
-                if (this.incluirHoraToggle.checked) {
-                    if (!this.endSelectedTime) {
-                        this.endSelectedTime = this.selectedTime ? { ...this.selectedTime } : { hour: 0, minute: 0 };
-                        this.updateEndTimeDisplay();
-                    }
-                }
-            }
-
-            toggleEndDateCalendar() {
-                // Cerrar selector de hora si está abierto
-                this.closeTimePicker();
-                
-                // Si el calendario principal está abierto, cerrarlo
-                if (this.calendarContainer.classList.contains('show')) {
-                    this.closeCalendar();
-                }
-                
-                // Cambiar el modo a fecha de finalización
-                this.isEndDateMode = true;
-                this.openCalendar();
-            }
-
-            toggleEndTimePicker() {
-                // Cerrar calendario si está abierto
-                this.closeCalendar();
-                
-                // Si el selector de hora principal está abierto, cerrarlo
-                if (this.timePickerContainer.classList.contains('show')) {
-                    this.closeTimePicker();
-                }
-                
-                // Cambiar el modo a hora de finalización
-                this.isEndTimeMode = true;
-                
-                // Establecer los valores actuales en los selects
-                if (this.endSelectedTime) {
-                    this.setTimeSelectsValues(this.endSelectedTime);
-                } else {
-                    this.setTimeSelectsValues(this.selectedTime);
-                }
-                
-                this.openTimePicker();
-            }
-
-            updateEndDateDisplay() {
-                if (this.endSelectedDate) {
-                    const day = this.endSelectedDate.getDate().toString().padStart(2, '0');
-                    const month = (this.endSelectedDate.getMonth() + 1).toString().padStart(2, '0');
-                    const year = this.endSelectedDate.getFullYear();
-                    this.fechaFinalizacionDisplay.value = `${day}/${month}/${year}`;
-                }
-            }
-
-            updateEndTimeDisplay() {
-                if (this.endSelectedTime) {
-                    const hour = this.endSelectedTime.hour.toString().padStart(2, '0');
-                    const minute = this.endSelectedTime.minute.toString().padStart(2, '0');
-                    this.horaFinalizacionDisplay.value = `${hour}:${minute}`;
-                }
-            }
-
-            toggleTimeInclusion() {
-                this.updateTimeVisibility();
-                this.updateHiddenInputs();
-            }
-
-            updateTimeVisibility() {
-                const includeTime = this.incluirHoraToggle.checked;
-                
-                // Controlar visibilidad de hora en fecha principal
-                if (includeTime) {
-                    this.timeInputContainer.style.display = 'block';
-                    // Si no hay hora seleccionada, establecer una por defecto
-                    if (!this.selectedTime) {
-                        this.selectedTime = { hour: 0, minute: 0 };
-                        this.updateTimeDisplay();
-                    }
-                } else {
-                    this.timeInputContainer.style.display = 'none';
-                    this.selectedTime = null;
-                    this.horaDisplay.value = '';
-                }
-                
-                // Controlar visibilidad de hora en fecha de finalización
-                if (this.endDateSection && this.endDateSection.style.display !== 'none') {
-                    const endTimeContainer = this.endDateSection.querySelector('.time-input-container');
-                    if (endTimeContainer) {
-                        if (includeTime) {
-                            endTimeContainer.style.display = 'block';
-                            // Si no hay hora de finalización seleccionada, establecer una por defecto
-                            if (!this.endSelectedTime) {
-                                this.endSelectedTime = { hour: 0, minute: 0 };
-                                this.updateEndTimeDisplay();
-                            }
-                        } else {
-                            endTimeContainer.style.display = 'none';
-                            this.endSelectedTime = null;
-                            this.horaFinalizacionDisplay.value = '';
-                        }
-                    }
-                }
-            }
-
-
-            clearDate() {
-                // Limpiar fecha principal
-                this.selectedDate = null;
-                this.selectedTime = null;
-                this.fechaDisplay.value = '';
-                this.horaDisplay.value = '';
-                
-                // Limpiar fecha de finalización
-                this.clearEndDate();
-                
-                // Desmarcar todos los checkboxes
-                this.fechaFinalizacionToggle.checked = false;
-                this.incluirHoraToggle.checked = false;
-                
-                // Ocultar secciones
-                this.endDateSection.style.display = 'none';
-                this.timeInputContainer.style.display = 'none';
-                this.hideDateOptions();
-                
-                // Actualizar inputs ocultos
-                this.updateHiddenInputs();
-                this.validateDateField();
-            }
-
-            clearEndDate() {
-                this.endSelectedDate = null;
-                this.endSelectedTime = null;
-                this.fechaFinalizacionDisplay.value = '';
-                this.horaFinalizacionDisplay.value = '';
-                this.updateHiddenInputs();
-            }
-
-            updateHiddenInputs() {
-                const fechaInput = document.getElementById('fecha_planeada');
-                const fechaFinalizacionInput = document.getElementById('fecha_finalizacion');
-                
-                // Actualizar fecha principal
-                if (this.selectedDate) {
-                    const dateTime = new Date(this.selectedDate);
-                    if (this.incluirHoraToggle.checked && this.selectedTime) {
-                        dateTime.setHours(this.selectedTime.hour, this.selectedTime.minute, 0, 0);
-                    } else {
-                        dateTime.setHours(0, 0, 0, 0);
-                    }
-                    fechaInput.value = this.formatDateTimeForNotion(dateTime);
-                } else {
-                    fechaInput.value = '';
-                }
-                
-                // Actualizar fecha de finalización
-                if (this.endSelectedDate) {
-                    const endDateTime = new Date(this.endSelectedDate);
-                    if (this.endSelectedTime) {
-                        endDateTime.setHours(this.endSelectedTime.hour, this.endSelectedTime.minute, 0, 0);
-                    } else {
-                        endDateTime.setHours(0, 0, 0, 0);
-                    }
-                    fechaFinalizacionInput.value = this.formatDateTimeForNotion(endDateTime);
-                } else {
-                    fechaFinalizacionInput.value = '';
-                }
-            }
-
-            validateDateField() {
-                const hasDate = this.selectedDate !== null;
-                const hasTime = this.incluirHoraToggle.checked ? (this.selectedTime !== null) : true;
-                const isValid = hasDate && hasTime;
-                const container = this.fechaDisplay.closest('.form-group');
+                const isValid = selectedDate !== null;
                 
                 if (isValid) {
-                    this.fechaDisplay.classList.remove('invalid');
-                    this.fechaDisplay.classList.add('valid');
-                    this.hideFieldError(this.fechaDisplay);
+                    display.classList.remove('invalid');
+                    display.classList.add('valid');
+                    this.hideFieldError(display);
                 } else {
-                    this.fechaDisplay.classList.remove('valid');
-                    this.fechaDisplay.classList.add('invalid');
-                    if (!hasDate) {
-                        this.showFieldError(this.fechaDisplay, 'Debe seleccionar una fecha válida.');
-                    } else if (this.incluirHoraToggle.checked && !hasTime) {
-                        this.showFieldError(this.fechaDisplay, 'Debe seleccionar una hora válida.');
-                    }
+                    display.classList.remove('valid');
+                    display.classList.add('invalid');
+                    this.showFieldError(display, `Debe seleccionar una fecha de ${type === 'inicio' ? 'inicio' : 'fin'} válida.`);
                 }
                 
                 return isValid;
             }
 
-            updateDateTimeDisplay() {
-                const fechaInput = document.getElementById('fecha_planeada');
-                
-                if (fechaInput.value) {
-                    // Crear la fecha desde el valor del input datetime-local
-                    const selectedDateTime = new Date(fechaInput.value);
-                    
-                    // Crear un input oculto con el valor formateado correctamente para el envío
-                    this.updateHiddenDateTimeValue(selectedDateTime);
-                }
-            }
 
-            updateHiddenDateTimeValue(dateTime) {
-                // Crear o actualizar un input oculto con el formato YYYY-MM-DDTHH:MM:SS.FFF-HH:MM
-                let hiddenInput = document.getElementById('fecha_planeada_formatted');
-                if (!hiddenInput) {
-                    hiddenInput = document.createElement('input');
-                    hiddenInput.type = 'hidden';
-                    hiddenInput.id = 'fecha_planeada_formatted';
-                    hiddenInput.name = 'fecha_planeada';
-                    document.getElementById('fecha_planeada').parentNode.appendChild(hiddenInput);
-                }
-                
-                // Formatear al formato YYYY-MM-DDTHH:MM:SS.FFF-HH:MM
-                const formattedValue = this.formatDateTimeForNotion(dateTime);
-                hiddenInput.value = formattedValue;
-                
-                // Remover el name del input original para evitar duplicados
-                const originalInput = document.getElementById('fecha_planeada');
-                originalInput.removeAttribute('name');
-            }
 
-            formatDateTimeForNotion(dateTime) {
-                // Obtener la zona horaria local en formato -HH:MM
-                const timezoneOffset = -dateTime.getTimezoneOffset();
-                const timezoneHours = Math.floor(Math.abs(timezoneOffset) / 60);
-                const timezoneMinutes = Math.abs(timezoneOffset) % 60;
-                const sign = timezoneOffset >= 0 ? '+' : '-';
-                const timezoneString = `${sign}${timezoneHours.toString().padStart(2, '0')}:${timezoneMinutes.toString().padStart(2, '0')}`;
-                
-                // Formatear la fecha y hora
-                const year = dateTime.getFullYear();
-                const month = (dateTime.getMonth() + 1).toString().padStart(2, '0');
-                const day = dateTime.getDate().toString().padStart(2, '0');
-                const hours = dateTime.getHours().toString().padStart(2, '0');
-                const minutes = dateTime.getMinutes().toString().padStart(2, '0');
-                const seconds = dateTime.getSeconds().toString().padStart(2, '0');
-                
-                // Formato: YYYY-MM-DDTHH:MM:SS.FFF-HH:MM
-                return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000${timezoneString}`;
-            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             // Cargar datos para los selects
             async loadSelectData() {
@@ -2167,11 +2639,18 @@
                     }
                 }
                 
-                // Validar componente de fecha personalizado
-                if (!this.validateDateField()) {
+                // Validar campos de fecha personalizados
+                if (!this.validateDateTimeField('inicio')) {
                     isValid = false;
-                    if (!emptyFields.includes('Fecha Planeada')) {
-                        emptyFields.push('Fecha Planeada');
+                    if (!emptyFields.includes('Fecha de Inicio')) {
+                        emptyFields.push('Fecha de Inicio');
+                    }
+                }
+                
+                if (!this.validateDateTimeField('fin')) {
+                    isValid = false;
+                    if (!emptyFields.includes('Fecha de Fin')) {
+                        emptyFields.push('Fecha de Fin');
                     }
                 }
                 
@@ -2192,7 +2671,8 @@
                     'tipo': 'Area',
                     'solicitante': 'Quien Solicita',
                     'indicaciones': 'Indicaciones a Seguir',
-                    'fecha_planeada': 'Fecha Planeada',
+                    'fecha_inicio': 'Fecha de Inicio',
+                    'fecha_fin': 'Fecha de Fin',
                     'prioridad': 'Prioridad',
                     'medio': 'Medio'
                 };
@@ -2279,14 +2759,34 @@
                     this.updateMedioHiddenInput();
                 }
                 
-                // Limpiar componente de fecha
-                this.clearDate();
-                this.clearEndDate();
-                this.fechaFinalizacionToggle.checked = false;
-                this.endDateSection.style.display = 'none';
-                this.incluirHoraToggle.checked = false;
-                this.timeInputContainer.style.display = 'none';
-                this.hideDateOptions();
+                // Limpiar campos de fecha
+                this.clearDateTimeFields();
+            }
+
+            clearDateTimeFields() {
+                // Limpiar fecha de inicio
+                this.inicioSelectedDate = null;
+                this.inicioSelectedTime = { hour: 12, minute: 0, ampm: 'PM' };
+                if (this.inicioDisplay) {
+                    this.inicioDisplay.value = '';
+                }
+                if (this.inicioHiddenInput) {
+                    this.inicioHiddenInput.value = '';
+                }
+                
+                // Limpiar fecha de fin
+                this.finSelectedDate = null;
+                this.finSelectedTime = { hour: 12, minute: 0, ampm: 'PM' };
+                if (this.finDisplay) {
+                    this.finDisplay.value = '';
+                }
+                if (this.finHiddenInput) {
+                    this.finHiddenInput.value = '';
+                }
+                
+                // Cerrar pickers si están abiertos
+                this.closeDateTimePicker('inicio');
+                this.closeDateTimePicker('fin');
             }
 
             clearAllValidations() {
@@ -2300,6 +2800,17 @@
                 if (this.medioDropdown) {
                     this.medioDropdown.classList.remove('valid', 'invalid');
                     this.hideFieldError(this.medioDropdown);
+                }
+                
+                // Limpiar validación de los campos de fecha
+                if (this.inicioDisplay) {
+                    this.inicioDisplay.classList.remove('valid', 'invalid');
+                    this.hideFieldError(this.inicioDisplay);
+                }
+                
+                if (this.finDisplay) {
+                    this.finDisplay.classList.remove('valid', 'invalid');
+                    this.hideFieldError(this.finDisplay);
                 }
             }
 
@@ -2421,7 +2932,24 @@
 
         // Inicializar la aplicación cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', () => {
-            new FormularioSolicitud();
+            console.log('Inicializando FormularioSolicitud...');
+            const app = new FormularioSolicitud();
+            
+            // Depuración adicional después de la inicialización
+            setTimeout(() => {
+                console.log('Verificando elementos de hora después de la inicialización...');
+                const hourScrollInicio = document.getElementById('hourScrollInicio');
+                const minuteScrollInicio = document.getElementById('minuteScrollInicio');
+                const hourScrollFin = document.getElementById('hourScrollFin');
+                const minuteScrollFin = document.getElementById('minuteScrollFin');
+                
+                console.log('Elementos encontrados:', {
+                    hourScrollInicio: hourScrollInicio,
+                    minuteScrollInicio: minuteScrollInicio,
+                    hourScrollFin: hourScrollFin,
+                    minuteScrollFin: minuteScrollFin
+                });
+            }, 1000);
         });
 
         // Manejo de errores globales
@@ -2435,3 +2963,4 @@
     </script>
 </body>
 </html>
+
