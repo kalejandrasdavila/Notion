@@ -13,26 +13,55 @@
             box-sizing: border-box;
         }
 
+        /* Ocultar scrollbar en todos los navegadores */
+        html {
+            overflow: hidden;
+            height: 100%;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
-            min-height: 100vh;
-            padding: 10px;
+            height: 100vh;
+            padding: 120px 10px;
             margin: 0;
+            overflow: hidden;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: visible; /* Cambiado para permitir que el datetime picker se extienda */
+            overflow: visible !important; /* Cambiado para permitir que el datetime picker se extienda */
             position: relative; /* Añadido para mejor posicionamiento */
+            min-height: 700px;
+            max-height: 95vh;
+            padding-bottom: 50px;
+        }
+
+        /* Asegurar que los campos de fecha no corten el picker */
+        .form-group {
+            position: relative;
+            overflow: visible !important;
+        }
+
+        .form-group input[type="text"] {
+            overflow: visible !important;
         }
 
         .form-wrapper {
-            padding: 40px;
+            padding: 50px;
         }
 
         .form-header {
@@ -369,7 +398,7 @@
             border: 2px solid #e5e7eb;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            z-index: 1;
             max-height: 200px;
             overflow-y: auto;
             display: none;
@@ -544,7 +573,7 @@
         /* Móviles pequeños */
         @media (max-width: 480px) {
             body {
-                padding: 5px;
+                padding: 60px 5px;
             }
             
             .container {
@@ -553,7 +582,7 @@
             }
             
             .form-wrapper {
-                padding: 20px;
+                padding: 30px;
             }
             
             .notion-logo {
@@ -684,7 +713,7 @@
 
         .datetime-display {
             width: 100%;
-            padding: 12px 16px;
+            padding: 12px 50px 12px 16px; /* Aumentar padding derecho para el icono */
             border: 2px solid #e2e8f0;
             border-radius: 12px;
             background: #f8fafc;
@@ -693,6 +722,7 @@
             cursor: pointer;
             outline: none;
             transition: all 0.3s ease;
+            box-sizing: border-box; /* Asegurar que el padding se incluya en el ancho */
         }
 
         .datetime-display:focus {
@@ -706,17 +736,23 @@
 
         .datetime-picker-toggle {
             position: absolute;
-            right: 12px;
+            right: 8px; /* Reducir distancia del borde */
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
             color: #667eea;
             cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
+            padding: 8px; /* Aumentar área de click */
+            border-radius: 6px;
             transition: all 0.3s ease;
-            font-size: 14px;
+            font-size: 16px; /* Aumentar tamaño del icono */
+            z-index: 10; /* Asegurar que esté encima */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px; /* Ancho fijo */
+            height: 32px; /* Alto fijo */
         }
 
         .datetime-picker-toggle:hover {
@@ -724,19 +760,63 @@
             color: #4f46e5;
         }
 
-        /* DateTime Picker */
-        .datetime-picker {
-            position: absolute;
-            top: 100%;
+        /* Solución específica para Safari y Chrome */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            .datetime-picker-container {
+                position: relative;
+                overflow: visible;
+            }
+            
+            .datetime-display {
+                padding-right: 50px !important;
+                box-sizing: border-box !important;
+            }
+            
+            .datetime-picker-toggle {
+                position: absolute !important;
+                right: 8px !important;
+                top: 50% !important;
+                transform: translateY(-50%) !important;
+                z-index: 10 !important;
+            }
+        }
+
+        /* Overlay de fondo */
+        .datetime-picker-overlay {
+            position: fixed;
+            top: 0;
             left: 0;
             right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: none;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+
+        .datetime-picker-overlay.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* DateTime Picker */
+        .datetime-picker {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             background: white;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             z-index: 10000;
             display: none;
-            margin-top: 8px;
             min-width: 400px;
             max-width: 450px;
             width: auto;
@@ -758,33 +838,33 @@
 
         .datetime-picker.show {
             display: block;
-            -webkit-animation: slideDown 0.2s ease-out;
-            animation: slideDown 0.2s ease-out;
+            -webkit-animation: fadeInScale 0.3s ease-out;
+            animation: fadeInScale 0.3s ease-out;
         }
 
-        @-webkit-keyframes slideDown {
+        @-webkit-keyframes fadeInScale {
             from {
                 opacity: 0;
-                -webkit-transform: translateY(-10px);
-                transform: translateY(-10px);
+                -webkit-transform: translate(-50%, -50%) scale(0.9);
+                transform: translate(-50%, -50%) scale(0.9);
             }
             to {
                 opacity: 1;
-                -webkit-transform: translateY(0);
-                transform: translateY(0);
+                -webkit-transform: translate(-50%, -50%) scale(1);
+                transform: translate(-50%, -50%) scale(1);
             }
         }
 
-        @keyframes slideDown {
+        @keyframes fadeInScale {
             from {
                 opacity: 0;
-                -webkit-transform: translateY(-10px);
-                transform: translateY(-10px);
+                -webkit-transform: translate(-50%, -50%) scale(0.9);
+                transform: translate(-50%, -50%) scale(0.9);
             }
             to {
                 opacity: 1;
-                -webkit-transform: translateY(0);
-                transform: translateY(0);
+                -webkit-transform: translate(-50%, -50%) scale(1);
+                transform: translate(-50%, -50%) scale(1);
             }
         }
         
@@ -841,7 +921,8 @@
             display: -webkit-flex;
             display: -ms-flexbox;
             display: flex;
-            min-height: 280px;
+            height: 350px;
+            max-height: 65vh;
             -webkit-flex-wrap: nowrap;
             -ms-flex-wrap: nowrap;
             flex-wrap: nowrap;
@@ -869,8 +950,8 @@
             flex: 1;
             padding: 12px;
             border-right: 1px solid #e2e8f0;
-            min-width: 220px;
-            max-width: 250px;
+            min-width: 180px;
+            max-width: 200px;
             /* Compatibilidad Safari mejorada */
             -webkit-box-sizing: border-box;
             box-sizing: border-box;
@@ -1075,17 +1156,17 @@
         /* Sección de tiempo */
         .time-section {
             -webkit-box-flex: 0;
-            -webkit-flex: 0 0 150px;
-            -ms-flex: 0 0 150px;
-            flex: 0 0 150px;
-            padding: 10px;
+            -webkit-flex: 0 0 130px;
+            -ms-flex: 0 0 130px;
+            flex: 0 0 130px;
+            padding: 8px;
             display: -webkit-box;
             display: -webkit-flex;
             display: -ms-flexbox;
             display: flex;
-            gap: 4px;
-            min-width: 150px;
-            max-width: 150px;
+            gap: 3px;
+            min-width: 130px;
+            max-width: 130px;
             background: #f8fafc;
             /* Compatibilidad Safari mejorada */
             -webkit-box-orient: horizontal;
@@ -1398,11 +1479,317 @@
             }
         }
 
+        /* Widget de fecha y hora - texto simple */
+        .datetime-widget {
+            position: fixed !important;
+            top: 10px !important;
+            right: 20px !important;
+            z-index: 9999 !important;
+            text-align: right;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            max-width: 180px;
+            word-wrap: break-word;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
+
+        .datetime-widget .location {
+            font-size: 0.8rem;
+            margin-bottom: 3px;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .datetime-widget .date {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .datetime-widget .time {
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Ajuste adicional para evitar solapamiento con scrollbar */
+        @media (min-width: 769px) {
+            .datetime-widget {
+                right: 30px !important;
+            }
+        }
+
+        /* Reducir tamaño de scrollbars en time pickers */
+        .time-picker::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .time-picker::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .time-picker::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .time-picker::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Aplicar a todos los elementos con scroll en time pickers */
+        .flatpickr-time input,
+        .flatpickr-time .flatpickr-time-separator,
+        .time-list,
+        .hour-list,
+        .minute-list {
+            scrollbar-width: thin;
+            scrollbar-color: #c1c1c1 #f1f1f1;
+        }
+
+        /* CSS específico para datetime pickers */
+        .flatpickr-calendar,
+        .flatpickr-time {
+            z-index: 9999 !important;
+        }
+
+        .flatpickr-calendar {
+            max-height: 150px !important;
+            max-width: 220px !important;
+            width: 220px !important;
+            overflow: visible !important;
+            font-size: 8px !important;
+        }
+
+        .flatpickr-calendar .flatpickr-months {
+            padding: 2px 6px !important;
+        }
+
+        .flatpickr-calendar .flatpickr-month {
+            height: 16px !important;
+        }
+
+        .flatpickr-calendar .flatpickr-current-month {
+            font-size: 9px !important;
+            padding: 0 !important;
+        }
+
+        .flatpickr-calendar .flatpickr-weekdays {
+            height: 14px !important;
+        }
+
+        .flatpickr-calendar .flatpickr-weekday {
+            font-size: 7px !important;
+            height: 14px !important;
+            line-height: 14px !important;
+        }
+
+        .flatpickr-calendar .flatpickr-days {
+            padding: 0.5px !important;
+        }
+
+        .flatpickr-calendar .flatpickr-day {
+            height: 14px !important;
+            line-height: 14px !important;
+            font-size: 7px !important;
+            margin: 0.05px !important;
+        }
+
+        .flatpickr-time {
+            width: 120px !important;
+            min-width: 120px !important;
+            max-width: 120px !important;
+            overflow: visible !important;
+            padding: 2px !important;
+        }
+
+        .flatpickr-time .flatpickr-time-separator {
+            margin: 0 2px !important;
+            font-size: 8px !important;
+        }
+
+        .flatpickr-time input {
+            width: 25px !important;
+            min-width: 25px !important;
+            max-width: 25px !important;
+            font-size: 7px !important;
+            padding: 0.5px 1px !important;
+        }
+
+        .flatpickr-time .flatpickr-am-pm {
+            font-size: 7px !important;
+            padding: 0.5px 2px !important;
+        }
+
+        /* Calendario - solución simple y directa */
+        .flatpickr-calendar.open {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            z-index: 999999 !important;
+            background: white !important;
+            border: 1px solid #e1e5e9 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        /* Ajustar el contenedor del datetime picker */
+        .flatpickr-input {
+            position: relative !important;
+        }
+
+        .flatpickr-calendar {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+            border: 1px solid #e1e5e9 !important;
+        }
+
+        /* Asegurar que el calendario nunca se salga del contenedor */
+        .container {
+            position: relative !important;
+            overflow: visible !important;
+        }
+
+        .form-group {
+            position: relative !important;
+            overflow: visible !important;
+            z-index: 1;
+        }
+
+        .form-group:hover {
+            z-index: 10;
+        }
+
+        /* Asegurar que el calendario esté siempre encima de todos los elementos del formulario */
+        .datetime-picker.show {
+            z-index: 999999 !important;
+        }
+
+        .datetime-picker-overlay.show {
+            z-index: 999998 !important;
+        }
+
+        /* Asegurar que los dropdowns estén por debajo del calendario */
+        .dropdown-container,
+        .dropdown-menu,
+        .dropdown-toggle {
+            z-index: 10 !important;
+        }
+
+        /* SOLUCIÓN UNIVERSAL SIMPLE */
+        .flatpickr-calendar.open {
+            z-index: 999999 !important;
+        }
+
+        /* Todos los elementos del formulario por debajo del calendario */
+        .form-group,
+        .form-group:hover,
+        .dropdown-container,
+        .dropdown-menu,
+        .dropdown-toggle,
+        #medioDropdown,
+        .form-input,
+        .form-select,
+        .btn {
+            z-index: 1 !important;
+        }
+
+        /* Regla más agresiva para asegurar que funcione */
+        *:not(.flatpickr-calendar):not(.flatpickr-calendar *) {
+            z-index: 1 !important;
+        }
+
+        .flatpickr-calendar.open {
+            z-index: 999999 !important;
+        }
+
+        /* SOLUCIÓN ESPECÍFICA PARA EL DROPDOWN MEDIO */
+        .flatpickr-calendar.open ~ .form-group,
+        .flatpickr-calendar.open ~ .form-group *,
+        .flatpickr-calendar.open ~ * .form-group,
+        .flatpickr-calendar.open ~ * .form-group * {
+            z-index: 1 !important;
+        }
+
+        /* Regla específica para el dropdown Medio cuando el calendario está abierto */
+        body:has(.flatpickr-calendar.open) .form-group:has(#medioDropdown),
+        body:has(.flatpickr-calendar.open) .form-group:has(#medioDropdown) *,
+        body:has(.flatpickr-calendar.open) #medioDropdown,
+        body:has(.flatpickr-calendar.open) .dropdown-container[data-field="medio"],
+        body:has(.flatpickr-calendar.open) .dropdown-menu[data-field="medio"] {
+            z-index: 1 !important;
+        }
+
+        /* Solución de respaldo para navegadores que no soportan :has() */
+        .calendar-open .form-group:has(#medioDropdown),
+        .calendar-open .form-group:has(#medioDropdown) *,
+        .calendar-open #medioDropdown,
+        .calendar-open .dropdown-container[data-field="medio"],
+        .calendar-open .dropdown-menu[data-field="medio"] {
+            z-index: 1 !important;
+        }
+
+        /* REGLA MÁS ESPECÍFICA CON LA CLASE CALENDAR-OPEN */
+        .calendar-open .form-group,
+        .calendar-open .form-group *,
+        .calendar-open .dropdown-container,
+        .calendar-open .dropdown-menu,
+        .calendar-open .dropdown-toggle,
+        .calendar-open #medioDropdown {
+            z-index: 1 !important;
+        }
+
+        .calendar-open .flatpickr-calendar.open {
+            z-index: 999999 !important;
+        }
+
+
+
+        /* Scrollbars más delgados para todos los elementos */
+        *::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        *::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 2px;
+        }
+
+        *::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive para el widget */
+        @media (max-width: 768px) {
+            .datetime-widget {
+                position: relative;
+                top: auto;
+                right: auto;
+                text-align: center;
+                margin: 0 auto 15px auto;
+                color: #333;
+                text-shadow: none;
+            }
+        }
+
 
 
     </style>
 </head>
 <body>
+    <!-- Widget de fecha y hora -->
+    <div class="datetime-widget">
+        <div class="location">Monterrey, NL, México</div>
+        <div class="date" id="currentDate"></div>
+        <div class="time" id="currentTime"></div>
+    </div>
+
     <div class="container">
         <div class="form-wrapper">
             <div class="form-header">
@@ -1412,7 +1799,7 @@
                         <h1>Formulario de Peticiones</h1>
                         <p>Asignación de servicio mesa</p>
                     </div>
-                    <img src="https://www.notion.so/images/logo-ios.png" alt="Notion Logo" class="notion-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/2048px-Notion-logo.svg.png" alt="Notion Logo" class="notion-logo">
                 </div>
             </div>
             
@@ -1739,6 +2126,77 @@
     </div>
 
     <script>
+        // Widget de fecha y hora para Monterrey, NL, México
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Configurar zona horaria de Monterrey (America/Monterrey)
+            const options = {
+                timeZone: 'America/Monterrey',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long'
+            };
+            
+            const timeOptions = {
+                timeZone: 'America/Monterrey',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            };
+            
+            const dateElement = document.getElementById('currentDate');
+            const timeElement = document.getElementById('currentTime');
+            
+            if (dateElement) {
+                dateElement.textContent = now.toLocaleDateString('es-MX', options);
+            }
+            
+            if (timeElement) {
+                timeElement.textContent = now.toLocaleTimeString('es-MX', timeOptions);
+            }
+        }
+        
+                // Actualizar inmediatamente y luego cada segundo
+                updateDateTime();
+                setInterval(updateDateTime, 1000);
+
+
+        // Función para hacer el calendario más compacto
+        function makeCalendarCompact() {
+            const calendars = document.querySelectorAll('.flatpickr-calendar.open');
+            calendars.forEach(calendar => {
+                // Asegurar que el calendario sea ultra-compacto
+                calendar.style.maxHeight = '150px';
+                calendar.style.overflowY = 'auto';
+                calendar.style.width = '220px';
+                calendar.style.maxWidth = '220px';
+            });
+        }
+
+        // Aplicar estilos compactos cuando se abre el calendario
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList') {
+                        const addedNodes = Array.from(mutation.addedNodes);
+                        addedNodes.forEach(node => {
+                            if (node.nodeType === 1 && node.classList && node.classList.contains('flatpickr-calendar')) {
+                                setTimeout(makeCalendarCompact, 10);
+                            }
+                        });
+                    }
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+
         // Configuración de la aplicación
         const CONFIG = {
             endpoints: {
@@ -1859,6 +2317,16 @@
                 }, 200);
             }
 
+
+            forceFormElementsBelow() {
+                // Esta función ya no es necesaria en la versión original
+            }
+
+            restoreFormElementsZIndex() {
+                // Esta función ya no es necesaria en la versión original
+            }
+
+
             // Funciones del DateTime Picker
             toggleDateTimePicker(type) {
                 const prefix = type === 'inicio' ? 'Inicio' : 'Fin';
@@ -1891,6 +2359,9 @@
                     picker.style.opacity = '1';
                     picker.classList.add('show');
                     
+                    // Agregar clase al body para controlar z-index dinámicamente
+                    document.body.classList.add('calendar-open');
+                    
                     // Forzar repaint en Safari
                     picker.offsetHeight;
                     
@@ -1898,12 +2369,6 @@
                     setTimeout(() => {
                         this.forceTimeOptionsVisibility(type);
                     }, 50);
-                    
-                    // En móviles, agregar clase para el overlay
-                    if (window.innerWidth <= 850) {
-                        document.body.style.overflow = 'hidden';
-                        picker.classList.add('mobile-picker');
-                    }
                 }
             }
 
@@ -1921,9 +2386,13 @@
                     picker.style.visibility = 'hidden';
                     picker.style.opacity = '0';
                     
-                    // Restaurar scroll en móviles
-                    if (window.innerWidth <= 850) {
-                        document.body.style.overflow = '';
+                    // Verificar si hay otros calendarios abiertos
+                    const otherPicker = type === 'inicio' ? this.finPicker : this.inicioPicker;
+                    const hasOtherOpen = otherPicker && otherPicker.classList.contains('show');
+                    
+                    // Solo quitar la clase si no hay otros calendarios abiertos
+                    if (!hasOtherOpen) {
+                        document.body.classList.remove('calendar-open');
                     }
                 }
             }
@@ -2238,8 +2707,25 @@
                     fullDate.setHours(selectedTime.ampm === 'PM' && selectedTime.hour !== 12 ? selectedTime.hour + 12 : 
                                      selectedTime.ampm === 'AM' && selectedTime.hour === 12 ? 0 : selectedTime.hour);
                     fullDate.setMinutes(selectedTime.minute);
+                    fullDate.setSeconds(0);
+                    fullDate.setMilliseconds(0);
                     
-                    hiddenInput.value = fullDate.toISOString();
+                    // Formatear en zona horaria local para mantener la hora exacta
+                    const fullYear = fullDate.getFullYear();
+                    const fullMonth = (fullDate.getMonth() + 1).toString().padStart(2, '0');
+                    const fullDay = fullDate.getDate().toString().padStart(2, '0');
+                    const fullHours = fullDate.getHours().toString().padStart(2, '0');
+                    const fullMinutes = fullDate.getMinutes().toString().padStart(2, '0');
+                    const fullSeconds = fullDate.getSeconds().toString().padStart(2, '0');
+                    
+                    // Crear string en formato ISO con offset local
+                    const offset = fullDate.getTimezoneOffset();
+                    const offsetHours = Math.floor(Math.abs(offset) / 60);
+                    const offsetMinutes = Math.abs(offset) % 60;
+                    const offsetSign = offset <= 0 ? '+' : '-';
+                    const offsetString = `${offsetSign}${offsetHours.toString().padStart(2, '0')}:${offsetMinutes.toString().padStart(2, '0')}`;
+                    
+                    hiddenInput.value = `${fullYear}-${fullMonth}-${fullDay}T${fullHours}:${fullMinutes}:${fullSeconds}.000${offsetString}`;
                 } else {
                     // Si no hay fecha seleccionada, solo mostrar la hora
                     const hour = selectedTime.hour.toString().padStart(2, '0');
