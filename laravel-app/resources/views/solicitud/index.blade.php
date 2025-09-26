@@ -64,6 +64,11 @@
             height: auto;
             padding-bottom: 50px;
         }
+        .logo-notion {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
 
         /* ===== SISTEMA RESPONSIVO COMPLETO ===== */
         
@@ -191,9 +196,10 @@
         .header-content {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             gap: 20px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            max-width: 100%;
         }
 
         .notion-logo {
@@ -202,26 +208,32 @@
             object-fit: contain;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
             flex-shrink: 0;
+            order: 2;
         }
 
         .header-text {
-            text-align: center;
-            flex: none;
+            text-align: left;
+            flex: 1;
+            order: 1;
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
         .form-header h1 {
             color: #333;
             font-size: 2.5rem;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
+            margin: 0;
+            flex-shrink: 0;
         }
 
-        .form-header p {
+        .subtitle {
             color: #666;
             font-size: 1.1rem;
+            margin: 0;
+            font-weight: 300;
+            white-space: nowrap;
         }
 
 
@@ -655,7 +667,7 @@
                 font-size: 2rem;
             }
             
-            .form-header p {
+            .subtitle {
                 font-size: 1rem;
             }
             
@@ -699,12 +711,14 @@
             .header-content {
                 flex-direction: row;
                 gap: 15px;
-                text-align: center;
-                justify-content: center;
+                justify-content: space-between;
+                align-items: center;
             }
             
             .header-text {
-                text-align: center;
+                text-align: left;
+                flex: 1;
+                gap: 12px;
             }
 
             .notion-logo {
@@ -777,7 +791,7 @@
                 line-height: 1.3;
             }
             
-            .form-header p {
+            .subtitle {
                 font-size: 0.95rem;
             }
             
@@ -855,19 +869,27 @@
                 grid-template-columns: 1fr;
                 gap: 14px;
             }
-            
+
             .form-header h1 {
                 font-size: 1.6rem;
                 line-height: 1.2;
                 margin-bottom: 8px;
             }
-            
-            .form-header p {
+
+            .subtitle {
                 font-size: 0.9rem;
             }
             
             .header-content {
-                flex-direction: column;
+                flex-direction: row;
+                gap: 10px;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .header-text {
+                text-align: left;
+                flex: 1;
                 gap: 10px;
             }
             
@@ -892,7 +914,7 @@
                 flex-wrap: nowrap;
                 justify-content: center;
             }
-
+            
             .datetime-picker {
                 width: 98vw;
                 max-width: none;
@@ -970,12 +992,20 @@
                 font-size: 1.4rem;
             }
             
-            .form-header p {
+            .subtitle {
                 font-size: 0.85rem;
             }
             
             .header-content {
-                flex-direction: column;
+                flex-direction: row;
+                gap: 8px;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .header-text {
+                text-align: left;
+                flex: 1;
                 gap: 8px;
             }
             
@@ -1017,9 +1047,8 @@
                 margin-bottom: 5px;
             }
             
-            .form-header p {
+            .subtitle {
                 font-size: 0.9rem;
-                margin-bottom: 15px;
             }
             
             .form-grid {
@@ -1133,7 +1162,7 @@
                 -webkit-border-radius: 12px;
                 border-radius: 12px;
             }
-
+            
             .form-select {
                 background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
                 background-repeat: no-repeat;
@@ -1530,12 +1559,18 @@
     <div class="container">
         <div class="form-wrapper">
             <div class="form-header">
-                <div class="header-content">
+                <div class="row align-items-center header-content">
                     <div class="header-text">
-                        <h1>Formulario de Peticiones</h1>
-                        <p>Asignación de servicio mesa</p>
+                    <div class="col-4 text-start">
+                            <span class="text-muted">Asignación de servicio mesa</span>
+                        </div>
+                        <div class="col-4 text-center">
+                            <h1 class="mb-0">Formulario de Peticiones</h1>
+                        </div>
+                        <div class="col-3 text-end">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/2048px-Notion-logo.svg.png" alt="Notion" class="logo-notion">
+                        </div>
                     </div>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/2048px-Notion-logo.svg.png" alt="Notion Logo" class="notion-logo">
                 </div>
             </div>
             
@@ -2146,13 +2181,13 @@
 
                 try {
                     this.setSubmitState(true);
-
+                    
                     // Preparar los datos del formulario
                     const formData = new FormData(this.form);
 
-                    // Get datetime values from jQuery datepicker
-                    const fechaInicio = $('#fecha_inicio').data('iso-value') || $('#fecha_inicio').val();
-                    const fechaFin = $('#fecha_fin').data('iso-value') || $('#fecha_fin').val();
+                    // Get datetime values from jQuery datepicker and format with GMT-6
+                    const fechaInicio = $('#fecha_inicio').data('iso-value') || this.convertDateToISO($('#fecha_inicio').val());
+                    const fechaFin = $('#fecha_fin').data('iso-value') || this.convertDateToISO($('#fecha_fin').val());
 
                     // Override with ISO values if available
                     if (fechaInicio) {
@@ -2161,7 +2196,7 @@
                     if (fechaFin) {
                         formData.set('fecha_fin', fechaFin);
                     }
-
+                    
                     console.log('Enviando formulario...');
                     console.log('Endpoint:', CONFIG.endpoints.submit);
 
@@ -2178,7 +2213,7 @@
                     if (result.success) {
                         this.showSuccessPopup();
                         this.form.reset();
-                        this.clearAllValidations();
+                        this.handleReset();
                     } else {
                         // Mostrar errores específicos de validación si están disponibles
                         if (result.errors) {
@@ -2238,6 +2273,38 @@
                 $('#fecha_inicio, #fecha_fin').val('').removeData('iso-value');
             }
 
+            // Convertir fecha en formato DD/MM/YYYY HH:MM AM/PM a ISO con GMT-6
+            convertDateToISO(dateString) {
+                if (!dateString || dateString.trim() === '') {
+                    return null;
+                }
+
+                // Try to parse DD/MM/YYYY HH:MM AM/PM format
+                const dateTimeRegex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})\s*(AM|PM)?$/i;
+                const match = dateString.match(dateTimeRegex);
+
+                if (match) {
+                    const day = parseInt(match[1]);
+                    const month = parseInt(match[2]);
+                    const year = parseInt(match[3]);
+                    let hours = parseInt(match[4]);
+                    const minutes = parseInt(match[5]);
+                    const ampm = (match[6] || 'AM').toUpperCase();
+
+                    // Convert to 24-hour format
+                    if (ampm === 'PM' && hours !== 12) {
+                        hours += 12;
+                    } else if (ampm === 'AM' && hours === 12) {
+                        hours = 0;
+                    }
+
+                    // Create date and format with GMT-6
+                    const localDate = new Date(year, month - 1, day, hours, minutes);
+                    return formatDateTimeWithTimezone(localDate, -6);
+                }
+
+                return null;
+            }
 
             clearAllValidations() {
                 const fields = this.form.querySelectorAll('.valid, .invalid');
@@ -2367,6 +2434,30 @@
                 };
                 document.addEventListener('keydown', handleEscape);
             }
+        }
+
+        // Función para formatear fecha y hora con timezone específico
+        function formatDateTimeWithTimezone(date, timezoneOffsetHours) {
+            // Crear una nueva fecha ajustada al timezone especificado
+            const offsetMs = timezoneOffsetHours * 60 * 60 * 1000;
+            const utcTime = date.getTime() + (date.getTimezoneOffset() * 60000);
+            const targetTime = new Date(utcTime + offsetMs);
+            
+            // Formatear en formato ISO con timezone
+            const year = targetTime.getFullYear();
+            const month = String(targetTime.getMonth() + 1).padStart(2, '0');
+            const day = String(targetTime.getDate()).padStart(2, '0');
+            const hours = String(targetTime.getHours()).padStart(2, '0');
+            const minutes = String(targetTime.getMinutes()).padStart(2, '0');
+            const seconds = String(targetTime.getSeconds()).padStart(2, '0');
+            const milliseconds = String(targetTime.getMilliseconds()).padStart(3, '0');
+            
+            // Formatear el offset del timezone
+            const offsetSign = timezoneOffsetHours >= 0 ? '+' : '-';
+            const offsetHours = String(Math.abs(timezoneOffsetHours)).padStart(2, '0');
+            const offsetMinutes = '00'; // Asumimos que siempre son horas completas
+            
+            return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${offsetSign}${offsetHours}:${offsetMinutes}`;
         }
 
         // Inicializar la aplicación cuando el DOM esté listo
@@ -2608,8 +2699,9 @@
                                 hours = 0;
                             }
 
-                            // Create ISO date for backend
-                            const isoDate = new Date(year, month - 1, day, hours, minutes).toISOString();
+                            // Create ISO date for backend with GMT-6 timezone
+                            const localDate = new Date(year, month - 1, day, hours, minutes);
+                            const isoDate = formatDateTimeWithTimezone(localDate, -6);
                             $(this).data('iso-value', isoDate);
                         } else {
                             // Invalid values, clear the field
