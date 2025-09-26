@@ -153,7 +153,8 @@
             gap: 15px;
             justify-content: center;
             margin-top: 30px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            align-items: center;
         }
 
 
@@ -176,7 +177,7 @@
         .header-content {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             gap: 20px;
             flex-wrap: wrap;
         }
@@ -187,12 +188,11 @@
             object-fit: contain;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
             flex-shrink: 0;
-            margin-left: auto;
         }
 
         .header-text {
-            text-align: left;
-            flex: 1;
+            text-align: center;
+            flex: none;
         }
 
         .form-header h1 {
@@ -609,6 +609,11 @@
             .form-header h1 {
                 font-size: 2.2rem;
             }
+            
+            .form-actions {
+                gap: 15px;
+                flex-wrap: nowrap;
+            }
         }
 
         /* Tablets pequeños y móviles grandes (576px - 767px) - iPads mini, móviles landscape */
@@ -666,6 +671,11 @@
             .time-section {
                 padding: 20px;
             }
+            
+            .form-actions {
+                gap: 12px;
+                flex-wrap: nowrap;
+            }
         }
             
             .form-wrapper {
@@ -673,9 +683,10 @@
             }
 
             .header-content {
-                flex-direction: column;
+                flex-direction: row;
                 gap: 15px;
                 text-align: center;
+                justify-content: center;
             }
             
             .header-text {
@@ -802,30 +813,57 @@
                 padding: 12px 20px;
                 font-size: 0.95rem;
             }
-        }
             
-            .notion-logo {
-                width: 45px;
-                height: 45px;
+            .form-actions {
+                gap: 10px;
+                flex-wrap: nowrap;
             }
-
-            .form-header h1 {
-                font-size: 1.8rem;
+        }
+        
+        /* Móviles pequeños (320px - 399px) - iPhones pequeños */
+        @media (min-width: 320px) and (max-width: 399px) {
+            body {
+                padding: 50px 5px;
             }
-
-            .form-header p {
-                font-size: 1rem;
+            
+            .container {
+                max-width: 100%;
+                margin: 0 auto;
+                border-radius: 12px;
+                min-height: auto;
+            }
+            
+            .form-wrapper {
+                padding: 20px 15px 0 15px;
             }
             
             .form-grid {
-                gap: 12px;
+                grid-template-columns: 1fr;
+                gap: 14px;
             }
             
-            .form-input,
-            .form-select,
-            .form-textarea {
+            .form-header h1 {
+                font-size: 1.6rem;
+                line-height: 1.2;
+                margin-bottom: 8px;
+            }
+            
+            .form-header p {
+                font-size: 0.9rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .form-input, .form-select, .form-textarea {
+                font-size: 16px; /* Evita zoom en iOS */
                 padding: 10px 12px;
-                font-size: 16px; /* Previene zoom en iOS */
+            }
+            
+            .form-textarea {
+                min-height: 80px;
             }
             
             .btn {
@@ -835,10 +873,12 @@
             }
             
             .form-actions {
-                flex-direction: column;
+                flex-direction: row;
                 gap: 10px;
+                flex-wrap: nowrap;
+                justify-content: center;
             }
-            
+
             .datetime-picker {
                 width: 98vw;
                 max-width: none;
@@ -892,91 +932,6 @@
             }
         }
         
-        /* Móviles pequeños (320px - 399px) - iPhones pequeños */
-        @media (min-width: 320px) and (max-width: 399px) {
-            body {
-                padding: 50px 5px;
-            }
-            
-            .container {
-                max-width: 100%;
-                margin: 0 auto;
-                border-radius: 12px;
-                min-height: auto;
-            }
-            
-            .form-wrapper {
-                padding: 20px 15px 0 15px;
-            }
-            
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: 14px;
-            }
-            
-            .form-header h1 {
-                font-size: 1.6rem;
-                line-height: 1.2;
-                margin-bottom: 8px;
-            }
-            
-            .form-header p {
-                font-size: 0.9rem;
-            }
-            
-            .form-input, .form-select, .form-textarea {
-                font-size: 16px; /* Evita zoom en iOS */
-                padding: 10px 12px;
-            }
-            
-            .form-textarea {
-                min-height: 80px;
-            }
-            
-            .datetime-picker {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 100vw;
-                height: 100vh;
-                max-width: none;
-                max-height: none;
-                border-radius: 0;
-                z-index: 10000;
-            }
-            
-            .datetime-picker-content {
-                flex-direction: column;
-                height: 100%;
-                min-height: auto;
-            }
-            
-            .calendar-section,
-            .time-section {
-                padding: 12px;
-            }
-            
-            .calendar-day {
-                min-height: 32px;
-                font-size: 0.85rem;
-            }
-            
-            .time-scroll {
-                height: 100px;
-                max-height: 100px;
-            }
-            
-            .btn {
-                padding: 10px 16px;
-                font-size: 0.9rem;
-            }
-            
-            .notion-logo {
-                width: 40px;
-                height: 40px;
-            }
-        }
 
         /* Móviles ultra pequeños (menos de 320px) - Dispositivos muy antiguos */
         @media (max-width: 319px) {
@@ -1005,6 +960,11 @@
                 font-size: 0.85rem;
             }
             
+            .header-content {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
             .form-input, .form-select, .form-textarea {
                 font-size: 16px;
                 padding: 8px 10px;
@@ -1013,6 +973,12 @@
             .btn {
                 padding: 8px 12px;
                 font-size: 0.85rem;
+            }
+            
+            .form-actions {
+                gap: 8px;
+                flex-wrap: nowrap;
+                flex-direction: row;
             }
         }
 
