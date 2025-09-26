@@ -168,7 +168,7 @@ class NotionService
 
         // Título (usando el campo correcto de Notion)
         if (isset($data['indicaciones'])) {
-            $properties['INDICACIONES A SEGUIR'] = [
+            $properties['INDICACIONES A SEGUIR (Que, como, y en donde)'] = [
                 'title' => [
                     [
                         'type' => 'text',
