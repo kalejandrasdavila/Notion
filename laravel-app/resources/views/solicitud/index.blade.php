@@ -6,6 +6,8 @@
     <!-- CSRF token disabled for iframe embedding -->
     <title>{{ config('app.name') }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -13,9 +15,8 @@
             box-sizing: border-box;
         }
 
-        /* Ocultar scrollbar en todos los navegadores */
+        /* Configuración base para permitir scroll interno */
         html {
-            overflow: hidden;
             height: 100%;
         }
 
@@ -31,14 +32,14 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
-            height: 100vh;
+            min-height: 100vh;
             padding: 120px 10px;
             margin: 0;
             overflow: hidden;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -46,9 +47,115 @@
             overflow: visible !important; /* Cambiado para permitir que el datetime picker se extienda */
             position: relative; /* Añadido para mejor posicionamiento */
             min-height: 700px;
-            max-height: 95vh;
+            height: auto;
             padding-bottom: 50px;
         }
+
+        /* ===== SISTEMA RESPONSIVO COMPLETO ===== */
+        
+        /* Pantallas extra grandes (1920px+) - Monitores 4K */
+        @media (min-width: 1920px) {
+            .container {
+                max-width: 1200px;
+            }
+            
+            .form-wrapper {
+                padding: 60px;
+            }
+            
+            .form-grid {
+                gap: 30px;
+            }
+            
+            .form-input, .form-select, .form-textarea {
+                font-size: 1.1rem;
+                padding: 15px 20px;
+            }
+        }
+
+        /* Pantallas muy grandes (1400px - 1919px) - Monitores grandes */
+        @media (min-width: 1400px) and (max-width: 1919px) {
+            .container {
+                max-width: 1100px;
+            }
+            
+            .form-wrapper {
+                padding: 55px;
+            }
+        }
+
+        /* Pantallas grandes (1200px - 1399px) - Laptops grandes */
+        @media (min-width: 1200px) and (max-width: 1399px) {
+            .container {
+                max-width: 1000px;
+            }
+            
+            .form-wrapper {
+                padding: 50px;
+            }
+        }
+
+        /* Pantallas medianas-grandes (992px - 1199px) - Laptops estándar */
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .container {
+                max-width: 900px;
+            }
+            
+            .form-wrapper {
+                padding: 45px;
+            }
+            
+            .form-grid {
+                gap: 25px;
+            }
+        }
+
+        .form {
+            max-height: calc(100vh - 240px);
+            overflow-y: auto;
+            overflow-x: visible;
+            padding-right: 10px;
+            padding-bottom: 30px;
+        }
+
+        /* Estilo personalizado para el scrollbar del formulario */
+        .form::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .form::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .form::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .form::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .form-wrapper {
+            padding: 50px 50px 0 50px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
 
         /* Asegurar que los campos de fecha no corten el picker */
         .form-group {
@@ -60,9 +167,6 @@
             overflow: visible !important;
         }
 
-        .form-wrapper {
-            padding: 50px;
-        }
 
         .form-header {
             text-align: center;
@@ -72,7 +176,7 @@
         .header-content {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             gap: 20px;
             flex-wrap: wrap;
         }
@@ -82,10 +186,13 @@
             height: 60px;
             object-fit: contain;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+            flex-shrink: 0;
+            margin-left: auto;
         }
 
         .header-text {
-            text-align: center;
+            text-align: left;
+            flex: 1;
         }
 
         .form-header h1 {
@@ -103,12 +210,6 @@
             font-size: 1.1rem;
         }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
 
         .form-group {
             display: flex;
@@ -192,13 +293,6 @@
             margin-top: 5px;
         }
 
-        .form-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
 
         .btn {
             padding: 15px 30px;
@@ -398,8 +492,8 @@
             border: 2px solid #e5e7eb;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            z-index: 1;
-            max-height: 200px;
+            z-index: 1055;
+            max-height: 300px;
             overflow-y: auto;
             display: none;
             margin-top: 5px;
@@ -492,39 +586,100 @@
             background-color: rgba(255, 255, 255, 0.2);
         }
 
-        /* Tablets y pantallas medianas */
-        @media (max-width: 1024px) {
+        /* Tablets grandes (768px - 991px) - iPads Pro */
+        @media (min-width: 768px) and (max-width: 991px) {
             .container {
-                max-width: 95%;
+                max-width: 850px;
                 margin: 0 auto;
             }
             
             .form-wrapper {
-                padding: 30px;
+                padding: 40px;
+            }
+            
+            .form-grid {
+                gap: 20px;
             }
             
             .datetime-picker {
-                min-width: 350px;
+                min-width: 400px;
+                max-width: 500px;
+            }
+            
+            .form-header h1 {
+                font-size: 2.2rem;
             }
         }
 
-        @media (max-width: 850px) {
+        /* Tablets pequeños y móviles grandes (576px - 767px) - iPads mini, móviles landscape */
+        @media (min-width: 576px) and (max-width: 767px) {
+            body {
+                padding: 80px 10px;
+            }
+            
+            .container {
+                max-width: 95%;
+                margin: 0 auto;
+                border-radius: 18px;
+            }
+            
+            .form-wrapper {
+                padding: 35px 30px 0 30px;
+            }
+            
             .form-grid {
                 grid-template-columns: 1fr;
-                gap: 15px;
+                gap: 18px;
             }
             
             .form-header h1 {
                 font-size: 2rem;
             }
             
+            .form-header p {
+                font-size: 1rem;
+            }
+            
+            .datetime-picker {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 95vw;
+                max-width: 600px;
+                max-height: 85vh;
+                overflow-y: auto;
+                z-index: 10000;
+            }
+            
+            .datetime-picker-content {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .calendar-section {
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+                padding: 20px;
+            }
+            
+            .time-section {
+                padding: 20px;
+            }
+        }
+            
             .form-wrapper {
-                padding: 25px;
+                padding: 25px 25px 0 25px;
             }
 
             .header-content {
                 flex-direction: column;
                 gap: 15px;
+                text-align: center;
+            }
+            
+            .header-text {
+                text-align: center;
             }
 
             .notion-logo {
@@ -570,20 +725,84 @@
             }
         }
 
-        /* Móviles pequeños */
-        @media (max-width: 480px) {
+        /* Móviles estándar (400px - 575px) - iPhones, Androids */
+        @media (min-width: 400px) and (max-width: 575px) {
             body {
-                padding: 60px 5px;
+                padding: 60px 8px;
             }
             
             .container {
-                border-radius: 15px;
-                max-width: 100%;
+                max-width: 98%;
+                margin: 0 auto;
+                border-radius: 16px;
+                min-height: auto;
             }
             
             .form-wrapper {
-                padding: 30px;
+                padding: 25px 20px 0 20px;
             }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .form-header h1 {
+                font-size: 1.8rem;
+                line-height: 1.3;
+            }
+            
+            .form-header p {
+                font-size: 0.95rem;
+            }
+            
+            .form-input, .form-select, .form-textarea {
+                font-size: 16px; /* Evita zoom en iOS */
+                padding: 12px 15px;
+            }
+            
+            .form-textarea {
+                min-height: 100px;
+            }
+            
+            .datetime-picker {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 98vw;
+                max-width: none;
+                max-height: 90vh;
+                border-radius: 12px;
+                z-index: 10000;
+            }
+            
+            .datetime-picker-content {
+                flex-direction: column;
+                height: auto;
+                min-height: auto;
+            }
+            
+            .calendar-section,
+            .time-section {
+                padding: 15px;
+            }
+            
+            .calendar-day {
+                min-height: 35px;
+                font-size: 0.9rem;
+            }
+            
+            .time-scroll {
+                height: 120px;
+                max-height: 120px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.95rem;
+            }
+        }
             
             .notion-logo {
                 width: 45px;
@@ -673,19 +892,190 @@
             }
         }
         
-        /* Pantallas muy pequeñas (menos de 360px) */
-        @media (max-width: 360px) {
+        /* Móviles pequeños (320px - 399px) - iPhones pequeños */
+        @media (min-width: 320px) and (max-width: 399px) {
+            body {
+                padding: 50px 5px;
+            }
+            
+            .container {
+                max-width: 100%;
+                margin: 0 auto;
+                border-radius: 12px;
+                min-height: auto;
+            }
+            
             .form-wrapper {
-                padding: 15px;
+                padding: 20px 15px 0 15px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
             }
             
             .form-header h1 {
                 font-size: 1.6rem;
+                line-height: 1.2;
+                margin-bottom: 8px;
             }
             
             .form-header p {
                 font-size: 0.9rem;
             }
+            
+            .form-input, .form-select, .form-textarea {
+                font-size: 16px; /* Evita zoom en iOS */
+                padding: 10px 12px;
+            }
+            
+            .form-textarea {
+                min-height: 80px;
+            }
+            
+            .datetime-picker {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 100vw;
+                height: 100vh;
+                max-width: none;
+                max-height: none;
+                border-radius: 0;
+                z-index: 10000;
+            }
+            
+            .datetime-picker-content {
+                flex-direction: column;
+                height: 100%;
+                min-height: auto;
+            }
+            
+            .calendar-section,
+            .time-section {
+                padding: 12px;
+            }
+            
+            .calendar-day {
+                min-height: 32px;
+                font-size: 0.85rem;
+            }
+            
+            .time-scroll {
+                height: 100px;
+                max-height: 100px;
+            }
+            
+            .btn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            
+            .notion-logo {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* Móviles ultra pequeños (menos de 320px) - Dispositivos muy antiguos */
+        @media (max-width: 319px) {
+            body {
+                padding: 40px 3px;
+            }
+            
+            .container {
+                max-width: 100%;
+                border-radius: 8px;
+            }
+            
+            .form-wrapper {
+                padding: 15px 10px 0 10px;
+            }
+            
+            .form-grid {
+                gap: 12px;
+            }
+            
+            .form-header h1 {
+                font-size: 1.4rem;
+            }
+            
+            .form-header p {
+                font-size: 0.85rem;
+            }
+            
+            .form-input, .form-select, .form-textarea {
+                font-size: 16px;
+                padding: 8px 10px;
+            }
+            
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* ===== ORIENTACIÓN LANDSCAPE EN MÓVILES ===== */
+        
+        /* Móviles en landscape (altura máxima 500px) */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                padding: 20px 10px;
+            }
+            
+            .container {
+                min-height: auto;
+            }
+            
+            .form-wrapper {
+                padding: 20px;
+            }
+            
+            .form-header h1 {
+                font-size: 1.5rem;
+                margin-bottom: 5px;
+            }
+            
+            .form-header p {
+                font-size: 0.9rem;
+                margin-bottom: 15px;
+            }
+            
+            .form-grid {
+                gap: 12px;
+            }
+            
+            .form-input, .form-select, .form-textarea {
+                padding: 8px 12px;
+            }
+            
+            .form-textarea {
+                min-height: 60px;
+            }
+            
+            .datetime-picker {
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+            
+            .datetime-picker-content {
+                flex-direction: row;
+                height: auto;
+                min-height: 250px;
+            }
+            
+            .calendar-section {
+                border-right: 1px solid #e2e8f0;
+                border-bottom: none;
+                flex: 1;
+                min-width: 280px;
+            }
+            
+            .time-section {
+                flex: 0 0 200px;
+            }
+        }
             
             .btn {
                 padding: 10px 16px;
@@ -706,9 +1096,16 @@
 
         /* Estilos para el datetime picker personalizado */
         .datetime-picker-container {
-            position: relative;
             width: 100%;
-            z-index: 1000; /* Añadido para mejor control de capas */
+        }
+        
+        /* Usar Bootstrap para posicionamiento */
+        .datetime-picker {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 1050 !important;
         }
 
         .datetime-display {
@@ -779,6 +1176,28 @@
                 transform: translateY(-50%) !important;
                 z-index: 10 !important;
             }
+            
+            /* Asegurar que el calendario tenga z-index alto en Safari/Chrome */
+            .datetime-picker {
+                z-index: 9999 !important;
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+                position: absolute !important;
+                top: 100% !important;
+                left: 0 !important;
+                right: 0 !important;
+            }
+            
+            /* Prevenir que el hover del form-group interfiera */
+            .form-group:hover {
+                z-index: 1 !important;
+            }
+            
+            .datetime-picker-container .form-group {
+                z-index: 1 !important;
+            }
         }
 
         /* Overlay de fondo */
@@ -805,66 +1224,49 @@
             to { opacity: 1; }
         }
 
-        /* DateTime Picker */
+        /* DateTime Picker - Usando Bootstrap */
         .datetime-picker {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             background: white;
             border: 1px solid #e2e8f0;
             border-radius: 16px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            z-index: 10000;
             display: none;
             min-width: 400px;
             max-width: 450px;
             width: auto;
             margin-left: 0;
             margin-right: 0;
-            /* Compatibilidad Safari/Chrome mejorada */
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            -webkit-perspective: 1000px;
-            perspective: 1000px;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            /* Mejoras de rendimiento */
-            will-change: transform, opacity;
-            contain: layout style paint;
         }
 
         .datetime-picker.show {
             display: block;
-            -webkit-animation: fadeInScale 0.3s ease-out;
-            animation: fadeInScale 0.3s ease-out;
+            -webkit-animation: fadeInSlide 0.3s ease-out;
+            animation: fadeInSlide 0.3s ease-out;
         }
 
-        @-webkit-keyframes fadeInScale {
+        @-webkit-keyframes fadeInSlide {
             from {
                 opacity: 0;
-                -webkit-transform: translate(-50%, -50%) scale(0.9);
-                transform: translate(-50%, -50%) scale(0.9);
+                -webkit-transform: translateY(-10px);
+                transform: translateY(-10px);
             }
             to {
                 opacity: 1;
-                -webkit-transform: translate(-50%, -50%) scale(1);
-                transform: translate(-50%, -50%) scale(1);
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
             }
         }
 
-        @keyframes fadeInScale {
+        @keyframes fadeInSlide {
             from {
                 opacity: 0;
-                -webkit-transform: translate(-50%, -50%) scale(0.9);
-                transform: translate(-50%, -50%) scale(0.9);
+                -webkit-transform: translateY(-10px);
+                transform: translateY(-10px);
             }
             to {
                 opacity: 1;
-                -webkit-transform: translate(-50%, -50%) scale(1);
-                transform: translate(-50%, -50%) scale(1);
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
             }
         }
         
@@ -921,8 +1323,9 @@
             display: -webkit-flex;
             display: -ms-flexbox;
             display: flex;
-            height: 350px;
-            max-height: 65vh;
+            height: auto;
+            min-height: 350px;
+            max-height: none;
             -webkit-flex-wrap: nowrap;
             -ms-flex-wrap: nowrap;
             flex-wrap: nowrap;
@@ -1434,10 +1837,27 @@
         @supports (-webkit-appearance: none) {
             .datetime-picker {
                 will-change: transform;
+                z-index: 9999 !important;
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+                position: absolute !important;
+                top: 100% !important;
+                left: 0 !important;
+                right: 0 !important;
             }
             
             .time-scroll {
                 scroll-behavior: smooth;
+            }
+            
+            /* Asegurar que el calendario esté por encima en Chrome */
+            .datetime-picker.show {
+                z-index: 9999 !important;
+            }
+            
+            /* Prevenir conflictos de z-index en Chrome */
+            .form-group:hover {
+                z-index: 1 !important;
             }
         }
         
@@ -1556,11 +1976,11 @@
         }
 
         .flatpickr-calendar {
-            max-height: 150px !important;
-            max-width: 220px !important;
-            width: 220px !important;
+            max-height: none !important;
+            max-width: 320px !important;
+            width: 280px !important;
             overflow: visible !important;
-            font-size: 8px !important;
+            font-size: 10px !important;
         }
 
         .flatpickr-calendar .flatpickr-months {
@@ -1623,16 +2043,24 @@
             padding: 0.5px 2px !important;
         }
 
-        /* Calendario - solución simple y directa */
-        .flatpickr-calendar.open {
-            position: absolute !important;
-            top: 100% !important;
-            left: 0 !important;
-            z-index: 999999 !important;
-            background: white !important;
-            border: 1px solid #e1e5e9 !important;
-            border-radius: 8px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        /* Calendario - solución optimizada y simple */
+        .datetime-picker {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .datetime-picker.show {
+            display: block;
         }
 
         /* Ajustar el contenedor del datetime picker */
@@ -1654,94 +2082,93 @@
         .form-group {
             position: relative !important;
             overflow: visible !important;
-            z-index: 1;
         }
 
         .form-group:hover {
             z-index: 10;
         }
 
-        /* Asegurar que el calendario esté siempre encima de todos los elementos del formulario */
-        .datetime-picker.show {
-            z-index: 999999 !important;
+        /* Contenedor del datetime picker */
+        .datetime-picker-container {
+            position: relative;
         }
 
-        .datetime-picker-overlay.show {
-            z-index: 999998 !important;
+        /* Dropdowns normales - usando Bootstrap z-index */
+        .dropdown-container {
+            z-index: 1;
         }
-
-        /* Asegurar que los dropdowns estén por debajo del calendario */
-        .dropdown-container,
-        .dropdown-menu,
+        
+        .dropdown-menu {
+            z-index: 1;
+        }
+        
         .dropdown-toggle {
-            z-index: 10 !important;
+            z-index: 1;
         }
 
-        /* SOLUCIÓN UNIVERSAL SIMPLE */
-        .flatpickr-calendar.open {
-            z-index: 999999 !important;
+        /* Calendario siempre encima usando Bootstrap z-index */
+        .datetime-picker.show {
+            display: block;
+        }
+        
+        /* Cuando el dropdown de Medio está abierto, asegurar que esté por encima */
+        .dropdown-menu.show {
+            z-index: 1055 !important;
+        }
+        
+        /* Asegurar que el dropdown de Medio no sea obstruido por el calendario */
+        .dropdown-container .dropdown-menu {
+            z-index: 1055 !important;
         }
 
-        /* Todos los elementos del formulario por debajo del calendario */
-        .form-group,
-        .form-group:hover,
-        .dropdown-container,
-        .dropdown-menu,
-        .dropdown-toggle,
-        #medioDropdown,
-        .form-input,
-        .form-select,
-        .btn {
-            z-index: 1 !important;
+        /* Estilos para el grupo de checkboxes de Medio */
+        .checkbox-group {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 15px;
+            background-color: #fafafa;
+            min-height: 60px;
         }
 
-        /* Regla más agresiva para asegurar que funcione */
-        *:not(.flatpickr-calendar):not(.flatpickr-calendar *) {
-            z-index: 1 !important;
+        .checkbox-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
         }
 
-        .flatpickr-calendar.open {
-            z-index: 999999 !important;
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        /* SOLUCIÓN ESPECÍFICA PARA EL DROPDOWN MEDIO */
-        .flatpickr-calendar.open ~ .form-group,
-        .flatpickr-calendar.open ~ .form-group *,
-        .flatpickr-calendar.open ~ * .form-group,
-        .flatpickr-calendar.open ~ * .form-group * {
-            z-index: 1 !important;
+        .checkbox-option:hover {
+            background-color: #f3f4f6;
+            border-color: #667eea;
         }
 
-        /* Regla específica para el dropdown Medio cuando el calendario está abierto */
-        body:has(.flatpickr-calendar.open) .form-group:has(#medioDropdown),
-        body:has(.flatpickr-calendar.open) .form-group:has(#medioDropdown) *,
-        body:has(.flatpickr-calendar.open) #medioDropdown,
-        body:has(.flatpickr-calendar.open) .dropdown-container[data-field="medio"],
-        body:has(.flatpickr-calendar.open) .dropdown-menu[data-field="medio"] {
-            z-index: 1 !important;
+        .checkbox-option input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
         }
 
-        /* Solución de respaldo para navegadores que no soportan :has() */
-        .calendar-open .form-group:has(#medioDropdown),
-        .calendar-open .form-group:has(#medioDropdown) *,
-        .calendar-open #medioDropdown,
-        .calendar-open .dropdown-container[data-field="medio"],
-        .calendar-open .dropdown-menu[data-field="medio"] {
-            z-index: 1 !important;
+        .checkbox-option label {
+            cursor: pointer;
+            margin: 0;
+            flex: 1;
+            font-size: 14px;
+            color: #374151;
         }
 
-        /* REGLA MÁS ESPECÍFICA CON LA CLASE CALENDAR-OPEN */
-        .calendar-open .form-group,
-        .calendar-open .form-group *,
-        .calendar-open .dropdown-container,
-        .calendar-open .dropdown-menu,
-        .calendar-open .dropdown-toggle,
-        .calendar-open #medioDropdown {
-            z-index: 1 !important;
-        }
-
-        .calendar-open .flatpickr-calendar.open {
-            z-index: 999999 !important;
+        .checkbox-option.checked {
+            background-color: #e0f2fe;
+            border-color: #0ea5e9;
         }
 
 
@@ -1794,7 +2221,6 @@
         <div class="form-wrapper">
             <div class="form-header">
                 <div class="header-content">
-                    
                     <div class="header-text">
                         <h1>Formulario de Peticiones</h1>
                         <p>Asignación de servicio mesa</p>
@@ -1850,14 +2276,14 @@
                             <i class="fas fa-calendar-alt"></i>
                             Fecha de Inicio <span class="required">*</span>
                         </label>
-                        <div class="datetime-picker-container">
+                        <div class="datetime-picker-container position-relative">
                             <input type="text" id="fecha_inicio_display" class="form-input datetime-display" readonly placeholder="Seleccionar fecha y hora">
                             <button type="button" class="datetime-picker-toggle" id="fechaInicioToggle">
                                 <i class="fas fa-calendar-alt"></i>
                             </button>
                             
                             <!-- DateTime Picker -->
-                            <div class="datetime-picker" id="fechaInicioPicker">
+                            <div class="datetime-picker position-absolute top-100 start-0 w-100" id="fechaInicioPicker" style="z-index: 1050;">
                                 <div class="datetime-picker-content">
                                     <!-- Calendario -->
                                     <div class="calendar-section">
@@ -1960,14 +2386,14 @@
                             <i class="fas fa-calendar-times"></i>
                             Fecha de Fin <span class="required">*</span>
                         </label>
-                        <div class="datetime-picker-container">
+                        <div class="datetime-picker-container position-relative">
                             <input type="text" id="fecha_fin_display" class="form-input datetime-display" readonly placeholder="Seleccionar fecha y hora">
                             <button type="button" class="datetime-picker-toggle" id="fechaFinToggle">
                                 <i class="fas fa-calendar-alt"></i>
                             </button>
                             
                             <!-- DateTime Picker -->
-                            <div class="datetime-picker" id="fechaFinPicker">
+                            <div class="datetime-picker position-absolute top-100 start-0 w-100" id="fechaFinPicker" style="z-index: 1050;">
                                 <div class="datetime-picker-content">
                                     <!-- Calendario -->
                                     <div class="calendar-section">
@@ -2082,28 +2508,20 @@
 
                     <!-- Medio -->
                     <div class="form-group">
-                        <label for="medio" class="form-label">
+                        <label class="form-label">
                             <i class="fas fa-broadcast-tower"></i>
                             Medio <span class="required">*</span>
                         </label>
-                        <div class="dropdown-container">
-                            <button type="button" class="dropdown-toggle" id="medioDropdown">
-                                <span class="dropdown-text">Seleccione uno o más medios...</span>
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                            <div class="dropdown-menu" id="medioDropdownMenu">
-                                <div class="loading" id="medioLoading">
-                                    <i class="fas fa-spinner fa-spin"></i> Cargando...
-                                </div>
-                                <div class="dropdown-options" id="medioOptions">
-                                    <!-- Las opciones se cargarán aquí dinámicamente -->
-                                </div>
+                        <div class="checkbox-group" id="medioCheckboxGroup">
+                            <div class="loading" id="medioLoading">
+                                <i class="fas fa-spinner fa-spin"></i> Cargando...
+                            </div>
+                            <div class="checkbox-options" id="medioOptions">
+                                <!-- Las opciones se cargarán aquí dinámicamente -->
                             </div>
                         </div>
                         <input type="hidden" id="medio" name="medio" required>
-                        <div class="selected-items" id="selectedMedios">
-                            <!-- Los elementos seleccionados se mostrarán aquí -->
-                        </div>
+                        <div class="field-error" id="medioError"></div>
                     </div>
                 </div>
 
@@ -2359,8 +2777,11 @@
                     picker.style.opacity = '1';
                     picker.classList.add('show');
                     
-                    // Agregar clase al body para controlar z-index dinámicamente
-                    document.body.classList.add('calendar-open');
+                    // Cerrar otros dropdowns cuando se abre el calendario
+                    this.closeMedioDropdown();
+                    
+                    // Asegurar que el calendario esté por encima usando Bootstrap z-index
+                    picker.style.zIndex = '1050';
                     
                     // Forzar repaint en Safari
                     picker.offsetHeight;
@@ -2386,14 +2807,9 @@
                     picker.style.visibility = 'hidden';
                     picker.style.opacity = '0';
                     
-                    // Verificar si hay otros calendarios abiertos
-                    const otherPicker = type === 'inicio' ? this.finPicker : this.inicioPicker;
-                    const hasOtherOpen = otherPicker && otherPicker.classList.contains('show');
+                    // El z-index se maneja automáticamente con Bootstrap
                     
-                    // Solo quitar la clase si no hay otros calendarios abiertos
-                    if (!hasOtherOpen) {
-                        document.body.classList.remove('calendar-open');
-                    }
+                    // No necesitamos manejar clases del body
                 }
             }
 
@@ -2817,48 +3233,20 @@
                 }
             }
 
-            // Configurar dropdown personalizado para medios
+            // Configurar checkboxes para medios
             setupMedioDropdown() {
-                this.medioDropdown = document.getElementById('medioDropdown');
-                this.medioDropdownMenu = document.getElementById('medioDropdownMenu');
+                this.medioCheckboxGroup = document.getElementById('medioCheckboxGroup');
                 this.medioOptions = document.getElementById('medioOptions');
                 this.medioLoading = document.getElementById('medioLoading');
-                this.selectedMedios = document.getElementById('selectedMedios');
                 this.medioHiddenInput = document.getElementById('medio');
+                this.medioError = document.getElementById('medioError');
                 
                 this.selectedMediosList = [];
-                
-                // Eventos del dropdown
-                this.medioDropdown.addEventListener('click', () => this.toggleMedioDropdown());
-                
-                // Cerrar dropdown al hacer clic fuera
-                document.addEventListener('click', (e) => {
-                    if (!e.target.closest('.dropdown-container')) {
-                        this.closeMedioDropdown();
-                    }
-                });
                 
                 // Cargar opciones de medios
                 this.loadMedioOptions();
             }
 
-            toggleMedioDropdown() {
-                if (this.medioDropdownMenu.classList.contains('show')) {
-                    this.closeMedioDropdown();
-                } else {
-                    this.openMedioDropdown();
-                }
-            }
-
-            openMedioDropdown() {
-                this.medioDropdownMenu.classList.add('show');
-                this.medioDropdown.classList.add('active');
-            }
-
-            closeMedioDropdown() {
-                this.medioDropdownMenu.classList.remove('show');
-                this.medioDropdown.classList.remove('active');
-            }
 
             async loadMedioOptions() {
                 try {
@@ -2896,7 +3284,7 @@
                 
                 options.forEach(option => {
                     const optionDiv = document.createElement('div');
-                    optionDiv.className = 'dropdown-option';
+                    optionDiv.className = 'checkbox-option';
                     
                     const checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
@@ -2913,6 +3301,7 @@
                     // Evento para manejar la selección
                     checkbox.addEventListener('change', () => {
                         this.handleMedioSelection(option.name || option.value, checkbox.checked);
+                        this.updateCheckboxVisualState(optionDiv, checkbox.checked);
                     });
                     
                     this.medioOptions.appendChild(optionDiv);
@@ -2928,53 +3317,18 @@
                     this.selectedMediosList = this.selectedMediosList.filter(item => item !== value);
                 }
                 
-                this.updateMedioDisplay();
                 this.updateMedioHiddenInput();
                 this.validateMedioField();
             }
 
-            updateMedioDisplay() {
-                this.selectedMedios.innerHTML = '';
-                
-                if (this.selectedMediosList.length === 0) {
-                    this.medioDropdown.querySelector('.dropdown-text').textContent = 'Seleccione uno o más medios...';
+            updateCheckboxVisualState(optionDiv, isChecked) {
+                if (isChecked) {
+                    optionDiv.classList.add('checked');
                 } else {
-                    this.medioDropdown.querySelector('.dropdown-text').textContent = `${this.selectedMediosList.length} medio(s) seleccionado(s)`;
-                    
-                    this.selectedMediosList.forEach(medio => {
-                        const itemDiv = document.createElement('div');
-                        itemDiv.className = 'selected-item';
-                        itemDiv.innerHTML = `
-                            ${medio}
-                            <button type="button" class="remove-btn" data-value="${medio}">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `;
-                        
-                        // Evento para remover elemento
-                        const removeBtn = itemDiv.querySelector('.remove-btn');
-                        removeBtn.addEventListener('click', () => {
-                            this.removeMedio(medio);
-                        });
-                        
-                        this.selectedMedios.appendChild(itemDiv);
-                    });
+                    optionDiv.classList.remove('checked');
                 }
             }
 
-            removeMedio(medio) {
-                this.selectedMediosList = this.selectedMediosList.filter(item => item !== medio);
-                
-                // Desmarcar checkbox
-                const checkbox = document.querySelector(`input[value="${medio}"]`);
-                if (checkbox) {
-                    checkbox.checked = false;
-                }
-                
-                this.updateMedioDisplay();
-                this.updateMedioHiddenInput();
-                this.validateMedioField();
-            }
 
             updateMedioHiddenInput() {
                 this.medioHiddenInput.value = JSON.stringify(this.selectedMediosList);
@@ -2982,16 +3336,16 @@
 
             validateMedioField() {
                 const isValid = this.selectedMediosList.length > 0;
-                const container = this.medioDropdown.closest('.form-group');
+                const container = this.medioCheckboxGroup.closest('.form-group');
                 
                 if (isValid) {
-                    this.medioDropdown.classList.remove('invalid');
-                    this.medioDropdown.classList.add('valid');
-                    this.hideFieldError(this.medioDropdown);
+                    this.medioCheckboxGroup.classList.remove('invalid');
+                    this.medioCheckboxGroup.classList.add('valid');
+                    this.hideFieldError(this.medioError);
                 } else {
-                    this.medioDropdown.classList.remove('valid');
-                    this.medioDropdown.classList.add('invalid');
-                    this.showFieldError(this.medioDropdown, 'Debe seleccionar al menos un medio.');
+                    this.medioCheckboxGroup.classList.remove('valid');
+                    this.medioCheckboxGroup.classList.add('invalid');
+                    this.showFieldError(this.medioError, 'Debe seleccionar al menos un medio.');
                 }
                 
                 return isValid;
@@ -3278,11 +3632,19 @@
                 this.clearAllValidations();
                 this.clearMessages();
                 
-                // Limpiar dropdown de medios
+                // Limpiar checkboxes de medios
                 if (this.selectedMediosList) {
                     this.selectedMediosList = [];
-                    this.updateMedioDisplay();
                     this.updateMedioHiddenInput();
+                    // Desmarcar todos los checkboxes
+                    const checkboxes = this.medioOptions.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                        const optionDiv = checkbox.closest('.checkbox-option');
+                        if (optionDiv) {
+                            optionDiv.classList.remove('checked');
+                        }
+                    });
                 }
                 
                 // Limpiar campos de fecha
@@ -3322,10 +3684,10 @@
                     this.hideFieldError(field);
                 });
                 
-                // Limpiar validación del dropdown de medios
-                if (this.medioDropdown) {
-                    this.medioDropdown.classList.remove('valid', 'invalid');
-                    this.hideFieldError(this.medioDropdown);
+                // Limpiar validación del grupo de checkboxes de medios
+                if (this.medioCheckboxGroup) {
+                    this.medioCheckboxGroup.classList.remove('valid', 'invalid');
+                    this.hideFieldError(this.medioError);
                 }
                 
                 // Limpiar validación de los campos de fecha
