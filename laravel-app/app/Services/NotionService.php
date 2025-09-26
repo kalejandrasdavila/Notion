@@ -259,6 +259,11 @@ class NotionService
             ];
         }
 
+        // Notificación (checkbox) - siempre true por defecto
+        $properties['NOTIFICACIÓN'] = [
+            'checkbox' => true
+        ];
+
         return $properties;
     }
 
