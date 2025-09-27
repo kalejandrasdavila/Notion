@@ -207,13 +207,11 @@ class NotionService
             ];
         }
 
-        // Fecha límite (usando el campo FECHA Y HORA LIMITE) - send null to clear the field
+        // Fecha límite (usando el campo FECHA Y HORA LIMITE) - set to null
         if (isset($data['fecha_fin']) && !empty($data['fecha_fin'])) {
-            // Send null instead of actual date to keep field empty in Notion
+            // Don't use the fecha_fin value, explicitly leave empty
             $properties['FECHA Y HORA LIMITE'] = [
-                'date' => [
-                    'start' => null
-                ]
+                'date' => null
             ];
         }
 
