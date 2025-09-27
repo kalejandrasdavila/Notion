@@ -207,12 +207,12 @@ class NotionService
             ];
         }
 
-        // Fecha límite (usando el campo FECHA Y HORA LIMITE)
+        // Fecha límite (usando el campo FECHA Y HORA LIMITE) - send empty string to clear the field
         if (isset($data['fecha_fin']) && !empty($data['fecha_fin'])) {
-            $endDate = $this->convertToNotionFormat($data['fecha_fin']);
+            // Send empty string instead of actual date to keep field empty in Notion
             $properties['FECHA Y HORA LIMITE'] = [
                 'date' => [
-                    'start' => $endDate
+                    'start' => ''
                 ]
             ];
         }
