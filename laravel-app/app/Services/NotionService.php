@@ -207,15 +207,7 @@ class NotionService
             ];
         }
 
-        // Fecha límite (usando el campo FECHA Y HORA LIMITE)
-        if (isset($data['fecha_fin']) && !empty($data['fecha_fin'])) {
-            $endDate = $this->convertToNotionFormat($data['fecha_fin']);
-            $properties['FECHA Y HORA LIMITE'] = [
-                'date' => [
-                    'start' => $endDate
-                ]
-            ];
-        }
+        // Fecha límite - removed, leaving empty in Notion
 
         // Tipo (campo opcional - solo si se proporciona)
         if (isset($data['tipo']) && !empty($data['tipo'])) {

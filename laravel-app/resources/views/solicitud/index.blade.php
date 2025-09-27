@@ -1559,17 +1559,14 @@
     <div class="container">
         <div class="form-wrapper">
             <div class="form-header">
-                <div class="row align-items-center header-content">
-                    <div class="header-text">
-                    <div class="col-4 text-start">
-                            <span class="text-muted">Asignación de servicio mesa</span>
-                        </div>
-                        <div class="col-4 text-center">
-                            <h1 class="mb-0">Formulario de Peticiones</h1>
-                        </div>
-                        <div class="col-3 text-end">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/2048px-Notion-logo.svg.png" alt="Notion" class="logo-notion">
-                        </div>
+                <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+                    <div style="flex: 1;"></div>
+                    <div style="flex: 2;">
+                        <h1 class="mb-0" style="text-align: center;">Formulario de Peticiones</h1>
+                        <p class="text-muted mb-0 mt-2" style="font-size: 1.1rem; text-align: left; padding-left: 11%;">Asignación de servicio mesa</p>
+                    </div>
+                    <div style="flex: 1; text-align: right;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/2048px-Notion-logo.svg.png" alt="Notion" class="logo-notion">
                     </div>
                 </div>
             </div>
@@ -2497,6 +2494,7 @@
                     changeMonth: true,
                     changeYear: true,
                     showButtonPanel: true,
+                    minDate: 0, // Prevent selecting past dates
                     onSelect: function(dateText) {
                         // Always set to standard format with time
                         $input.val(dateText + ' 12:00 PM');
