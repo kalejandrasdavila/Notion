@@ -1559,8 +1559,9 @@
     <div class="container">
         <div class="form-wrapper">
             <div class="form-header">
+            <div style="flex: 1;" id="welcomeMessage">Bienvenido, alejandradavila</div>
                 <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
-                    <div style="flex: 1;"></div>
+                <div style="flex: 1;"></div>
                     <div style="flex: 2;">
                         <h1 class="mb-0" style="text-align: center;">Formulario de Peticiones</h1>
                         <p class="text-muted mb-0 mt-2" style="font-size: 1.1rem; text-align: left; padding-left: 11%;">Asignación de servicio mesa</p>
@@ -1578,7 +1579,7 @@
                     <input type="hidden" id="status" name="status" value="PENDIENTE">
         
                     <!-- Tipo -->
-                    <div class="form-group">
+                    <div class="form-group full-width">
                         <label for="tipo" class="form-label">
                             <i class="fas fa-tag"></i>
                             Area <span class="required">*</span>
@@ -1592,10 +1593,10 @@
                     </div>
 
                     <!-- Quien solicita -->
-                    <div class="form-group">
+                    <div class="form-group" hidden>
                         <label for="solicitante" class="form-label">
                             <i class="fas fa-user"></i>
-                            Quien Solicita <span class="required">*</span>
+                            Quien Solicita <span class="required" hidden>*</span>
                         </label>
                         <input type="text" id="solicitante" name="solicitante" class="form-input"
                                placeholder="Ingrese el nombre de quien solicita" required>
@@ -1605,7 +1606,7 @@
                     <div class="form-group full-width">
                         <label for="indicaciones" class="form-label">
                             <i class="fas fa-list-ul"></i>
-                            Indicaciones a Seguir <span class="required">*</span>
+                            Indicaciones a Seguir (Lugar, Que, Como)<span class="required">*</span>
                         </label>
                         <textarea id="indicaciones" name="indicaciones" class="form-textarea" 
                                   placeholder="Describa las indicaciones detalladamente..." 
@@ -2472,6 +2473,11 @@
             // Check for 'solicitante' parameter in URL
             const solicitanteParam = getUrlParameter('solicitante');
             if (solicitanteParam) {
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = 'Bienvenid@, ' + solicitanteParam;
+                }
+                
                 // Pre-fill and disable the Quien Solicita field
                 const solicitanteField = document.getElementById('solicitante');
                 if (solicitanteField) {
