@@ -1597,7 +1597,7 @@
                             <i class="fas fa-user"></i>
                             Quien Solicita <span class="required">*</span>
                         </label>
-                        <input type="text" id="solicitante" name="solicitante" class="form-input" 
+                        <input type="text" id="solicitante" name="solicitante" class="form-input"
                                placeholder="Ingrese el nombre de quien solicita" required>
                     </div>
 
@@ -2457,9 +2457,31 @@
             return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${offsetSign}${offsetHours}:${offsetMinutes}`;
         }
 
+        // Función para obtener parámetros de la URL
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
         // Inicializar la aplicación cuando el DOM esté listo
         $(document).ready(function() {
             console.log('Inicializando FormularioSolicitud...');
+
+            // Check for 'solicitante' parameter in URL
+            const solicitanteParam = getUrlParameter('solicitante');
+            if (solicitanteParam) {
+                // Pre-fill and disable the Quien Solicita field
+                const solicitanteField = document.getElementById('solicitante');
+                if (solicitanteField) {
+                    solicitanteField.value = solicitanteParam;
+                    solicitanteField.setAttribute('readonly', true);
+                    solicitanteField.style.backgroundColor = '#f8f9fa';
+                    solicitanteField.style.cursor = 'not-allowed';
+                    solicitanteField.style.color = '#6c757d';
+                }
+            }
 
             // Spanish localization for jQuery UI
             $.datepicker.regional['es'] = {
