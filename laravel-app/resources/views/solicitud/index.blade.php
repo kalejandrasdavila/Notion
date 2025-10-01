@@ -2209,8 +2209,23 @@
                     
                     if (result.success) {
                         this.showSuccessPopup();
+
+                        // Save the solicitante value if it came from URL
+                        const solicitanteField = document.getElementById('solicitante');
+                        const solicitanteValue = solicitanteField ? solicitanteField.value : null;
+                        const isReadonly = solicitanteField ? solicitanteField.hasAttribute('readonly') : false;
+
                         this.form.reset();
                         this.handleReset();
+
+                        // Restore solicitante value if it was from URL parameter
+                        if (solicitanteField && solicitanteValue && isReadonly) {
+                            solicitanteField.value = solicitanteValue;
+                            solicitanteField.setAttribute('readonly', true);
+                            solicitanteField.style.backgroundColor = '#f8f9fa';
+                            solicitanteField.style.cursor = 'not-allowed';
+                            solicitanteField.style.color = '#6c757d';
+                        }
                     } else {
                         // Mostrar errores específicos de validación si están disponibles
                         if (result.errors) {
