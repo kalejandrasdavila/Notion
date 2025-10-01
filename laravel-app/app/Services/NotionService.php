@@ -258,9 +258,10 @@ class NotionService
         }
 
         // Notificación (checkbox) - siempre true por defecto
-        $properties['NOTIFICACIÓN'] = [
-            'checkbox' => true
-        ];
+        // Commented out until field is added to Notion database
+        // $properties['NOTIFICACIÓN'] = [
+        //     'checkbox' => true
+        // ];
 
         return $properties;
     }
