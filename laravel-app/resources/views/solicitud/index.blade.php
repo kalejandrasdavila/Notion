@@ -1562,6 +1562,7 @@
                 <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
                     <div style="flex: 1;"></div>
                     <div style="flex: 2;">
+                        <p id="welcome-message" class="text-center mb-2" style="font-size: 1.2rem; color: #333; font-weight: 500; display: none;"></p>
                         <h1 class="mb-0" style="text-align: center;">Formulario de Peticiones</h1>
                         <p class="text-muted mb-0 mt-2" style="font-size: 1.1rem; text-align: left; padding-left: 11%;">Asignación de servicio mesa</p>
                     </div>
@@ -2479,6 +2480,13 @@
                 const solicitanteField = document.getElementById('solicitante');
                 if (solicitanteField) {
                     solicitanteField.value = solicitanteParam;
+                }
+
+                // Display welcome message
+                const welcomeMessage = document.getElementById('welcome-message');
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = `Bienvenid@ ${solicitanteParam}`;
+                    welcomeMessage.style.display = 'block';
                 }
             }
 
