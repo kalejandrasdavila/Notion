@@ -1591,15 +1591,8 @@
                         </div>
                     </div>
 
-                    <!-- Quien solicita -->
-                    <div class="form-group">
-                        <label for="solicitante" class="form-label">
-                            <i class="fas fa-user"></i>
-                            Quien Solicita <span class="required">*</span>
-                        </label>
-                        <input type="text" id="solicitante" name="solicitante" class="form-input"
-                               placeholder="Ingrese el nombre de quien solicita" required>
-                    </div>
+                    <!-- Quien solicita (hidden but functional) -->
+                    <input type="hidden" id="solicitante" name="solicitante" value="">
 
                     <!-- Indicaciones -->
                     <div class="form-group full-width">
@@ -2210,21 +2203,16 @@
                     if (result.success) {
                         this.showSuccessPopup();
 
-                        // Save the solicitante value if it came from URL
+                        // Save the solicitante value from hidden field
                         const solicitanteField = document.getElementById('solicitante');
                         const solicitanteValue = solicitanteField ? solicitanteField.value : null;
-                        const isReadonly = solicitanteField ? solicitanteField.hasAttribute('readonly') : false;
 
                         this.form.reset();
                         this.handleReset();
 
-                        // Restore solicitante value if it was from URL parameter
-                        if (solicitanteField && solicitanteValue && isReadonly) {
+                        // Restore solicitante value to hidden field
+                        if (solicitanteField && solicitanteValue) {
                             solicitanteField.value = solicitanteValue;
-                            solicitanteField.setAttribute('readonly', true);
-                            solicitanteField.style.backgroundColor = '#f8f9fa';
-                            solicitanteField.style.cursor = 'not-allowed';
-                            solicitanteField.style.color = '#6c757d';
                         }
                     } else {
                         // Mostrar errores específicos de validación si están disponibles
@@ -2487,14 +2475,10 @@
             // Check for 'solicitante' parameter in URL
             const solicitanteParam = getUrlParameter('solicitante');
             if (solicitanteParam) {
-                // Pre-fill and disable the Quien Solicita field
+                // Set the hidden field value from URL parameter
                 const solicitanteField = document.getElementById('solicitante');
                 if (solicitanteField) {
                     solicitanteField.value = solicitanteParam;
-                    solicitanteField.setAttribute('readonly', true);
-                    solicitanteField.style.backgroundColor = '#f8f9fa';
-                    solicitanteField.style.cursor = 'not-allowed';
-                    solicitanteField.style.color = '#6c757d';
                 }
             }
 
