@@ -2497,12 +2497,25 @@
                 }
             }
 
-            // Set minimum date/time to current for both inputs
+            // Set minimum date/time to current local time
+            // The browser should already be in Monterrey timezone
             const now = new Date();
-            const minDateTime = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:mm
 
+            // Format for datetime-local input using local time
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const minDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+            // Set minimum to current time
             document.getElementById('fecha_inicio').min = minDateTime;
             document.getElementById('fecha_fin').min = minDateTime;
+
+            // Set default values to current time
+            document.getElementById('fecha_inicio').value = minDateTime;
+            document.getElementById('fecha_fin').value = minDateTime;
 
             // Auto-set end date when start date changes
             document.getElementById('fecha_inicio').addEventListener('change', function() {
