@@ -1612,8 +1612,8 @@
                             <i class="fas fa-calendar-alt"></i>
                             Fecha de Inicio <span class="required">*</span>
                         </label>
-                        <input type="text" id="fecha_inicio" name="fecha_inicio" class="form-input datepicker"
-                               placeholder="Seleccionar fecha y hora" required>
+                        <input type="datetime-local" id="fecha_inicio" name="fecha_inicio" class="form-input"
+                               required>
                     </div>
 
                     <!-- Fecha de Fin -->
@@ -1622,8 +1622,8 @@
                             <i class="fas fa-calendar-times"></i>
                             Fecha de Fin <span class="required">*</span>
                         </label>
-                        <input type="text" id="fecha_fin" name="fecha_fin" class="form-input datepicker"
-                               placeholder="Seleccionar fecha y hora" required>
+                        <input type="datetime-local" id="fecha_fin" name="fecha_fin" class="form-input"
+                               required>
                     </div>
 
                     <!-- Prioridad -->
@@ -2176,15 +2176,18 @@
                     // Preparar los datos del formulario
                     const formData = new FormData(this.form);
 
-                    // Get datetime values from jQuery datepicker and format with GMT-6
-                    const fechaInicio = $('#fecha_inicio').data('iso-value') || this.convertDateToISO($('#fecha_inicio').val());
-                    const fechaFin = $('#fecha_fin').data('iso-value') || this.convertDateToISO($('#fecha_fin').val());
+                    // Get datetime values and convert to ISO format with GMT-6
+                    const fechaInicioValue = document.getElementById('fecha_inicio').value;
+                    const fechaFinValue = document.getElementById('fecha_fin').value;
 
-                    // Override with ISO values if available
-                    if (fechaInicio) {
+                    if (fechaInicioValue) {
+                        // Convert datetime-local to ISO with GMT-6
+                        const fechaInicio = new Date(fechaInicioValue).toISOString();
                         formData.set('fecha_inicio', fechaInicio);
                     }
-                    if (fechaFin) {
+                    if (fechaFinValue) {
+                        // Convert datetime-local to ISO with GMT-6
+                        const fechaFin = new Date(fechaFinValue).toISOString();
                         formData.set('fecha_fin', fechaFin);
                     }
                     
@@ -2270,12 +2273,13 @@
                     });
                 }
                 
-                // Clear jQuery datepicker fields
-                $('#fecha_inicio, #fecha_fin').val('').removeData('iso-value');
+                // Clear datetime fields
+                document.getElementById('fecha_inicio').value = '';
+                document.getElementById('fecha_fin').value = '';
             }
 
-            // Convertir fecha en formato DD/MM/YYYY HH:MM AM/PM a ISO con GMT-6
-            convertDateToISO(dateString) {
+            // OLD - No longer needed with datetime-local input
+            /*convertDateToISO(dateString) {
                 if (!dateString || dateString.trim() === '') {
                     return null;
                 }
@@ -2305,7 +2309,7 @@
                 }
 
                 return null;
-            }
+            }*/
 
             clearAllValidations() {
                 const fields = this.form.querySelectorAll('.valid, .invalid');
@@ -2438,7 +2442,8 @@
         }
 
         // Función para formatear fecha y hora con timezone específico
-        function formatDateTimeWithTimezone(date, timezoneOffsetHours) {
+        // OLD - No longer needed with datetime-local input
+        /*function formatDateTimeWithTimezone(date, timezoneOffsetHours) {
             // Crear una nueva fecha ajustada al timezone especificado
             const offsetMs = timezoneOffsetHours * 60 * 60 * 1000;
             const utcTime = date.getTime() + (date.getTimezoneOffset() * 60000);
@@ -2459,7 +2464,7 @@
             const offsetMinutes = '00'; // Asumimos que siempre son horas completas
             
             return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${offsetSign}${offsetHours}:${offsetMinutes}`;
-        }
+        }*/
 
         // Función para obtener parámetros de la URL
         function getUrlParameter(name) {
@@ -2490,7 +2495,30 @@
                 }
             }
 
-            // Spanish localization for jQuery UI
+            // Set minimum date/time to current for both inputs
+            const now = new Date();
+            const minDateTime = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:mm
+
+            document.getElementById('fecha_inicio').min = minDateTime;
+            document.getElementById('fecha_fin').min = minDateTime;
+
+            // Auto-set end date when start date changes
+            document.getElementById('fecha_inicio').addEventListener('change', function() {
+                const startDate = this.value;
+                if (startDate) {
+                    // Set end date minimum to start date
+                    document.getElementById('fecha_fin').min = startDate;
+
+                    // If end date is before start date, clear it
+                    const endDate = document.getElementById('fecha_fin').value;
+                    if (endDate && endDate < startDate) {
+                        document.getElementById('fecha_fin').value = '';
+                    }
+                }
+            });
+
+            // Initialize the form application
+            /*OLD CODE REMOVED - was using jQuery datepicker
             $.datepicker.regional['es'] = {
                 closeText: 'Cerrar',
                 prevText: '&#x3C;Ant',
@@ -2766,7 +2794,7 @@
                 // Set placeholder
                 $input.attr('placeholder', 'DD/MM/YYYY HH:MM AM/PM');
                 $input.attr('maxlength', '22'); // Maximum valid length
-            });
+            });*/
 
             const app = new FormularioSolicitud();
         });
