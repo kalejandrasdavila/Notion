@@ -2181,13 +2181,15 @@
                     const fechaFinValue = document.getElementById('fecha_fin').value;
 
                     if (fechaInicioValue) {
-                        // Convert datetime-local to ISO with GMT-6
-                        const fechaInicio = new Date(fechaInicioValue).toISOString();
+                        // Convert datetime-local to ISO with Monterrey timezone (GMT-6)
+                        // The datetime-local input gives us local time, we need to append the timezone
+                        const fechaInicio = fechaInicioValue + ':00-06:00';
                         formData.set('fecha_inicio', fechaInicio);
                     }
                     if (fechaFinValue) {
-                        // Convert datetime-local to ISO with GMT-6
-                        const fechaFin = new Date(fechaFinValue).toISOString();
+                        // Convert datetime-local to ISO with Monterrey timezone (GMT-6)
+                        // The datetime-local input gives us local time, we need to append the timezone
+                        const fechaFin = fechaFinValue + ':00-06:00';
                         formData.set('fecha_fin', fechaFin);
                     }
                     
