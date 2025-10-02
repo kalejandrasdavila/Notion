@@ -2181,17 +2181,17 @@
                     const fechaFinValue = document.getElementById('fecha_fin').value;
 
                     if (fechaInicioValue) {
-                        // The datetime-local value is already in local time
-                        // Convert to Date object and then to ISO string (which will be in UTC)
-                        const date = new Date(fechaInicioValue);
-                        const fechaInicio = date.toISOString();
+                        // The datetime-local value is in local time without timezone
+                        // We need to append seconds and the Monterrey timezone offset
+                        // This tells the backend that this time is in GMT-6
+                        const fechaInicio = fechaInicioValue + ':00-06:00';
                         formData.set('fecha_inicio', fechaInicio);
                     }
                     if (fechaFinValue) {
-                        // The datetime-local value is already in local time
-                        // Convert to Date object and then to ISO string (which will be in UTC)
-                        const date = new Date(fechaFinValue);
-                        const fechaFin = date.toISOString();
+                        // The datetime-local value is in local time without timezone
+                        // We need to append seconds and the Monterrey timezone offset
+                        // This tells the backend that this time is in GMT-6
+                        const fechaFin = fechaFinValue + ':00-06:00';
                         formData.set('fecha_fin', fechaFin);
                     }
                     
