@@ -47,7 +47,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
             min-height: 100vh;
-            padding: 120px 10px;
+            padding: 40px 10px;
             margin: 0;
             overflow: hidden;
         }
@@ -157,7 +157,7 @@
         }
 
         .form-wrapper {
-            padding: 50px 50px 0 50px;
+            padding: 30px 50px 0 50px;
         }
 
         .form-grid {
@@ -645,7 +645,7 @@
         /* Tablets pequeños y móviles grandes (576px - 767px) - iPads mini, móviles landscape */
         @media (min-width: 576px) and (max-width: 767px) {
             body {
-                padding: 80px 10px;
+                padding: 30px 10px;
             }
             
             .container {
@@ -767,7 +767,7 @@
         /* Móviles estándar (400px - 575px) - iPhones, Androids */
         @media (min-width: 400px) and (max-width: 575px) {
             body {
-                padding: 60px 8px;
+                padding: 25px 8px;
             }
             
             .container {
@@ -851,7 +851,7 @@
         /* Móviles pequeños (320px - 399px) - iPhones pequeños */
         @media (min-width: 320px) and (max-width: 399px) {
             body {
-                padding: 50px 5px;
+                padding: 20px 5px;
             }
             
             .container {
@@ -972,7 +972,7 @@
         /* Móviles ultra pequeños (menos de 320px) - Dispositivos muy antiguos */
         @media (max-width: 319px) {
             body {
-                padding: 40px 3px;
+                padding: 15px 3px;
             }
             
             .container {
@@ -1031,7 +1031,7 @@
         /* Móviles en landscape (altura máxima 500px) */
         @media (max-height: 500px) and (orientation: landscape) {
             body {
-                padding: 20px 10px;
+                padding: 10px 10px;
             }
             
             .container {
