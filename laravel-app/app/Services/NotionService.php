@@ -268,9 +268,9 @@ class NotionService
         //     'checkbox' => true
         // ];
 
-        // Comentarios (Redacción complementaria)
+        // Redacción (Redacción complementaria)
         if (isset($data['redaccion_complementaria']) && !empty($data['redaccion_complementaria'])) {
-            $properties['COMENTARIOS'] = [
+            $properties['REDACCION'] = [
                 'rich_text' => [
                     [
                         'type' => 'text',
