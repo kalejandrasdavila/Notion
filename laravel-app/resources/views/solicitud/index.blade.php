@@ -2293,6 +2293,16 @@
                         this.form.reset();
                         this.handleReset();
 
+                        // Clear file input and file list display
+                        const fileInput = document.getElementById('archivo');
+                        if (fileInput) {
+                            fileInput.value = ''; // Clear the file input
+                        }
+                        const fileList = document.getElementById('fileList');
+                        if (fileList) {
+                            fileList.innerHTML = ''; // Clear the file list display
+                        }
+
                         // Restore solicitante value to hidden field
                         if (solicitanteField && solicitanteValue) {
                             solicitanteField.value = solicitanteValue;
@@ -2336,7 +2346,17 @@
             handleReset() {
                 this.clearAllValidations();
                 this.clearMessages();
-                
+
+                // Clear file input and file list display
+                const fileInput = document.getElementById('archivo');
+                if (fileInput) {
+                    fileInput.value = ''; // Clear the file input
+                }
+                const fileList = document.getElementById('fileList');
+                if (fileList) {
+                    fileList.innerHTML = ''; // Clear the file list display
+                }
+
                 // Limpiar checkboxes de medios
                 if (this.selectedMediosList) {
                     this.selectedMediosList = [];
@@ -2351,7 +2371,7 @@
                         }
                     });
                 }
-                
+
                 // Clear datetime fields
                 document.getElementById('fecha_inicio').value = '';
                 document.getElementById('fecha_fin').value = '';
