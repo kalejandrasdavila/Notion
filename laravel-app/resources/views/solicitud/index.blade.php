@@ -1572,7 +1572,7 @@
                 </div>
             </div>
             
-            <form id="solicitudForm" class="form">
+            <form id="solicitudForm" class="form" enctype="multipart/form-data">
                 <!-- CSRF disabled for iframe embedding -->
                 <div class="form-grid">
                     <!-- Status (oculto) -->
