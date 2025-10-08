@@ -1599,7 +1599,7 @@
                     <div class="form-group full-width">
                         <label for="indicaciones" class="form-label">
                             <i class="fas fa-list-ul"></i>
-                            Indicaciones a Seguir <span class="required">*</span>
+                            Indicaciones a seguir (Título corto ¿Qué? ¿Cómo? y ¿Dónde?) <span class="required">*</span>
                         </label>
                         <textarea id="indicaciones" name="indicaciones" class="form-textarea" 
                                   placeholder="Describa las indicaciones detalladamente..." 
@@ -2184,7 +2184,7 @@
                 const fieldNames = {
                     'tipo': 'Area',
                     'solicitante': 'Quien Solicita',
-                    'indicaciones': 'Indicaciones a Seguir',
+                    'indicaciones': 'Indicaciones a seguir (Título corto ¿Qué? ¿Cómo? y ¿Dónde?)',
                     'fecha_inicio': 'Fecha de Inicio',
                     'fecha_fin': 'Fecha de Fin',
                     'prioridad': 'Prioridad',
