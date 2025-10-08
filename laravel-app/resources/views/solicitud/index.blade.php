@@ -1606,6 +1606,18 @@
                                   rows="4" required></textarea>
                     </div>
 
+                    <!-- Redacción complementaria -->
+                    <div class="form-group full-width">
+                        <label for="redaccion_complementaria" class="form-label">
+                            <i class="fas fa-comment-dots"></i>
+                            Redacción complementaria
+                        </label>
+                        <textarea id="redaccion_complementaria" name="redaccion_complementaria" class="form-textarea"
+                                  placeholder="Información adicional o comentarios..."
+                                  rows="4"></textarea>
+                        <div class="field-error" id="redaccionComplementariaError"></div>
+                    </div>
+
                     <!-- Fecha de Inicio -->
                     <div class="form-group">
                         <label for="fecha_inicio" class="form-label">

@@ -268,6 +268,20 @@ class NotionService
         //     'checkbox' => true
         // ];
 
+        // Comentarios (Redacción complementaria)
+        if (isset($data['redaccion_complementaria']) && !empty($data['redaccion_complementaria'])) {
+            $properties['COMENTARIOS'] = [
+                'rich_text' => [
+                    [
+                        'type' => 'text',
+                        'text' => [
+                            'content' => $data['redaccion_complementaria']
+                        ]
+                    ]
+                ]
+            ];
+        }
+
         // Adjuntar archivo (files)
         if (isset($data['archivo_url']) && !empty($data['archivo_url'])) {
             $fileUrls = is_array($data['archivo_url']) ? $data['archivo_url'] : [$data['archivo_url']];
