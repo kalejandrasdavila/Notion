@@ -120,11 +120,16 @@ class NotionService
                 'properties' => $properties
             ];
 
+            Log::info('=== NOTION API REQUEST ===');
+            Log::info('Sending to Notion:', ['payload' => json_encode($payload, JSON_PRETTY_PRINT)]);
+
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiToken,
                 'Notion-Version' => $this->version,
                 'Content-Type' => 'application/json',
             ])->post($this->baseUrl . '/pages', $payload);
+
+            Log::info('Notion API Response Status:', ['status' => $response->status()]);
 
             if ($response->successful()) {
                 return [
@@ -266,17 +271,29 @@ class NotionService
         // Adjuntar archivo (files)
         if (isset($data['archivo_url']) && !empty($data['archivo_url'])) {
             $fileUrls = is_array($data['archivo_url']) ? $data['archivo_url'] : [$data['archivo_url']];
+
+            Log::info('=== NOTION FILE PROPERTY ===');
+            Log::info('Building file property for Notion', ['urls' => $fileUrls]);
+
+            $fileProperty = array_map(function($url) {
+                $fileData = [
+                    'name' => basename($url),
+                    'type' => 'external',
+                    'external' => [
+                        'url' => $url
+                    ]
+                ];
+                Log::info('File data for Notion:', $fileData);
+                return $fileData;
+            }, $fileUrls);
+
             $properties['ADJUNTAR ARCHIVO'] = [
-                'files' => array_map(function($url) {
-                    return [
-                        'name' => basename($url),
-                        'type' => 'external',
-                        'external' => [
-                            'url' => $url
-                        ]
-                    ];
-                }, $fileUrls)
+                'files' => $fileProperty
             ];
+
+            Log::info('Final file property:', ['ADJUNTAR ARCHIVO' => $properties['ADJUNTAR ARCHIVO']]);
+        } else {
+            Log::info('No archivo_url in data, skipping file attachment');
         }
 
         return $properties;

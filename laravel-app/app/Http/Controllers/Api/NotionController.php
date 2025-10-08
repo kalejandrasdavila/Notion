@@ -159,16 +159,29 @@ class NotionController extends Controller
             $data = $request->all();
 
             // Handle file upload if present
+            Log::info('=== FILE UPLOAD CHECK ===');
+            Log::info('Has file "archivo"?', ['hasFile' => $request->hasFile('archivo')]);
+            Log::info('All files in request:', ['files' => $request->allFiles()]);
+
             if ($request->hasFile('archivo')) {
                 $fileUrls = [];
                 $files = $request->file('archivo');
+
+                Log::info('Files received:', ['count' => is_array($files) ? count($files) : 1]);
 
                 // Handle single or multiple files
                 if (!is_array($files)) {
                     $files = [$files];
                 }
 
-                foreach ($files as $file) {
+                foreach ($files as $index => $file) {
+                    Log::info("Processing file {$index}", [
+                        'original_name' => $file->getClientOriginalName(),
+                        'mime_type' => $file->getMimeType(),
+                        'size' => $file->getSize(),
+                        'isValid' => $file->isValid()
+                    ]);
+
                     if ($file->isValid()) {
                         // Store file in public storage
                         $path = $file->store('uploads', 'public');
@@ -177,16 +190,23 @@ class NotionController extends Controller
                         $url = asset('storage/' . $path);
                         $fileUrls[] = $url;
 
-                        Log::info('File uploaded', [
+                        Log::info("File {$index} uploaded successfully", [
                             'path' => $path,
-                            'url' => $url
+                            'url' => $url,
+                            'storage_path' => storage_path('app/public/' . $path),
+                            'exists' => file_exists(storage_path('app/public/' . $path))
                         ]);
+                    } else {
+                        Log::error("File {$index} is invalid");
                     }
                 }
 
                 if (!empty($fileUrls)) {
                     $data['archivo_url'] = $fileUrls;
+                    Log::info('File URLs to be sent to Notion:', ['urls' => $fileUrls]);
                 }
+            } else {
+                Log::info('No files in request');
             }
 
             $result = $this->notionService->createPage($data);

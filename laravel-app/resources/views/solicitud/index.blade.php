@@ -2209,6 +2209,25 @@
                     // Preparar los datos del formulario
                     const formData = new FormData(this.form);
 
+                    // Log file information
+                    const fileInput = document.getElementById('archivo');
+                    if (fileInput && fileInput.files.length > 0) {
+                        console.log('=== FILES BEING UPLOADED ===');
+                        console.log('Number of files:', fileInput.files.length);
+                        for (let i = 0; i < fileInput.files.length; i++) {
+                            const file = fileInput.files[i];
+                            console.log(`File ${i + 1}:`, {
+                                name: file.name,
+                                size: file.size,
+                                type: file.type,
+                                lastModified: file.lastModified
+                            });
+                        }
+                        console.log('=========================');
+                    } else {
+                        console.log('No files selected for upload');
+                    }
+
                     // Get datetime values and convert to ISO format with GMT-6
                     const fechaInicioValue = document.getElementById('fecha_inicio').value;
                     const fechaFinValue = document.getElementById('fecha_fin').value;
@@ -2240,7 +2259,18 @@
                     });
 
                     const result = await response.json();
-                    
+
+                    // Log the full response from backend
+                    console.log('=== BACKEND RESPONSE ===');
+                    console.log('Full response:', result);
+                    if (result.data && result.data.properties) {
+                        console.log('Notion properties sent:', result.data.properties);
+                        if (result.data.properties['ADJUNTAR ARCHIVO']) {
+                            console.log('File URLs in Notion:', result.data.properties['ADJUNTAR ARCHIVO']);
+                        }
+                    }
+                    console.log('========================');
+
                     if (result.success) {
                         this.showSuccessPopup();
 
