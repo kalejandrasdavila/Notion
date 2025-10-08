@@ -7,6 +7,7 @@ use App\Services\NotionService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class NotionController extends Controller
 {
@@ -156,8 +157,40 @@ class NotionController extends Controller
     {
         try {
             $data = $request->all();
+
+            // Handle file upload if present
+            if ($request->hasFile('archivo')) {
+                $fileUrls = [];
+                $files = $request->file('archivo');
+
+                // Handle single or multiple files
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
+
+                foreach ($files as $file) {
+                    if ($file->isValid()) {
+                        // Store file in public storage
+                        $path = $file->store('uploads', 'public');
+
+                        // Generate public URL
+                        $url = asset('storage/' . $path);
+                        $fileUrls[] = $url;
+
+                        Log::info('File uploaded', [
+                            'path' => $path,
+                            'url' => $url
+                        ]);
+                    }
+                }
+
+                if (!empty($fileUrls)) {
+                    $data['archivo_url'] = $fileUrls;
+                }
+            }
+
             $result = $this->notionService->createPage($data);
-            
+
             return response()->json($result, $result['success'] ? 200 : 500);
 
         } catch (\Exception $e) {
@@ -169,6 +202,49 @@ class NotionController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error interno del servidor'
+            ], 500);
+        }
+    }
+
+    /**
+     * Upload file and return URL
+     */
+    public function uploadFile(Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'file' => 'required|file|max:10240' // Max 10MB
+            ]);
+
+            $file = $request->file('file');
+
+            if ($file->isValid()) {
+                // Store file in public storage
+                $path = $file->store('uploads', 'public');
+
+                // Generate public URL
+                $url = asset('storage/' . $path);
+
+                return response()->json([
+                    'success' => true,
+                    'url' => $url,
+                    'filename' => $file->getClientOriginalName()
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid file'
+            ], 400);
+
+        } catch (\Exception $e) {
+            Log::error('Error uploading file', [
+                'message' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error uploading file'
             ], 500);
         }
     }

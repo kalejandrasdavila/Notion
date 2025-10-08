@@ -1657,6 +1657,16 @@
                         <input type="hidden" id="medio" name="medio" required>
                         <div class="field-error" id="medioError"></div>
                     </div>
+                    <!-- Adjuntar archivo -->
+                    <div class="form-group full-width">
+                        <label class="form-label">
+                            <i class="fas fa-paperclip"></i>
+                            Adjuntar Archivo
+                        </label>
+                        <input type="file" id="archivo" name="archivo[]" class="form-control" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif">
+                        <small class="text-muted">Puede seleccionar múltiples archivos. Formatos permitidos: PDF, DOC, DOCX, XLS, XLSX, PNG, JPG, JPEG, GIF (Max: 10MB cada uno)</small>
+                        <div id="fileList" class="mt-2"></div>
+                    </div>
                 </div>
 
                 <!-- Botones -->
@@ -1678,6 +1688,29 @@
     </div>
 
     <script>
+        // Manejo de archivos adjuntos
+        document.getElementById('archivo').addEventListener('change', function(e) {
+            const fileList = document.getElementById('fileList');
+            const files = Array.from(e.target.files);
+
+            if (files.length > 0) {
+                fileList.innerHTML = '<strong>Archivos seleccionados:</strong><ul class="list-unstyled mt-2">';
+                files.forEach(file => {
+                    const fileSize = (file.size / 1024 / 1024).toFixed(2); // Convert to MB
+                    const fileItem = `
+                        <li class="mb-1">
+                            <i class="fas fa-file"></i> ${file.name}
+                            <span class="text-muted">(${fileSize} MB)</span>
+                        </li>
+                    `;
+                    fileList.innerHTML += fileItem;
+                });
+                fileList.innerHTML += '</ul>';
+            } else {
+                fileList.innerHTML = '';
+            }
+        });
+
         // Widget de fecha y hora para Monterrey, NL, México
         function updateDateTime() {
             const now = new Date();

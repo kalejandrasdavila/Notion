@@ -263,6 +263,22 @@ class NotionService
         //     'checkbox' => true
         // ];
 
+        // Adjuntar archivo (files)
+        if (isset($data['archivo_url']) && !empty($data['archivo_url'])) {
+            $fileUrls = is_array($data['archivo_url']) ? $data['archivo_url'] : [$data['archivo_url']];
+            $properties['ADJUNTAR ARCHIVO'] = [
+                'files' => array_map(function($url) {
+                    return [
+                        'name' => basename($url),
+                        'type' => 'external',
+                        'external' => [
+                            'url' => $url
+                        ]
+                    ];
+                }, $fileUrls)
+            ];
+        }
+
         return $properties;
     }
 

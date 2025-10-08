@@ -42,4 +42,5 @@ Route::prefix('api/notion')->name('api.notion.')->group(function () {
     Route::get('/prioridad', [NotionController::class, 'getPrioridad'])->name('prioridad');
     Route::get('/medio', [NotionController::class, 'getMedio'])->name('medio');
     Route::post('/page', [NotionController::class, 'createPage'])->name('create-page');
+    Route::post('/upload', [NotionController::class, 'uploadFile'])->name('upload-file');
 });
