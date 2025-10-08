@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class SolicitudController extends Controller
 {
@@ -111,11 +112,62 @@ class SolicitudController extends Controller
         }
 
         try {
+            // Handle file upload if present
+            Log::info('=== FILE UPLOAD CHECK IN SOLICITUD CONTROLLER ===');
+            Log::info('Has file "archivo"?', ['hasFile' => $request->hasFile('archivo')]);
+            Log::info('All files in request:', ['files' => $request->allFiles()]);
+
+            if ($request->hasFile('archivo')) {
+                $fileUrls = [];
+                $files = $request->file('archivo');
+
+                Log::info('Files received in SolicitudController:', ['count' => is_array($files) ? count($files) : 1]);
+
+                // Handle single or multiple files
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
+
+                foreach ($files as $index => $file) {
+                    Log::info("Processing file {$index} in SolicitudController", [
+                        'original_name' => $file->getClientOriginalName(),
+                        'mime_type' => $file->getMimeType(),
+                        'size' => $file->getSize(),
+                        'isValid' => $file->isValid()
+                    ]);
+
+                    if ($file->isValid()) {
+                        // Store file in public storage
+                        $path = $file->store('uploads', 'public');
+
+                        // Generate public URL
+                        $url = asset('storage/' . $path);
+                        $fileUrls[] = $url;
+
+                        Log::info("File {$index} uploaded successfully in SolicitudController", [
+                            'path' => $path,
+                            'url' => $url,
+                            'storage_path' => storage_path('app/public/' . $path),
+                            'exists' => file_exists(storage_path('app/public/' . $path))
+                        ]);
+                    } else {
+                        Log::error("File {$index} is invalid in SolicitudController");
+                    }
+                }
+
+                if (!empty($fileUrls)) {
+                    $data['archivo_url'] = $fileUrls;
+                    Log::info('File URLs to be sent to Notion from SolicitudController:', ['urls' => $fileUrls]);
+                }
+            } else {
+                Log::info('No files in request - SolicitudController');
+            }
+
             // Establecer status por defecto si no se proporciona
             if (!isset($data['status']) || empty($data['status'])) {
                 $data['status'] = 'PENDIENTE';
             }
-            
+
             // Mapear fecha_inicio a fecha_planeada para la base de datos
             if (isset($data['fecha_inicio']) && !empty($data['fecha_inicio'])) {
                 $data['fecha_planeada'] = $data['fecha_inicio'];
