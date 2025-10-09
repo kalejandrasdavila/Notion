@@ -301,11 +301,11 @@ class NotionService
                 return $fileData;
             }, $fileUrls);
 
-            $properties['ADJUNTAR ARCHIVO'] = [
+            $properties['ARCHIVO & MULTIMEDIA'] = [
                 'files' => $fileProperty
             ];
 
-            Log::info('Final file property:', ['ADJUNTAR ARCHIVO' => $properties['ADJUNTAR ARCHIVO']]);
+            Log::info('Final file property:', ['ARCHIVO & MULTIMEDIA' => $properties['ARCHIVO & MULTIMEDIA']]);
         } else {
             Log::info('No archivo_url in data, skipping file attachment');
         }
