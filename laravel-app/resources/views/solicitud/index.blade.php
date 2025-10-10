@@ -1546,6 +1546,18 @@
 
 
 
+        /* File list styling */
+        #fileList li {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        #fileList .btn-danger {
+            padding: 2px 8px;
+            font-size: 0.875rem;
+        }
     </style>
 </head>
 <body>
@@ -1697,9 +1709,11 @@
                             <i class="fas fa-paperclip"></i>
                             Adjuntar Archivo
                         </label>
-                        <input type="file" id="archivo" name="archivo[]" class="form-control" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif">
+                        <input type="file" id="archivo" class="form-control" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif">
                         <small class="text-muted">Puede seleccionar múltiples archivos. Formatos permitidos: PDF, DOC, DOCX, XLS, XLSX, PNG, JPG, JPEG, GIF (Max: 10MB cada uno)</small>
                         <div id="fileList" class="mt-2"></div>
+                        <!-- Hidden container for actual file inputs that will be submitted -->
+                        <div id="fileInputsContainer" style="display: none;"></div>
                     </div>
                 </div>
 
@@ -1759,27 +1773,122 @@
             setupCharacterCounter('link_descarga', 'link-counter');
         });
 
-        // Manejo de archivos adjuntos
-        document.getElementById('archivo').addEventListener('change', function(e) {
-            const fileList = document.getElementById('fileList');
-            const files = Array.from(e.target.files);
+        // Advanced file management system
+        class FileManager {
+            constructor() {
+                this.files = new Map(); // Store files with unique IDs
+                this.fileCounter = 0;
+                this.fileInput = document.getElementById('archivo');
+                this.fileList = document.getElementById('fileList');
+                this.fileInputsContainer = document.getElementById('fileInputsContainer');
 
-            if (files.length > 0) {
-                fileList.innerHTML = '<strong>Archivos seleccionados:</strong><ul class="list-unstyled mt-2">';
+                this.init();
+            }
+
+            init() {
+                // Handle file selection
+                this.fileInput.addEventListener('change', (e) => {
+                    this.addFiles(e.target.files);
+                    // Reset the input so the same file can be selected again
+                    e.target.value = '';
+                });
+            }
+
+            addFiles(fileList) {
+                const files = Array.from(fileList);
+
                 files.forEach(file => {
-                    const fileSize = (file.size / 1024 / 1024).toFixed(2); // Convert to MB
-                    const fileItem = `
-                        <li class="mb-1">
-                            <i class="fas fa-file"></i> ${file.name}
-                            <span class="text-muted">(${fileSize} MB)</span>
+                    const fileId = `file_${this.fileCounter++}`;
+
+                    // Check for duplicates
+                    let isDuplicate = false;
+                    for (let [id, existingFile] of this.files) {
+                        if (existingFile.name === file.name && existingFile.size === file.size) {
+                            isDuplicate = true;
+                            break;
+                        }
+                    }
+
+                    if (!isDuplicate) {
+                        this.files.set(fileId, file);
+                    }
+                });
+
+                this.updateFileDisplay();
+                this.updateHiddenInputs();
+            }
+
+            removeFile(fileId) {
+                this.files.delete(fileId);
+                this.updateFileDisplay();
+                this.updateHiddenInputs();
+            }
+
+            updateFileDisplay() {
+                if (this.files.size === 0) {
+                    this.fileList.innerHTML = '';
+                    return;
+                }
+
+                let html = '<strong>Archivos seleccionados:</strong><ul class="list-unstyled mt-2">';
+
+                for (let [fileId, file] of this.files) {
+                    const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                    html += `
+                        <li class="mb-2 d-flex align-items-center justify-content-between">
+                            <span>
+                                <i class="fas fa-file"></i> ${file.name}
+                                <span class="text-muted">(${fileSize} MB)</span>
+                            </span>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="fileManager.removeFile('${fileId}')">
+                                <i class="fas fa-times"></i> Eliminar
+                            </button>
                         </li>
                     `;
-                    fileList.innerHTML += fileItem;
-                });
-                fileList.innerHTML += '</ul>';
-            } else {
-                fileList.innerHTML = '';
+                }
+
+                html += '</ul>';
+                this.fileList.innerHTML = html;
             }
+
+            updateHiddenInputs() {
+                // Clear existing hidden inputs
+                this.fileInputsContainer.innerHTML = '';
+
+                // Create a DataTransfer object to hold our files
+                const dt = new DataTransfer();
+
+                for (let [fileId, file] of this.files) {
+                    dt.items.add(file);
+                }
+
+                // Create a hidden file input with all files
+                if (dt.files.length > 0) {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'file';
+                    hiddenInput.name = 'archivo[]';
+                    hiddenInput.multiple = true;
+                    hiddenInput.style.display = 'none';
+                    hiddenInput.files = dt.files;
+                    this.fileInputsContainer.appendChild(hiddenInput);
+                }
+            }
+
+            clearAll() {
+                this.files.clear();
+                this.updateFileDisplay();
+                this.updateHiddenInputs();
+            }
+
+            getFiles() {
+                return Array.from(this.files.values());
+            }
+        }
+
+        // Initialize file manager globally
+        let fileManager;
+        document.addEventListener('DOMContentLoaded', function() {
+            fileManager = new FileManager();
         });
 
         // Widget de fecha y hora para Monterrey, NL, México
@@ -2357,14 +2466,9 @@
                         this.form.reset();
                         this.handleReset();
 
-                        // Clear file input and file list display
-                        const fileInput = document.getElementById('archivo');
-                        if (fileInput) {
-                            fileInput.value = ''; // Clear the file input
-                        }
-                        const fileList = document.getElementById('fileList');
-                        if (fileList) {
-                            fileList.innerHTML = ''; // Clear the file list display
+                        // Clear file manager after successful submission
+                        if (typeof fileManager !== 'undefined') {
+                            fileManager.clearAll();
                         }
 
                         // Restore solicitante value to hidden field
@@ -2411,14 +2515,9 @@
                 this.clearAllValidations();
                 this.clearMessages();
 
-                // Clear file input and file list display
-                const fileInput = document.getElementById('archivo');
-                if (fileInput) {
-                    fileInput.value = ''; // Clear the file input
-                }
-                const fileList = document.getElementById('fileList');
-                if (fileList) {
-                    fileList.innerHTML = ''; // Clear the file list display
+                // Clear file manager
+                if (typeof fileManager !== 'undefined') {
+                    fileManager.clearAll();
                 }
 
                 // Limpiar checkboxes de medios
