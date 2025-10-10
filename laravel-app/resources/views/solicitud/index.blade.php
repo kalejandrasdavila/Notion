@@ -1615,9 +1615,9 @@
                         </label>
                         <textarea id="indicaciones" name="indicaciones" class="form-textarea"
                                   placeholder="Describa las indicaciones detalladamente..."
-                                  rows="4" maxlength="2000"></textarea>
+                                  rows="4" maxlength="1990"></textarea>
                         <div class="character-counter text-muted small mt-1">
-                            <span id="indicaciones-counter">0</span> / 2000 caracteres
+                            <span id="indicaciones-counter">0</span> / 1990 caracteres
                         </div>
                     </div>
 
@@ -1629,9 +1629,9 @@
                         </label>
                         <textarea id="redaccion_complementaria" name="redaccion_complementaria" class="form-textarea"
                                   placeholder="Información adicional o comentarios..."
-                                  rows="4" maxlength="2000"></textarea>
+                                  rows="4" maxlength="1990"></textarea>
                         <div class="character-counter text-muted small mt-1">
-                            <span id="redaccion-counter">0</span> / 2000 caracteres
+                            <span id="redaccion-counter">0</span> / 1990 caracteres
                         </div>
                         <div class="field-error" id="redaccionComplementariaError"></div>
                     </div>
@@ -1695,9 +1695,9 @@
                         </label>
                         <textarea id="link_descarga" name="link_descarga" class="form-textarea"
                                   placeholder="https://ejemplo.com/archivo&#10;https://ejemplo.com/otro-archivo&#10;(Puede ingresar múltiples URLs, una por línea)"
-                                  rows="3" maxlength="2000"></textarea>
+                                  rows="3" maxlength="1990"></textarea>
                         <div class="character-counter text-muted small mt-1">
-                            <span id="link-counter">0</span> / 2000 caracteres
+                            <span id="link-counter">0</span> / 1990 caracteres
                         </div>
                         <small class="text-muted">Puede ingresar múltiples URLs separadas por líneas</small>
                         <div class="field-error" id="linkDescargaError"></div>
