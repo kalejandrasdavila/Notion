@@ -1599,11 +1599,11 @@
                     <div class="form-group full-width">
                         <label for="indicaciones" class="form-label">
                             <i class="fas fa-list-ul"></i>
-                            Indicaciones a seguir (Título corto ¿Qué? ¿Cómo? y ¿Dónde?) <span class="required">*</span>
+                            Indicaciones a seguir (Título corto ¿Qué? ¿Cómo? y ¿Dónde?)
                         </label>
                         <textarea id="indicaciones" name="indicaciones" class="form-textarea"
                                   placeholder="Describa las indicaciones detalladamente..."
-                                  rows="4" required maxlength="2000"></textarea>
+                                  rows="4" maxlength="2000"></textarea>
                         <div class="character-counter text-muted small mt-1">
                             <span id="indicaciones-counter">0</span> / 2000 caracteres
                         </div>

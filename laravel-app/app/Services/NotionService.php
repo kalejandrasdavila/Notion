@@ -171,19 +171,19 @@ class NotionService
     {
         $properties = [];
 
-        // Título (usando el campo correcto de Notion)
-        if (isset($data['indicaciones'])) {
-            $properties['INDICACIONES A SEGUIR (Que, como, y en donde)'] = [
-                'title' => [
-                    [
-                        'type' => 'text',
-                        'text' => [
-                            'content' => $data['indicaciones']
-                        ]
+        // Título (usando el campo correcto de Notion) - Required field, send empty if not provided
+        $properties['INDICACIONES A SEGUIR (Que, como, y en donde)'] = [
+            'title' => [
+                [
+                    'type' => 'text',
+                    'text' => [
+                        'content' => isset($data['indicaciones']) && !empty($data['indicaciones'])
+                            ? $data['indicaciones']
+                            : 'Sin indicaciones'
                     ]
                 ]
-            ];
-        }
+            ]
+        ];
 
         // Status
         if (isset($data['status'])) {
