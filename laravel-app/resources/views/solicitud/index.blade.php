@@ -1601,9 +1601,12 @@
                             <i class="fas fa-list-ul"></i>
                             Indicaciones a seguir (Título corto ¿Qué? ¿Cómo? y ¿Dónde?) <span class="required">*</span>
                         </label>
-                        <textarea id="indicaciones" name="indicaciones" class="form-textarea" 
-                                  placeholder="Describa las indicaciones detalladamente..." 
-                                  rows="4" required></textarea>
+                        <textarea id="indicaciones" name="indicaciones" class="form-textarea"
+                                  placeholder="Describa las indicaciones detalladamente..."
+                                  rows="4" required maxlength="2000"></textarea>
+                        <div class="character-counter text-muted small mt-1">
+                            <span id="indicaciones-counter">0</span> / 2000 caracteres
+                        </div>
                     </div>
 
                     <!-- Redacción complementaria -->
@@ -1614,7 +1617,10 @@
                         </label>
                         <textarea id="redaccion_complementaria" name="redaccion_complementaria" class="form-textarea"
                                   placeholder="Información adicional o comentarios..."
-                                  rows="4"></textarea>
+                                  rows="4" maxlength="2000"></textarea>
+                        <div class="character-counter text-muted small mt-1">
+                            <span id="redaccion-counter">0</span> / 2000 caracteres
+                        </div>
                         <div class="field-error" id="redaccionComplementariaError"></div>
                     </div>
 
@@ -1675,9 +1681,13 @@
                             <i class="fas fa-link"></i>
                             Link de descarga
                         </label>
-                        <input type="text" id="link_descarga" name="link_descarga" class="form-input"
-                               placeholder="https://ejemplo.com/archivo">
-                        <small class="text-muted">Ingrese una URL válida (debe comenzar con http:// o https://)</small>
+                        <textarea id="link_descarga" name="link_descarga" class="form-textarea"
+                                  placeholder="https://ejemplo.com/archivo&#10;https://ejemplo.com/otro-archivo&#10;(Puede ingresar múltiples URLs, una por línea)"
+                                  rows="3" maxlength="2000"></textarea>
+                        <div class="character-counter text-muted small mt-1">
+                            <span id="link-counter">0</span> / 2000 caracteres
+                        </div>
+                        <small class="text-muted">Puede ingresar múltiples URLs separadas por líneas</small>
                         <div class="field-error" id="linkDescargaError"></div>
                     </div>
 
@@ -1712,6 +1722,43 @@
     </div>
 
     <script>
+        // Character counter for textareas
+        function setupCharacterCounter(textareaId, counterId) {
+            const textarea = document.getElementById(textareaId);
+            const counter = document.getElementById(counterId);
+
+            if (textarea && counter) {
+                // Update counter on input
+                textarea.addEventListener('input', function() {
+                    const currentLength = this.value.length;
+                    counter.textContent = currentLength;
+
+                    // Change color when approaching limit
+                    const maxLength = parseInt(this.getAttribute('maxlength'));
+                    if (currentLength > maxLength * 0.9) {
+                        counter.parentElement.classList.add('text-danger');
+                        counter.parentElement.classList.remove('text-warning', 'text-muted');
+                    } else if (currentLength > maxLength * 0.75) {
+                        counter.parentElement.classList.add('text-warning');
+                        counter.parentElement.classList.remove('text-danger', 'text-muted');
+                    } else {
+                        counter.parentElement.classList.add('text-muted');
+                        counter.parentElement.classList.remove('text-danger', 'text-warning');
+                    }
+                });
+
+                // Initial count
+                counter.textContent = textarea.value.length;
+            }
+        }
+
+        // Initialize character counters
+        document.addEventListener('DOMContentLoaded', function() {
+            setupCharacterCounter('indicaciones', 'indicaciones-counter');
+            setupCharacterCounter('redaccion_complementaria', 'redaccion-counter');
+            setupCharacterCounter('link_descarga', 'link-counter');
+        });
+
         // Manejo de archivos adjuntos
         document.getElementById('archivo').addEventListener('change', function(e) {
             const fileList = document.getElementById('fileList');
