@@ -2160,11 +2160,16 @@
                         errorMessage = 'Debe seleccionar una fecha y hora válida.';
                     }
                 } else if (field.type === 'textarea') {
-                    // Para textarea, verificar que tenga contenido significativo
+                    // Para textarea, verificar solo si es required
                     value = field.value.trim();
-                    isValid = value !== '' && value.length >= 3; // Mínimo 3 caracteres
-                    if (!isValid) {
-                        errorMessage = value === '' ? 'Este campo es obligatorio.' : 'Debe escribir al menos 3 caracteres.';
+                    if (field.hasAttribute('required')) {
+                        isValid = value !== '' && value.length >= 3; // Mínimo 3 caracteres
+                        if (!isValid) {
+                            errorMessage = value === '' ? 'Este campo es obligatorio.' : 'Debe escribir al menos 3 caracteres.';
+                        }
+                    } else {
+                        // Campo opcional - siempre válido
+                        isValid = true;
                     }
                 } else {
                     // Para inputs de texto, verificar que no esté vacío
