@@ -1669,6 +1669,18 @@
                         <input type="hidden" id="medio" name="medio" required>
                         <div class="field-error" id="medioError"></div>
                     </div>
+                    <!-- Link de descarga -->
+                    <div class="form-group full-width">
+                        <label for="link_descarga" class="form-label">
+                            <i class="fas fa-link"></i>
+                            Link de descarga
+                        </label>
+                        <input type="url" id="link_descarga" name="link_descarga" class="form-input"
+                               placeholder="https://ejemplo.com/archivo">
+                        <small class="text-muted">Ingrese una URL válida (debe comenzar con http:// o https://)</small>
+                        <div class="field-error" id="linkDescargaError"></div>
+                    </div>
+
                     <!-- Adjuntar archivo -->
                     <div class="form-group full-width">
                         <label class="form-label">

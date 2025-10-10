@@ -282,6 +282,13 @@ class NotionService
             ];
         }
 
+        // URL (Link de descarga)
+        if (isset($data['link_descarga']) && !empty($data['link_descarga'])) {
+            $properties['URL'] = [
+                'url' => $data['link_descarga']
+            ];
+        }
+
         // Adjuntar archivo (files)
         if (isset($data['archivo_url']) && !empty($data['archivo_url'])) {
             $fileUrls = is_array($data['archivo_url']) ? $data['archivo_url'] : [$data['archivo_url']];
