@@ -1675,7 +1675,7 @@
                             <i class="fas fa-link"></i>
                             Link de descarga
                         </label>
-                        <input type="url" id="link_descarga" name="link_descarga" class="form-input"
+                        <input type="text" id="link_descarga" name="link_descarga" class="form-input"
                                placeholder="https://ejemplo.com/archivo">
                         <small class="text-muted">Ingrese una URL válida (debe comenzar con http:// o https://)</small>
                         <div class="field-error" id="linkDescargaError"></div>
