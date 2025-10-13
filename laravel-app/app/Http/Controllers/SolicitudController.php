@@ -90,6 +90,7 @@ class SolicitudController extends Controller
             'status' => 'sometimes|string|max:255',
             'tipo' => 'nullable|string|max:255',
             'solicitante' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
             'indicaciones' => 'nullable|string|max:1990',
             'redaccion_complementaria' => 'nullable|string|max:1990',
             'link_descarga' => 'nullable|string|max:1990',
