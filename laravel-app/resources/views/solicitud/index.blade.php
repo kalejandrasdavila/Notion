@@ -1607,9 +1607,6 @@
                     <!-- Quien solicita (hidden but functional) -->
                     <input type="hidden" id="solicitante" name="solicitante" value="">
 
-                    <!-- Email (hidden but functional) -->
-                    <input type="hidden" id="email" name="email" value="">
-
                     <!-- Indicaciones -->
                     <div class="form-group full-width">
                         <label for="indicaciones" class="form-label">
@@ -2757,17 +2754,6 @@
                 if (welcomeMessage) {
                     welcomeMessage.textContent = `Bienvenid@ ${solicitanteParam}`;
                     welcomeMessage.style.display = 'block';
-                }
-            }
-
-            // Check for 'email' parameter in URL
-            const emailParam = getUrlParameter('email');
-            if (emailParam) {
-                // Set the hidden email field value from URL parameter
-                const emailField = document.getElementById('email');
-                if (emailField) {
-                    emailField.value = emailParam;
-                    console.log('Email captured from URL:', emailParam);
                 }
             }
 

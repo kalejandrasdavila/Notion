@@ -243,13 +243,6 @@ class NotionService
             ];
         }
 
-        // Email
-        if (isset($data['email']) && !empty($data['email'])) {
-            $properties['EMAIL'] = [
-                'email' => $data['email']
-            ];
-        }
-
         // Prioridad
         if (isset($data['prioridad'])) {
             $properties['PRIORIDAD'] = [
