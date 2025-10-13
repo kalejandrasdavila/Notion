@@ -1632,9 +1632,9 @@
                         </label>
                         <textarea id="redaccion_complementaria" name="redaccion_complementaria" class="form-textarea"
                                   placeholder="Información adicional o comentarios..."
-                                  rows="4" maxlength="1990"></textarea>
+                                  rows="4" maxlength="5000"></textarea>
                         <div class="character-counter text-muted small mt-1">
-                            <span id="redaccion-counter">0</span> / 1990 caracteres
+                            <span id="redaccion-counter">0</span> / 5000 caracteres
                         </div>
                         <div class="field-error" id="redaccionComplementariaError"></div>
                     </div>

@@ -275,18 +275,79 @@ class NotionService
         //     'checkbox' => true
         // ];
 
-        // Redacción (Redacción complementaria)
+        // Redacción (Redacción complementaria) - Split across 3 columns if needed
         if (isset($data['redaccion_complementaria']) && !empty($data['redaccion_complementaria'])) {
-            $properties['REDACCION'] = [
-                'rich_text' => [
-                    [
-                        'type' => 'text',
-                        'text' => [
-                            'content' => $data['redaccion_complementaria']
+            $fullText = $data['redaccion_complementaria'];
+            $textLength = strlen($fullText);
+
+            // Split text into chunks of max 1990 characters each
+            $maxChunkSize = 1990;
+            $chunks = [];
+
+            if ($textLength <= $maxChunkSize) {
+                // If text fits in first column, just use REDACCION
+                $chunks[] = $fullText;
+            } else {
+                // Split text across columns
+                $chunks[] = substr($fullText, 0, $maxChunkSize);
+
+                if ($textLength > $maxChunkSize && $textLength <= ($maxChunkSize * 2)) {
+                    // Use REDACCION and REDACCION2
+                    $chunks[] = substr($fullText, $maxChunkSize, $maxChunkSize);
+                } else {
+                    // Use all three columns
+                    $chunks[] = substr($fullText, $maxChunkSize, $maxChunkSize);
+                    $chunks[] = substr($fullText, $maxChunkSize * 2, $maxChunkSize);
+                }
+            }
+
+            // Set REDACCION (first chunk)
+            if (isset($chunks[0]) && !empty($chunks[0])) {
+                $properties['REDACCION'] = [
+                    'rich_text' => [
+                        [
+                            'type' => 'text',
+                            'text' => [
+                                'content' => $chunks[0]
+                            ]
                         ]
                     ]
-                ]
-            ];
+                ];
+            }
+
+            // Set REDACCION2 (second chunk if exists)
+            if (isset($chunks[1]) && !empty($chunks[1])) {
+                $properties['REDACCION2'] = [
+                    'rich_text' => [
+                        [
+                            'type' => 'text',
+                            'text' => [
+                                'content' => $chunks[1]
+                            ]
+                        ]
+                    ]
+                ];
+            }
+
+            // Set REDACCION3 (third chunk if exists)
+            if (isset($chunks[2]) && !empty($chunks[2])) {
+                $properties['REDACCION3'] = [
+                    'rich_text' => [
+                        [
+                            'type' => 'text',
+                            'text' => [
+                                'content' => $chunks[2]
+                            ]
+                        ]
+                    ]
+                ];
+            }
+
+            Log::info('Redacción split across columns', [
+                'total_length' => $textLength,
+                'chunks_count' => count($chunks),
+                'chunk_lengths' => array_map('strlen', $chunks)
+            ]);
         }
 
         // URL (Link de descarga)
