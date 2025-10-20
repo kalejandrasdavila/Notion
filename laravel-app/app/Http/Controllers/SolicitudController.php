@@ -118,49 +118,68 @@ class SolicitudController extends Controller
             // Handle file upload if present
             Log::info('=== FILE UPLOAD CHECK IN SOLICITUD CONTROLLER ===');
             Log::info('Has file "archivo"?', ['hasFile' => $request->hasFile('archivo')]);
+            Log::info('Has file "archivo[]"?', ['hasFile' => $request->hasFile('archivo')]);
             Log::info('All files in request:', ['files' => $request->allFiles()]);
+            Log::info('Request keys:', ['keys' => array_keys($request->all())]);
 
             if ($request->hasFile('archivo')) {
-                $fileUrls = [];
-                $files = $request->file('archivo');
+                try {
+                    $fileUrls = [];
+                    $files = $request->file('archivo');
 
-                Log::info('Files received in SolicitudController:', ['count' => is_array($files) ? count($files) : 1]);
-
-                // Handle single or multiple files
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-
-                foreach ($files as $index => $file) {
-                    Log::info("Processing file {$index} in SolicitudController", [
-                        'original_name' => $file->getClientOriginalName(),
-                        'mime_type' => $file->getMimeType(),
-                        'size' => $file->getSize(),
-                        'isValid' => $file->isValid()
+                    Log::info('Files received in SolicitudController:', [
+                        'count' => is_array($files) ? count($files) : 1,
+                        'type' => gettype($files)
                     ]);
 
-                    if ($file->isValid()) {
-                        // Store file in public storage
-                        $path = $file->store('uploads', 'public');
-
-                        // Generate public URL
-                        $url = asset('storage/' . $path);
-                        $fileUrls[] = $url;
-
-                        Log::info("File {$index} uploaded successfully in SolicitudController", [
-                            'path' => $path,
-                            'url' => $url,
-                            'storage_path' => storage_path('app/public/' . $path),
-                            'exists' => file_exists(storage_path('app/public/' . $path))
-                        ]);
-                    } else {
-                        Log::error("File {$index} is invalid in SolicitudController");
+                    // Handle single or multiple files
+                    if (!is_array($files)) {
+                        $files = [$files];
                     }
-                }
 
-                if (!empty($fileUrls)) {
-                    $data['archivo_url'] = $fileUrls;
-                    Log::info('File URLs to be sent to Notion from SolicitudController:', ['urls' => $fileUrls]);
+                    foreach ($files as $index => $file) {
+                        if (!$file) {
+                            Log::error("File {$index} is null");
+                            continue;
+                        }
+
+                        Log::info("Processing file {$index} in SolicitudController", [
+                            'original_name' => $file->getClientOriginalName(),
+                            'mime_type' => $file->getMimeType(),
+                            'size' => $file->getSize(),
+                            'isValid' => $file->isValid()
+                        ]);
+
+                        if ($file->isValid()) {
+                            // Store file in public storage
+                            $path = $file->store('uploads', 'public');
+
+                            // Generate public URL
+                            $url = asset('storage/' . $path);
+                            $fileUrls[] = $url;
+
+                            Log::info("File {$index} uploaded successfully in SolicitudController", [
+                                'path' => $path,
+                                'url' => $url,
+                                'storage_path' => storage_path('app/public/' . $path),
+                                'exists' => file_exists(storage_path('app/public/' . $path))
+                            ]);
+                        } else {
+                            Log::error("File {$index} is invalid in SolicitudController");
+                        }
+                    }
+
+                    if (!empty($fileUrls)) {
+                        $data['archivo_url'] = $fileUrls;
+                        Log::info('File URLs to be sent to Notion from SolicitudController:', ['urls' => $fileUrls]);
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Error processing files:', [
+                        'message' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+                    // Don't fail the entire request if file upload fails
+                    // Just continue without files
                 }
             } else {
                 Log::info('No files in request - SolicitudController');

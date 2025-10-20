@@ -2382,7 +2382,7 @@
                         console.log('=== FILES BEING UPLOADED ===');
                         console.log('Number of files:', files.length);
 
-                        // Append each file individually to FormData
+                        // Append each file individually to FormData as an array
                         files.forEach((file, index) => {
                             formData.append('archivo[]', file, file.name);
                             console.log(`File ${index + 1}:`, {
