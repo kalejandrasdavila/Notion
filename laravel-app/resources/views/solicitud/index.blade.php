@@ -2383,14 +2383,22 @@
                         console.log('Number of files:', files.length);
 
                         // Append each file individually to FormData as an array
+                        let validFilesCount = 0;
                         files.forEach((file, index) => {
-                            formData.append('archivo[]', file, file.name);
-                            console.log(`File ${index + 1}:`, {
-                                name: file.name,
-                                size: file.size,
-                                type: file.type
-                            });
+                            if (file && file instanceof File) {
+                                formData.append('archivo[]', file, file.name);
+                                validFilesCount++;
+                                console.log(`File ${index + 1}:`, {
+                                    name: file.name,
+                                    size: file.size,
+                                    type: file.type,
+                                    isFile: file instanceof File
+                                });
+                            } else {
+                                console.error(`File ${index + 1} is invalid:`, file);
+                            }
                         });
+                        console.log(`Valid files uploaded: ${validFilesCount} of ${files.length}`);
                         console.log('=========================');
                     } else {
                         console.log('No files selected for upload');

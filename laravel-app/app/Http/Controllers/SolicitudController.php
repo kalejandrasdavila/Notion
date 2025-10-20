@@ -129,7 +129,8 @@ class SolicitudController extends Controller
 
                     Log::info('Files received in SolicitudController:', [
                         'count' => is_array($files) ? count($files) : 1,
-                        'type' => gettype($files)
+                        'type' => gettype($files),
+                        'raw_files' => $files
                     ]);
 
                     // Handle single or multiple files
@@ -137,9 +138,16 @@ class SolicitudController extends Controller
                         $files = [$files];
                     }
 
+                    // Filter out null/empty entries and re-index array
+                    $files = array_values(array_filter($files, function($file) {
+                        return $file !== null && is_object($file);
+                    }));
+
+                    Log::info('Filtered files count:', ['count' => count($files)]);
+
                     foreach ($files as $index => $file) {
                         if (!$file || !is_object($file)) {
-                            Log::error("File {$index} is null or not an object");
+                            Log::error("File {$index} is null or not an object after filtering");
                             continue;
                         }
 
