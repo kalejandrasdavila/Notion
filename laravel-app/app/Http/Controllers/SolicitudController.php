@@ -138,17 +138,24 @@ class SolicitudController extends Controller
                     }
 
                     foreach ($files as $index => $file) {
-                        if (!$file) {
-                            Log::error("File {$index} is null");
+                        if (!$file || !is_object($file)) {
+                            Log::error("File {$index} is null or not an object");
                             continue;
                         }
 
-                        Log::info("Processing file {$index} in SolicitudController", [
-                            'original_name' => $file->getClientOriginalName(),
-                            'mime_type' => $file->getMimeType(),
-                            'size' => $file->getSize(),
-                            'isValid' => $file->isValid()
-                        ]);
+                        try {
+                            Log::info("Processing file {$index} in SolicitudController", [
+                                'original_name' => $file->getClientOriginalName(),
+                                'mime_type' => $file->getMimeType(),
+                                'size' => $file->getSize(),
+                                'isValid' => $file->isValid()
+                            ]);
+                        } catch (\Exception $e) {
+                            Log::error("Error getting file info for file {$index}", [
+                                'error' => $e->getMessage()
+                            ]);
+                            continue;
+                        }
 
                         if ($file->isValid()) {
                             // Store file in public storage
@@ -171,7 +178,10 @@ class SolicitudController extends Controller
 
                     if (!empty($fileUrls)) {
                         $data['archivo_url'] = $fileUrls;
-                        Log::info('File URLs to be sent to Notion from SolicitudController:', ['urls' => $fileUrls]);
+                        Log::info('File URLs to be sent to Notion from SolicitudController:', [
+                            'urls' => $fileUrls,
+                            'count' => count($fileUrls)
+                        ]);
                     }
                 } catch (\Exception $e) {
                     Log::error('Error processing files:', [

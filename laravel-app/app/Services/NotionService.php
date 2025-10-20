@@ -362,11 +362,20 @@ class NotionService
             $fileUrls = is_array($data['archivo_url']) ? $data['archivo_url'] : [$data['archivo_url']];
 
             Log::info('=== NOTION FILE PROPERTY ===');
-            Log::info('Building file property for Notion', ['urls' => $fileUrls]);
+            Log::info('Building file property for Notion', [
+                'urls' => $fileUrls,
+                'count' => count($fileUrls)
+            ]);
 
             $fileProperty = array_map(function($url) {
+                // Ensure URL is absolute
+                if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                    Log::warning('Invalid URL for file', ['url' => $url]);
+                    return null;
+                }
+
                 $fileData = [
-                    'name' => basename($url),
+                    'name' => basename(parse_url($url, PHP_URL_PATH)) ?: 'file',
                     'type' => 'external',
                     'external' => [
                         'url' => $url
@@ -376,11 +385,21 @@ class NotionService
                 return $fileData;
             }, $fileUrls);
 
-            $properties['ARCHIVO & MULTIMEDIA'] = [
-                'files' => $fileProperty
-            ];
+            // Filter out any null values
+            $fileProperty = array_filter($fileProperty);
 
-            Log::info('Final file property:', ['ARCHIVO & MULTIMEDIA' => $properties['ARCHIVO & MULTIMEDIA']]);
+            if (!empty($fileProperty)) {
+                $properties['ARCHIVO & MULTIMEDIA'] = [
+                    'files' => array_values($fileProperty) // Re-index array
+                ];
+
+                Log::info('Final file property:', [
+                    'ARCHIVO & MULTIMEDIA' => $properties['ARCHIVO & MULTIMEDIA'],
+                    'files_count' => count($fileProperty)
+                ]);
+            } else {
+                Log::warning('All file URLs were invalid, skipping file attachment');
+            }
         } else {
             Log::info('No archivo_url in data, skipping file attachment');
         }
