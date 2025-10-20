@@ -1715,8 +1715,7 @@
                         <input type="file" id="archivo" class="form-control" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif">
                         <small class="text-muted">Puede seleccionar múltiples archivos. Formatos permitidos: PDF, DOC, DOCX, XLS, XLSX, PNG, JPG, JPEG, GIF (Max: 10MB cada uno)</small>
                         <div id="fileList" class="mt-2"></div>
-                        <!-- Hidden container for actual file inputs that will be submitted -->
-                        <div id="fileInputsContainer" style="display: none;"></div>
+                        <!-- Files are now handled directly in FormData during form submission -->
                     </div>
                 </div>
 
@@ -1783,7 +1782,7 @@
                 this.fileCounter = 0;
                 this.fileInput = document.getElementById('archivo');
                 this.fileList = document.getElementById('fileList');
-                this.fileInputsContainer = document.getElementById('fileInputsContainer');
+                // Removed fileInputsContainer - files handled directly in FormData
 
                 this.init();
             }
@@ -1818,13 +1817,11 @@
                 });
 
                 this.updateFileDisplay();
-                this.updateHiddenInputs();
             }
 
             removeFile(fileId) {
                 this.files.delete(fileId);
                 this.updateFileDisplay();
-                this.updateHiddenInputs();
             }
 
             updateFileDisplay() {
@@ -1854,33 +1851,11 @@
                 this.fileList.innerHTML = html;
             }
 
-            updateHiddenInputs() {
-                // Clear existing hidden inputs
-                this.fileInputsContainer.innerHTML = '';
-
-                // Create a DataTransfer object to hold our files
-                const dt = new DataTransfer();
-
-                for (let [fileId, file] of this.files) {
-                    dt.items.add(file);
-                }
-
-                // Create a hidden file input with all files
-                if (dt.files.length > 0) {
-                    const hiddenInput = document.createElement('input');
-                    hiddenInput.type = 'file';
-                    hiddenInput.name = 'archivo[]';
-                    hiddenInput.multiple = true;
-                    hiddenInput.style.display = 'none';
-                    hiddenInput.files = dt.files;
-                    this.fileInputsContainer.appendChild(hiddenInput);
-                }
-            }
+            // Removed updateHiddenInputs() method - files are now handled directly in FormData during form submission
 
             clearAll() {
                 this.files.clear();
                 this.updateFileDisplay();
-                this.updateHiddenInputs();
             }
 
             getFiles() {
@@ -2397,20 +2372,25 @@
                     // Preparar los datos del formulario
                     const formData = new FormData(this.form);
 
-                    // Log file information
-                    const fileInput = document.getElementById('archivo');
-                    if (fileInput && fileInput.files.length > 0) {
+                    // Remove any existing file inputs from FormData to avoid conflicts
+                    formData.delete('archivo[]');
+                    formData.delete('archivo');
+
+                    // Add files from FileManager properly
+                    if (fileManager && fileManager.getFiles().length > 0) {
+                        const files = fileManager.getFiles();
                         console.log('=== FILES BEING UPLOADED ===');
-                        console.log('Number of files:', fileInput.files.length);
-                        for (let i = 0; i < fileInput.files.length; i++) {
-                            const file = fileInput.files[i];
-                            console.log(`File ${i + 1}:`, {
+                        console.log('Number of files:', files.length);
+
+                        // Append each file individually to FormData
+                        files.forEach((file, index) => {
+                            formData.append('archivo[]', file, file.name);
+                            console.log(`File ${index + 1}:`, {
                                 name: file.name,
                                 size: file.size,
-                                type: file.type,
-                                lastModified: file.lastModified
+                                type: file.type
                             });
-                        }
+                        });
                         console.log('=========================');
                     } else {
                         console.log('No files selected for upload');
