@@ -106,6 +106,14 @@ class NotionService
     }
 
     /**
+     * Obtener opciones de entidad
+     */
+    public function getEntidadOptions()
+    {
+        return $this->getSelectOptions('ENTIDAD');
+    }
+
+    /**
      * Crear una nueva página en Notion
      */
     public function createPage($data)
@@ -225,6 +233,15 @@ class NotionService
             $properties['TIPO'] = [
                 'select' => [
                     'name' => $data['tipo']
+                ]
+            ];
+        }
+
+        // Entidad (campo opcional - solo si se proporciona) - multi_select field
+        if (isset($data['entidad']) && !empty($data['entidad'])) {
+            $properties['ENTIDAD'] = [
+                'multi_select' => [
+                    ['name' => $data['entidad']]
                 ]
             ];
         }

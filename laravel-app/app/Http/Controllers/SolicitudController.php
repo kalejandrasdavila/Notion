@@ -49,6 +49,9 @@ class SolicitudController extends Controller
                 case 'medio':
                     $options = $this->notionService->getMedioOptions();
                     break;
+                case 'entidad':
+                    $options = $this->notionService->getEntidadOptions();
+                    break;
                 default:
                     return response()->json([
                         'success' => false,
@@ -89,6 +92,7 @@ class SolicitudController extends Controller
         $validator = Validator::make($data, [
             'status' => 'sometimes|string|max:255',
             'tipo' => 'nullable|string|max:255',
+            'entidad' => 'nullable|string|max:255',
             'solicitante' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'indicaciones' => 'nullable|string|max:1990',

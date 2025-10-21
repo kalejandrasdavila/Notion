@@ -1604,6 +1604,20 @@
                         </div>
                     </div>
 
+                    <!-- Entidad (conditional - shows only when Relaciones Institucionales is selected) -->
+                    <div class="form-group" id="entidadGroup" style="display: none;">
+                        <label for="entidad" class="form-label">
+                            <i class="fas fa-building"></i>
+                            Entidad <span class="required">*</span>
+                        </label>
+                        <select id="entidad" name="entidad" class="form-select">
+                            <option value="">Seleccione una entidad...</option>
+                        </select>
+                        <div class="loading" id="entidadLoading">
+                            <i class="fas fa-spinner fa-spin"></i> Cargando...
+                        </div>
+                    </div>
+
                     <!-- Quien solicita (hidden but functional) -->
                     <input type="hidden" id="solicitante" name="solicitante" value="">
 
@@ -1947,6 +1961,7 @@
                 tipo: '{{ route("api.options.tipo") }}?type=tipo',
                 prioridad: '{{ route("api.options.prioridad") }}?type=prioridad',
                 medio: '{{ route("api.options.medio") }}?type=medio',
+                entidad: '{{ route("api.options.entidad") }}?type=entidad',
                 submit: '{{ route("solicitud.store") }}'
             }
         };
@@ -1965,6 +1980,7 @@
                 this.loadSelectData();
                 this.setupDateValidation();
                 this.setupMedioDropdown();
+                this.setupEntidadLogic();
             }
 
             setupEventListeners() {
@@ -2019,6 +2035,36 @@
 
 
 
+
+            // Setup Entidad field logic (conditional display based on Area selection)
+            setupEntidadLogic() {
+                const tipoSelect = document.getElementById('tipo');
+                const entidadGroup = document.getElementById('entidadGroup');
+                const entidadSelect = document.getElementById('entidad');
+
+                // Listen for changes on tipo select
+                tipoSelect.addEventListener('change', async (e) => {
+                    const selectedValue = e.target.value;
+                    const selectedText = e.target.options[e.target.selectedIndex]?.text || '';
+
+                    // Check if "Relaciones Institucionales" is selected
+                    if (selectedText.toLowerCase().includes('relaciones institucionales')) {
+                        // Show entidad field
+                        entidadGroup.style.display = 'block';
+                        entidadSelect.setAttribute('required', 'required');
+
+                        // Load entidad options if not already loaded
+                        if (entidadSelect.options.length <= 1) {
+                            await this.loadSelectOptions('entidad', CONFIG.endpoints.entidad);
+                        }
+                    } else {
+                        // Hide entidad field and remove required
+                        entidadGroup.style.display = 'none';
+                        entidadSelect.removeAttribute('required');
+                        entidadSelect.value = ''; // Clear selection
+                    }
+                });
+            }
 
             // Cargar datos para los selects
             async loadSelectData() {
