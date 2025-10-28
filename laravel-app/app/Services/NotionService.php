@@ -106,6 +106,14 @@ class NotionService
     }
 
     /**
+     * Obtener opciones de entidad
+     */
+    public function getEntidadOptions()
+    {
+        return $this->getSelectOptions('ENTIDAD');
+    }
+
+    /**
      * Crear una nueva página en Notion
      */
     public function createPage($data)
@@ -120,11 +128,16 @@ class NotionService
                 'properties' => $properties
             ];
 
+            Log::info('=== NOTION API REQUEST ===');
+            Log::info('Sending to Notion:', ['payload' => json_encode($payload, JSON_PRETTY_PRINT)]);
+
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiToken,
                 'Notion-Version' => $this->version,
                 'Content-Type' => 'application/json',
             ])->post($this->baseUrl . '/pages', $payload);
+
+            Log::info('Notion API Response Status:', ['status' => $response->status()]);
 
             if ($response->successful()) {
                 return [
@@ -166,19 +179,19 @@ class NotionService
     {
         $properties = [];
 
-        // Título (usando el campo correcto de Notion)
-        if (isset($data['indicaciones'])) {
-            $properties['INDICACIONES A SEGUIR (Que, como, y en donde)'] = [
-                'title' => [
-                    [
-                        'type' => 'text',
-                        'text' => [
-                            'content' => $data['indicaciones']
-                        ]
+        // Título (usando el campo correcto de Notion) - Required field, send empty if not provided
+        $properties['INDICACIONES A SEGUIR (Que, como, y en donde)'] = [
+            'title' => [
+                [
+                    'type' => 'text',
+                    'text' => [
+                        'content' => isset($data['indicaciones']) && !empty($data['indicaciones'])
+                            ? $data['indicaciones']
+                            : 'Sin indicaciones'
                     ]
                 ]
-            ];
-        }
+            ]
+        ];
 
         // Status
         if (isset($data['status'])) {
@@ -224,6 +237,15 @@ class NotionService
             ];
         }
 
+        // Entidad (campo opcional - solo si se proporciona) - multi_select field
+        if (isset($data['entidad']) && !empty($data['entidad'])) {
+            $properties['ENTIDAD'] = [
+                'multi_select' => [
+                    ['name' => $data['entidad']]
+                ]
+            ];
+        }
+
         // Quien solicita
         if (isset($data['solicitante'])) {
             $properties['QUIEN SOLICITA'] = [
@@ -235,6 +257,13 @@ class NotionService
                         ]
                     ]
                 ]
+            ];
+        }
+
+        // Email
+        if (isset($data['email']) && !empty($data['email'])) {
+            $properties['EMAIL'] = [
+                'email' => $data['email']
             ];
         }
 
@@ -258,9 +287,139 @@ class NotionService
         }
 
         // Notificación (checkbox) - siempre true por defecto
-        $properties['NOTIFICACIÓN'] = [
-            'checkbox' => true
-        ];
+        // Commented out until field is added to Notion database
+        // $properties['NOTIFICACIÓN'] = [
+        //     'checkbox' => true
+        // ];
+
+        // Redacción (Redacción complementaria) - Split across 3 columns if needed
+        if (isset($data['redaccion_complementaria']) && !empty($data['redaccion_complementaria'])) {
+            $fullText = $data['redaccion_complementaria'];
+            $textLength = strlen($fullText);
+
+            // Split text into chunks of max 1990 characters each
+            $maxChunkSize = 1990;
+            $chunks = [];
+
+            if ($textLength <= $maxChunkSize) {
+                // If text fits in first column, just use REDACCION
+                $chunks[] = $fullText;
+            } else {
+                // Split text across columns
+                $chunks[] = substr($fullText, 0, $maxChunkSize);
+
+                if ($textLength > $maxChunkSize && $textLength <= ($maxChunkSize * 2)) {
+                    // Use REDACCION and REDACCION2
+                    $chunks[] = substr($fullText, $maxChunkSize, $maxChunkSize);
+                } else {
+                    // Use all three columns
+                    $chunks[] = substr($fullText, $maxChunkSize, $maxChunkSize);
+                    $chunks[] = substr($fullText, $maxChunkSize * 2, $maxChunkSize);
+                }
+            }
+
+            // Set REDACCION (first chunk)
+            if (isset($chunks[0]) && !empty($chunks[0])) {
+                $properties['REDACCION'] = [
+                    'rich_text' => [
+                        [
+                            'type' => 'text',
+                            'text' => [
+                                'content' => $chunks[0]
+                            ]
+                        ]
+                    ]
+                ];
+            }
+
+            // Set REDACCION2 (second chunk if exists)
+            if (isset($chunks[1]) && !empty($chunks[1])) {
+                $properties['REDACCION2'] = [
+                    'rich_text' => [
+                        [
+                            'type' => 'text',
+                            'text' => [
+                                'content' => $chunks[1]
+                            ]
+                        ]
+                    ]
+                ];
+            }
+
+            // Set REDACCION3 (third chunk if exists)
+            if (isset($chunks[2]) && !empty($chunks[2])) {
+                $properties['REDACCION3'] = [
+                    'rich_text' => [
+                        [
+                            'type' => 'text',
+                            'text' => [
+                                'content' => $chunks[2]
+                            ]
+                        ]
+                    ]
+                ];
+            }
+
+            Log::info('Redacción split across columns', [
+                'total_length' => $textLength,
+                'chunks_count' => count($chunks),
+                'chunk_lengths' => array_map('strlen', $chunks)
+            ]);
+        }
+
+        // URL (Link de descarga)
+        if (isset($data['link_descarga']) && !empty($data['link_descarga'])) {
+            $properties['URL'] = [
+                'url' => $data['link_descarga']
+            ];
+        }
+
+        // Adjuntar archivo (files)
+        if (isset($data['archivo_url']) && !empty($data['archivo_url'])) {
+            $fileUrls = is_array($data['archivo_url']) ? $data['archivo_url'] : [$data['archivo_url']];
+
+            Log::info('=== NOTION FILE PROPERTY ===');
+            Log::info('Building file property for Notion', [
+                'urls' => $fileUrls,
+                'count' => count($fileUrls)
+            ]);
+
+            $fileProperty = array_map(function($url) {
+                // Ensure URL is absolute
+                if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                    Log::warning('Invalid URL for file', ['url' => $url]);
+                    return null;
+                }
+
+                $fileData = [
+                    'name' => basename(parse_url($url, PHP_URL_PATH)) ?: 'file',
+                    'type' => 'external',
+                    'external' => [
+                        'url' => $url
+                    ]
+                ];
+                Log::info('File data for Notion:', $fileData);
+                return $fileData;
+            }, $fileUrls);
+
+            // Filter out any null values
+            $fileProperty = array_filter($fileProperty);
+
+            if (!empty($fileProperty)) {
+                $properties['ARCHIVO & MULTIMEDIA'] = [
+                    'files' => array_values($fileProperty) // Re-index array
+                ];
+
+                Log::info('Final file property:', [
+                    'ARCHIVO & MULTIMEDIA' => $properties['ARCHIVO & MULTIMEDIA'],
+                    'files_count' => count($fileProperty)
+                ]);
+            } else {
+                Log::warning('All file URLs were invalid, skipping file attachment');
+            }
+        } else {
+            Log::info('No archivo_url in data, skipping file attachment');
+        }
 
         return $properties;
     }

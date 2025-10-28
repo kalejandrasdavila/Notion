@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class SolicitudController extends Controller
 {
@@ -47,6 +48,9 @@ class SolicitudController extends Controller
                     break;
                 case 'medio':
                     $options = $this->notionService->getMedioOptions();
+                    break;
+                case 'entidad':
+                    $options = $this->notionService->getEntidadOptions();
                     break;
                 default:
                     return response()->json([
@@ -88,8 +92,12 @@ class SolicitudController extends Controller
         $validator = Validator::make($data, [
             'status' => 'sometimes|string|max:255',
             'tipo' => 'nullable|string|max:255',
+            'entidad' => 'nullable|string|max:255',
             'solicitante' => 'required|string|max:255',
-            'indicaciones' => 'required|string|max:1000',
+            'email' => 'nullable|email|max:255',
+            'indicaciones' => 'nullable|string|max:1990',
+            'redaccion_complementaria' => 'nullable|string|max:5000',
+            'link_descarga' => 'nullable|string|max:1990',
             'fecha_inicio' => 'required|string',
             'fecha_fin' => 'required|string',
             'prioridad' => 'required|string|max:255',
@@ -111,11 +119,99 @@ class SolicitudController extends Controller
         }
 
         try {
+            // Handle file upload if present
+            Log::info('=== FILE UPLOAD CHECK IN SOLICITUD CONTROLLER ===');
+            Log::info('Has file "archivo"?', ['hasFile' => $request->hasFile('archivo')]);
+            Log::info('Has file "archivo[]"?', ['hasFile' => $request->hasFile('archivo')]);
+            Log::info('All files in request:', ['files' => $request->allFiles()]);
+            Log::info('Request keys:', ['keys' => array_keys($request->all())]);
+
+            if ($request->hasFile('archivo')) {
+                try {
+                    $fileUrls = [];
+                    $files = $request->file('archivo');
+
+                    Log::info('Files received in SolicitudController:', [
+                        'count' => is_array($files) ? count($files) : 1,
+                        'type' => gettype($files),
+                        'raw_files' => $files
+                    ]);
+
+                    // Handle single or multiple files
+                    if (!is_array($files)) {
+                        $files = [$files];
+                    }
+
+                    // Filter out null/empty entries and re-index array
+                    $files = array_values(array_filter($files, function($file) {
+                        return $file !== null && is_object($file);
+                    }));
+
+                    Log::info('Filtered files count:', ['count' => count($files)]);
+
+                    foreach ($files as $index => $file) {
+                        if (!$file || !is_object($file)) {
+                            Log::error("File {$index} is null or not an object after filtering");
+                            continue;
+                        }
+
+                        try {
+                            Log::info("Processing file {$index} in SolicitudController", [
+                                'original_name' => $file->getClientOriginalName(),
+                                'mime_type' => $file->getMimeType(),
+                                'size' => $file->getSize(),
+                                'isValid' => $file->isValid()
+                            ]);
+                        } catch (\Exception $e) {
+                            Log::error("Error getting file info for file {$index}", [
+                                'error' => $e->getMessage()
+                            ]);
+                            continue;
+                        }
+
+                        if ($file->isValid()) {
+                            // Store file in public storage
+                            $path = $file->store('uploads', 'public');
+
+                            // Generate public URL
+                            $url = asset('storage/' . $path);
+                            $fileUrls[] = $url;
+
+                            Log::info("File {$index} uploaded successfully in SolicitudController", [
+                                'path' => $path,
+                                'url' => $url,
+                                'storage_path' => storage_path('app/public/' . $path),
+                                'exists' => file_exists(storage_path('app/public/' . $path))
+                            ]);
+                        } else {
+                            Log::error("File {$index} is invalid in SolicitudController");
+                        }
+                    }
+
+                    if (!empty($fileUrls)) {
+                        $data['archivo_url'] = $fileUrls;
+                        Log::info('File URLs to be sent to Notion from SolicitudController:', [
+                            'urls' => $fileUrls,
+                            'count' => count($fileUrls)
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Error processing files:', [
+                        'message' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+                    // Don't fail the entire request if file upload fails
+                    // Just continue without files
+                }
+            } else {
+                Log::info('No files in request - SolicitudController');
+            }
+
             // Establecer status por defecto si no se proporciona
             if (!isset($data['status']) || empty($data['status'])) {
                 $data['status'] = 'PENDIENTE';
             }
-            
+
             // Mapear fecha_inicio a fecha_planeada para la base de datos
             if (isset($data['fecha_inicio']) && !empty($data['fecha_inicio'])) {
                 $data['fecha_planeada'] = $data['fecha_inicio'];

@@ -32,6 +32,7 @@ Route::prefix('api/options')->name('api.options.')->group(function () {
     Route::get('/tipo', [SolicitudController::class, 'getOptions'])->name('tipo');
     Route::get('/prioridad', [SolicitudController::class, 'getOptions'])->name('prioridad');
     Route::get('/medio', [SolicitudController::class, 'getOptions'])->name('medio');
+    Route::get('/entidad', [SolicitudController::class, 'getOptions'])->name('entidad');
 });
 
 // Rutas de API para Notion
@@ -42,4 +43,5 @@ Route::prefix('api/notion')->name('api.notion.')->group(function () {
     Route::get('/prioridad', [NotionController::class, 'getPrioridad'])->name('prioridad');
     Route::get('/medio', [NotionController::class, 'getMedio'])->name('medio');
     Route::post('/page', [NotionController::class, 'createPage'])->name('create-page');
+    Route::post('/upload', [NotionController::class, 'uploadFile'])->name('upload-file');
 });

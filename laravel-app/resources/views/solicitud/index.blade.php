@@ -47,7 +47,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
             min-height: 100vh;
-            padding: 120px 10px;
+            padding: 40px 10px;
             margin: 0;
             overflow: hidden;
         }
@@ -157,7 +157,7 @@
         }
 
         .form-wrapper {
-            padding: 50px 50px 0 50px;
+            padding: 30px 50px 0 50px;
         }
 
         .form-grid {
@@ -645,7 +645,7 @@
         /* Tablets pequeños y móviles grandes (576px - 767px) - iPads mini, móviles landscape */
         @media (min-width: 576px) and (max-width: 767px) {
             body {
-                padding: 80px 10px;
+                padding: 30px 10px;
             }
             
             .container {
@@ -767,7 +767,7 @@
         /* Móviles estándar (400px - 575px) - iPhones, Androids */
         @media (min-width: 400px) and (max-width: 575px) {
             body {
-                padding: 60px 8px;
+                padding: 25px 8px;
             }
             
             .container {
@@ -851,7 +851,7 @@
         /* Móviles pequeños (320px - 399px) - iPhones pequeños */
         @media (min-width: 320px) and (max-width: 399px) {
             body {
-                padding: 50px 5px;
+                padding: 20px 5px;
             }
             
             .container {
@@ -972,7 +972,7 @@
         /* Móviles ultra pequeños (menos de 320px) - Dispositivos muy antiguos */
         @media (max-width: 319px) {
             body {
-                padding: 40px 3px;
+                padding: 15px 3px;
             }
             
             .container {
@@ -1031,7 +1031,7 @@
         /* Móviles en landscape (altura máxima 500px) */
         @media (max-height: 500px) and (orientation: landscape) {
             body {
-                padding: 20px 10px;
+                padding: 10px 10px;
             }
             
             .container {
@@ -1546,6 +1546,18 @@
 
 
 
+        /* File list styling */
+        #fileList li {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        #fileList .btn-danger {
+            padding: 2px 8px;
+            font-size: 0.875rem;
+        }
     </style>
 </head>
 <body>
@@ -1563,6 +1575,7 @@
                 <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
                 <div style="flex: 1;"></div>
                     <div style="flex: 2;">
+                        <p id="welcome-message" class="text-center mb-2" style="font-size: 1.2rem; color: #333; font-weight: 500; display: none;"></p>
                         <h1 class="mb-0" style="text-align: center;">Formulario de Peticiones</h1>
                         <p class="text-muted mb-0 mt-2" style="font-size: 1.1rem; text-align: left; padding-left: 11%;">Asignación de servicio mesa</p>
                     </div>
@@ -1572,7 +1585,7 @@
                 </div>
             </div>
             
-            <form id="solicitudForm" class="form">
+            <form id="solicitudForm" class="form" enctype="multipart/form-data">
                 <!-- CSRF disabled for iframe embedding -->
                 <div class="form-grid">
                     <!-- Status (oculto) -->
@@ -1592,25 +1605,53 @@
                         </div>
                     </div>
 
-                    <!-- Quien solicita -->
-                    <div class="form-group" hidden>
-                        <label for="solicitante" class="form-label">
-                            <i class="fas fa-user"></i>
-                            Quien Solicita <span class="required" >*</span>
+                    <!-- Entidad (conditional - shows only when Relaciones Institucionales is selected) -->
+                    <div class="form-group" id="entidadGroup" style="display: none;">
+                        <label for="entidad" class="form-label">
+                            <i class="fas fa-building"></i>
+                            Entidad <span class="required">*</span>
                         </label>
-                        <input type="text" id="solicitante" name="solicitante" class="form-input"
-                               placeholder="Ingrese el nombre de quien solicita" required>
+                        <select id="entidad" name="entidad" class="form-select">
+                            <option value="">Seleccione una entidad...</option>
+                        </select>
+                        <div class="loading" id="entidadLoading">
+                            <i class="fas fa-spinner fa-spin"></i> Cargando...
+                        </div>
                     </div>
+
+                    <!-- Quien solicita (hidden but functional) -->
+                    <input type="hidden" id="solicitante" name="solicitante" value="">
+
+                    <!-- Email (hidden but functional) -->
+                    <input type="hidden" id="email" name="email" value="">
 
                     <!-- Indicaciones -->
                     <div class="form-group full-width">
                         <label for="indicaciones" class="form-label">
                             <i class="fas fa-list-ul"></i>
-                            Indicaciones a Seguir (Lugar, Que, Como)<span class="required">*</span>
+                            Indicaciones a seguir (Título corto ¿Qué? ¿Cómo? y ¿Dónde?) <span class="required">*</span>
                         </label>
-                        <textarea id="indicaciones" name="indicaciones" class="form-textarea" 
-                                  placeholder="Describa las indicaciones detalladamente..." 
-                                  rows="4" required></textarea>
+                        <textarea id="indicaciones" name="indicaciones" class="form-textarea"
+                                  placeholder="Describa las indicaciones detalladamente..."
+                                  rows="4" maxlength="1990"></textarea>
+                        <div class="character-counter text-muted small mt-1">
+                            <span id="indicaciones-counter">0</span> / 1990 caracteres
+                        </div>
+                    </div>
+
+                    <!-- Redacción complementaria -->
+                    <div class="form-group full-width">
+                        <label for="redaccion_complementaria" class="form-label">
+                            <i class="fas fa-comment-dots"></i>
+                            Redacción complementaria
+                        </label>
+                        <textarea id="redaccion_complementaria" name="redaccion_complementaria" class="form-textarea"
+                                  placeholder="Información adicional o comentarios..."
+                                  rows="4" maxlength="5000"></textarea>
+                        <div class="character-counter text-muted small mt-1">
+                            <span id="redaccion-counter">0</span> / 5000 caracteres
+                        </div>
+                        <div class="field-error" id="redaccionComplementariaError"></div>
                     </div>
 
                     <!-- Fecha de Inicio -->
@@ -1619,8 +1660,8 @@
                             <i class="fas fa-calendar-alt"></i>
                             Fecha de Inicio <span class="required">*</span>
                         </label>
-                        <input type="text" id="fecha_inicio" name="fecha_inicio" class="form-input datepicker"
-                               placeholder="Seleccionar fecha y hora" required>
+                        <input type="datetime-local" id="fecha_inicio" name="fecha_inicio" class="form-input"
+                               required>
                     </div>
 
                     <!-- Fecha de Fin -->
@@ -1629,8 +1670,8 @@
                             <i class="fas fa-calendar-times"></i>
                             Fecha de Fin <span class="required">*</span>
                         </label>
-                        <input type="text" id="fecha_fin" name="fecha_fin" class="form-input datepicker"
-                               placeholder="Seleccionar fecha y hora" required>
+                        <input type="datetime-local" id="fecha_fin" name="fecha_fin" class="form-input"
+                               required>
                     </div>
 
                     <!-- Prioridad -->
@@ -1664,6 +1705,33 @@
                         <input type="hidden" id="medio" name="medio" required>
                         <div class="field-error" id="medioError"></div>
                     </div>
+                    <!-- Link de descarga -->
+                    <div class="form-group full-width">
+                        <label for="link_descarga" class="form-label">
+                            <i class="fas fa-link"></i>
+                            Link de descarga
+                        </label>
+                        <textarea id="link_descarga" name="link_descarga" class="form-textarea"
+                                  placeholder="https://ejemplo.com/archivo&#10;https://ejemplo.com/otro-archivo&#10;(Puede ingresar múltiples URLs, una por línea)"
+                                  rows="3" maxlength="1990"></textarea>
+                        <div class="character-counter text-muted small mt-1">
+                            <span id="link-counter">0</span> / 1990 caracteres
+                        </div>
+                        <small class="text-muted">Puede ingresar múltiples URLs separadas por líneas</small>
+                        <div class="field-error" id="linkDescargaError"></div>
+                    </div>
+
+                    <!-- Adjuntar archivo -->
+                    <div class="form-group full-width">
+                        <label class="form-label">
+                            <i class="fas fa-paperclip"></i>
+                            Adjuntar Archivo
+                        </label>
+                        <input type="file" id="archivo" class="form-control" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif">
+                        <small class="text-muted">Puede seleccionar múltiples archivos. Formatos permitidos: PDF, DOC, DOCX, XLS, XLSX, PNG, JPG, JPEG, GIF (Max: 10MB cada uno)</small>
+                        <div id="fileList" class="mt-2"></div>
+                        <!-- Files are now handled directly in FormData during form submission -->
+                    </div>
                 </div>
 
                 <!-- Botones -->
@@ -1685,6 +1753,137 @@
     </div>
 
     <script>
+        // Character counter for textareas
+        function setupCharacterCounter(textareaId, counterId) {
+            const textarea = document.getElementById(textareaId);
+            const counter = document.getElementById(counterId);
+
+            if (textarea && counter) {
+                // Update counter on input
+                textarea.addEventListener('input', function() {
+                    const currentLength = this.value.length;
+                    counter.textContent = currentLength;
+
+                    // Change color when approaching limit
+                    const maxLength = parseInt(this.getAttribute('maxlength'));
+                    if (currentLength > maxLength * 0.9) {
+                        counter.parentElement.classList.add('text-danger');
+                        counter.parentElement.classList.remove('text-warning', 'text-muted');
+                    } else if (currentLength > maxLength * 0.75) {
+                        counter.parentElement.classList.add('text-warning');
+                        counter.parentElement.classList.remove('text-danger', 'text-muted');
+                    } else {
+                        counter.parentElement.classList.add('text-muted');
+                        counter.parentElement.classList.remove('text-danger', 'text-warning');
+                    }
+                });
+
+                // Initial count
+                counter.textContent = textarea.value.length;
+            }
+        }
+
+        // Initialize character counters
+        document.addEventListener('DOMContentLoaded', function() {
+            setupCharacterCounter('indicaciones', 'indicaciones-counter');
+            setupCharacterCounter('redaccion_complementaria', 'redaccion-counter');
+            setupCharacterCounter('link_descarga', 'link-counter');
+        });
+
+        // Advanced file management system
+        class FileManager {
+            constructor() {
+                this.files = new Map(); // Store files with unique IDs
+                this.fileCounter = 0;
+                this.fileInput = document.getElementById('archivo');
+                this.fileList = document.getElementById('fileList');
+                // Removed fileInputsContainer - files handled directly in FormData
+
+                this.init();
+            }
+
+            init() {
+                // Handle file selection
+                this.fileInput.addEventListener('change', (e) => {
+                    this.addFiles(e.target.files);
+                    // Reset the input so the same file can be selected again
+                    e.target.value = '';
+                });
+            }
+
+            addFiles(fileList) {
+                const files = Array.from(fileList);
+
+                files.forEach(file => {
+                    const fileId = `file_${this.fileCounter++}`;
+
+                    // Check for duplicates
+                    let isDuplicate = false;
+                    for (let [id, existingFile] of this.files) {
+                        if (existingFile.name === file.name && existingFile.size === file.size) {
+                            isDuplicate = true;
+                            break;
+                        }
+                    }
+
+                    if (!isDuplicate) {
+                        this.files.set(fileId, file);
+                    }
+                });
+
+                this.updateFileDisplay();
+            }
+
+            removeFile(fileId) {
+                this.files.delete(fileId);
+                this.updateFileDisplay();
+            }
+
+            updateFileDisplay() {
+                if (this.files.size === 0) {
+                    this.fileList.innerHTML = '';
+                    return;
+                }
+
+                let html = '<strong>Archivos seleccionados:</strong><ul class="list-unstyled mt-2">';
+
+                for (let [fileId, file] of this.files) {
+                    const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                    html += `
+                        <li class="mb-2 d-flex align-items-center justify-content-between">
+                            <span>
+                                <i class="fas fa-file"></i> ${file.name}
+                                <span class="text-muted">(${fileSize} MB)</span>
+                            </span>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="fileManager.removeFile('${fileId}')">
+                                <i class="fas fa-times"></i> Eliminar
+                            </button>
+                        </li>
+                    `;
+                }
+
+                html += '</ul>';
+                this.fileList.innerHTML = html;
+            }
+
+            // Removed updateHiddenInputs() method - files are now handled directly in FormData during form submission
+
+            clearAll() {
+                this.files.clear();
+                this.updateFileDisplay();
+            }
+
+            getFiles() {
+                return Array.from(this.files.values());
+            }
+        }
+
+        // Initialize file manager globally
+        let fileManager;
+        document.addEventListener('DOMContentLoaded', function() {
+            fileManager = new FileManager();
+        });
+
         // Widget de fecha y hora para Monterrey, NL, México
         function updateDateTime() {
             const now = new Date();
@@ -1763,6 +1962,7 @@
                 tipo: '{{ route("api.options.tipo") }}?type=tipo',
                 prioridad: '{{ route("api.options.prioridad") }}?type=prioridad',
                 medio: '{{ route("api.options.medio") }}?type=medio',
+                entidad: '{{ route("api.options.entidad") }}?type=entidad',
                 submit: '{{ route("solicitud.store") }}'
             }
         };
@@ -1781,6 +1981,7 @@
                 this.loadSelectData();
                 this.setupDateValidation();
                 this.setupMedioDropdown();
+                this.setupEntidadLogic();
             }
 
             setupEventListeners() {
@@ -1835,6 +2036,36 @@
 
 
 
+
+            // Setup Entidad field logic (conditional display based on Area selection)
+            setupEntidadLogic() {
+                const tipoSelect = document.getElementById('tipo');
+                const entidadGroup = document.getElementById('entidadGroup');
+                const entidadSelect = document.getElementById('entidad');
+
+                // Listen for changes on tipo select
+                tipoSelect.addEventListener('change', async (e) => {
+                    const selectedValue = e.target.value;
+                    const selectedText = e.target.options[e.target.selectedIndex]?.text || '';
+
+                    // Check if "Relaciones Institucionales" is selected
+                    if (selectedText.toLowerCase().includes('relaciones institucionales')) {
+                        // Show entidad field
+                        entidadGroup.style.display = 'block';
+                        entidadSelect.setAttribute('required', 'required');
+
+                        // Load entidad options if not already loaded
+                        if (entidadSelect.options.length <= 1) {
+                            await this.loadSelectOptions('entidad', CONFIG.endpoints.entidad);
+                        }
+                    } else {
+                        // Hide entidad field and remove required
+                        entidadGroup.style.display = 'none';
+                        entidadSelect.removeAttribute('required');
+                        entidadSelect.value = ''; // Clear selection
+                    }
+                });
+            }
 
             // Cargar datos para los selects
             async loadSelectData() {
@@ -2063,11 +2294,16 @@
                         errorMessage = 'Debe seleccionar una fecha y hora válida.';
                     }
                 } else if (field.type === 'textarea') {
-                    // Para textarea, verificar que tenga contenido significativo
+                    // Para textarea, verificar solo si es required
                     value = field.value.trim();
-                    isValid = value !== '' && value.length >= 3; // Mínimo 3 caracteres
-                    if (!isValid) {
-                        errorMessage = value === '' ? 'Este campo es obligatorio.' : 'Debe escribir al menos 3 caracteres.';
+                    if (field.hasAttribute('required')) {
+                        isValid = value !== '' && value.length >= 3; // Mínimo 3 caracteres
+                        if (!isValid) {
+                            errorMessage = value === '' ? 'Este campo es obligatorio.' : 'Debe escribir al menos 3 caracteres.';
+                        }
+                    } else {
+                        // Campo opcional - siempre válido
+                        isValid = true;
                     }
                 } else {
                     // Para inputs de texto, verificar que no esté vacío
@@ -2158,7 +2394,7 @@
                 const fieldNames = {
                     'tipo': 'Area',
                     'solicitante': 'Quien Solicita',
-                    'indicaciones': 'Indicaciones a Seguir',
+                    'indicaciones': 'Indicaciones a seguir (Título corto ¿Qué? ¿Cómo? y ¿Dónde?)',
                     'fecha_inicio': 'Fecha de Inicio',
                     'fecha_fin': 'Fecha de Fin',
                     'prioridad': 'Prioridad',
@@ -2183,15 +2419,54 @@
                     // Preparar los datos del formulario
                     const formData = new FormData(this.form);
 
-                    // Get datetime values from jQuery datepicker and format with GMT-6
-                    const fechaInicio = $('#fecha_inicio').data('iso-value') || this.convertDateToISO($('#fecha_inicio').val());
-                    const fechaFin = $('#fecha_fin').data('iso-value') || this.convertDateToISO($('#fecha_fin').val());
+                    // Remove any existing file inputs from FormData to avoid conflicts
+                    formData.delete('archivo[]');
+                    formData.delete('archivo');
 
-                    // Override with ISO values if available
-                    if (fechaInicio) {
+                    // Add files from FileManager properly
+                    if (fileManager && fileManager.getFiles().length > 0) {
+                        const files = fileManager.getFiles();
+                        console.log('=== FILES BEING UPLOADED ===');
+                        console.log('Number of files:', files.length);
+
+                        // Append each file individually to FormData as an array
+                        let validFilesCount = 0;
+                        files.forEach((file, index) => {
+                            if (file && file instanceof File) {
+                                formData.append('archivo[]', file, file.name);
+                                validFilesCount++;
+                                console.log(`File ${index + 1}:`, {
+                                    name: file.name,
+                                    size: file.size,
+                                    type: file.type,
+                                    isFile: file instanceof File
+                                });
+                            } else {
+                                console.error(`File ${index + 1} is invalid:`, file);
+                            }
+                        });
+                        console.log(`Valid files uploaded: ${validFilesCount} of ${files.length}`);
+                        console.log('=========================');
+                    } else {
+                        console.log('No files selected for upload');
+                    }
+
+                    // Get datetime values and convert to ISO format with GMT-6
+                    const fechaInicioValue = document.getElementById('fecha_inicio').value;
+                    const fechaFinValue = document.getElementById('fecha_fin').value;
+
+                    if (fechaInicioValue) {
+                        // The datetime-local value is in local time without timezone
+                        // We need to append seconds and the Monterrey timezone offset
+                        // This tells the backend that this time is in GMT-6
+                        const fechaInicio = fechaInicioValue + ':00-06:00';
                         formData.set('fecha_inicio', fechaInicio);
                     }
-                    if (fechaFin) {
+                    if (fechaFinValue) {
+                        // The datetime-local value is in local time without timezone
+                        // We need to append seconds and the Monterrey timezone offset
+                        // This tells the backend that this time is in GMT-6
+                        const fechaFin = fechaFinValue + ':00-06:00';
                         formData.set('fecha_fin', fechaFin);
                     }
                     
@@ -2207,11 +2482,37 @@
                     });
 
                     const result = await response.json();
-                    
+
+                    // Log the full response from backend
+                    console.log('=== BACKEND RESPONSE ===');
+                    console.log('Full response:', result);
+                    if (result.data && result.data.properties) {
+                        console.log('Notion properties sent:', result.data.properties);
+                        if (result.data.properties['ADJUNTAR ARCHIVO']) {
+                            console.log('File URLs in Notion:', result.data.properties['ADJUNTAR ARCHIVO']);
+                        }
+                    }
+                    console.log('========================');
+
                     if (result.success) {
                         this.showSuccessPopup();
+
+                        // Save the solicitante value from hidden field
+                        const solicitanteField = document.getElementById('solicitante');
+                        const solicitanteValue = solicitanteField ? solicitanteField.value : null;
+
                         this.form.reset();
                         this.handleReset();
+
+                        // Clear file manager after successful submission
+                        if (typeof fileManager !== 'undefined') {
+                            fileManager.clearAll();
+                        }
+
+                        // Restore solicitante value to hidden field
+                        if (solicitanteField && solicitanteValue) {
+                            solicitanteField.value = solicitanteValue;
+                        }
                     } else {
                         // Mostrar errores específicos de validación si están disponibles
                         if (result.errors) {
@@ -2251,7 +2552,12 @@
             handleReset() {
                 this.clearAllValidations();
                 this.clearMessages();
-                
+
+                // Clear file manager
+                if (typeof fileManager !== 'undefined') {
+                    fileManager.clearAll();
+                }
+
                 // Limpiar checkboxes de medios
                 if (this.selectedMediosList) {
                     this.selectedMediosList = [];
@@ -2266,13 +2572,14 @@
                         }
                     });
                 }
-                
-                // Clear jQuery datepicker fields
-                $('#fecha_inicio, #fecha_fin').val('').removeData('iso-value');
+
+                // Clear datetime fields
+                document.getElementById('fecha_inicio').value = '';
+                document.getElementById('fecha_fin').value = '';
             }
 
-            // Convertir fecha en formato DD/MM/YYYY HH:MM AM/PM a ISO con GMT-6
-            convertDateToISO(dateString) {
+            // OLD - No longer needed with datetime-local input
+            /*convertDateToISO(dateString) {
                 if (!dateString || dateString.trim() === '') {
                     return null;
                 }
@@ -2302,7 +2609,7 @@
                 }
 
                 return null;
-            }
+            }*/
 
             clearAllValidations() {
                 const fields = this.form.querySelectorAll('.valid, .invalid');
@@ -2435,7 +2742,8 @@
         }
 
         // Función para formatear fecha y hora con timezone específico
-        function formatDateTimeWithTimezone(date, timezoneOffsetHours) {
+        // OLD - No longer needed with datetime-local input
+        /*function formatDateTimeWithTimezone(date, timezoneOffsetHours) {
             // Crear una nueva fecha ajustada al timezone especificado
             const offsetMs = timezoneOffsetHours * 60 * 60 * 1000;
             const utcTime = date.getTime() + (date.getTimezoneOffset() * 60000);
@@ -2456,7 +2764,7 @@
             const offsetMinutes = '00'; // Asumimos que siempre son horas completas
             
             return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${offsetSign}${offsetHours}:${offsetMinutes}`;
-        }
+        }*/
 
         // Función para obtener parámetros de la URL
         function getUrlParameter(name) {
@@ -2473,23 +2781,67 @@
             // Check for 'solicitante' parameter in URL
             const solicitanteParam = getUrlParameter('solicitante');
             if (solicitanteParam) {
+                // Update welcome message with solicitante parameter
                 const welcomeMessage = document.getElementById('welcomeMessage');
                 if (welcomeMessage) {
                     welcomeMessage.textContent = 'Bienvenid@, ' + solicitanteParam;
                 }
                 
-                // Pre-fill and disable the Quien Solicita field
+                // Set the hidden field value from URL parameter
                 const solicitanteField = document.getElementById('solicitante');
                 if (solicitanteField) {
                     solicitanteField.value = solicitanteParam;
-                    solicitanteField.setAttribute('readonly', true);
-                    solicitanteField.style.backgroundColor = '#f8f9fa';
-                    solicitanteField.style.cursor = 'not-allowed';
-                    solicitanteField.style.color = '#6c757d';
                 }
             }
 
-            // Spanish localization for jQuery UI
+            // Check for 'email' parameter in URL
+            const emailParam = getUrlParameter('email');
+            if (emailParam) {
+                // Set the hidden email field value from URL parameter
+                const emailField = document.getElementById('email');
+                if (emailField) {
+                    emailField.value = emailParam;
+                    console.log('Email captured from URL:', emailParam);
+                }
+            }
+
+            // Set minimum date/time to current local time
+            // The browser should already be in Monterrey timezone
+            const now = new Date();
+
+            // Format for datetime-local input using local time
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const minDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+            // Set minimum to current time
+            document.getElementById('fecha_inicio').min = minDateTime;
+            document.getElementById('fecha_fin').min = minDateTime;
+
+            // Set default values to current time
+            document.getElementById('fecha_inicio').value = minDateTime;
+            document.getElementById('fecha_fin').value = minDateTime;
+
+            // Auto-set end date when start date changes
+            document.getElementById('fecha_inicio').addEventListener('change', function() {
+                const startDate = this.value;
+                if (startDate) {
+                    // Set end date minimum to start date
+                    document.getElementById('fecha_fin').min = startDate;
+
+                    // If end date is before start date, clear it
+                    const endDate = document.getElementById('fecha_fin').value;
+                    if (endDate && endDate < startDate) {
+                        document.getElementById('fecha_fin').value = '';
+                    }
+                }
+            });
+
+            // Initialize the form application
+            /*OLD CODE REMOVED - was using jQuery datepicker
             $.datepicker.regional['es'] = {
                 closeText: 'Cerrar',
                 prevText: '&#x3C;Ant',
@@ -2765,7 +3117,7 @@
                 // Set placeholder
                 $input.attr('placeholder', 'DD/MM/YYYY HH:MM AM/PM');
                 $input.attr('maxlength', '22'); // Maximum valid length
-            });
+            });*/
 
             const app = new FormularioSolicitud();
         });
