@@ -1596,7 +1596,7 @@
                     <div class="form-group" hidden>
                         <label for="solicitante" class="form-label">
                             <i class="fas fa-user"></i>
-                            Quien Solicita <span class="required" hidden>*</span>
+                            Quien Solicita <span class="required" >*</span>
                         </label>
                         <input type="text" id="solicitante" name="solicitante" class="form-input"
                                placeholder="Ingrese el nombre de quien solicita" required>

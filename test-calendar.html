@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Calendario - Safari y Chrome</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Estilos específicos para la prueba */
+        .form-group {
+            position: relative;
+            overflow: visible !important;
+            z-index: 1;
+        }
+
+        .form-group:hover {
+            z-index: 10;
+        }
+
+        .datetime-picker-container {
+            width: 100%;
+        }
+
+        .datetime-display {
+            width: 100%;
+            padding: 12px 50px 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            background-color: #fafafa;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .datetime-picker-toggle {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #667eea;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+        }
+
+        .datetime-picker {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 10000;
+            display: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .datetime-picker.show {
+            display: block;
+        }
+
+        /* Solución específica para Safari y Chrome */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            .datetime-picker {
+                z-index: 9999 !important;
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+            }
+            
+            .form-group:hover {
+                z-index: 1 !important;
+            }
+            
+            .datetime-picker-container .form-group {
+                z-index: 1 !important;
+            }
+        }
+
+        /* Estilos específicos para Chrome */
+        @supports (-webkit-appearance: none) {
+            .datetime-picker {
+                z-index: 9999 !important;
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+            
+            .datetime-picker.show {
+                z-index: 9999 !important;
+            }
+            
+            .form-group:hover {
+                z-index: 1 !important;
+            }
+        }
+
+        .calendar-content {
+            padding: 20px;
+            text-align: center;
+            color: #374151;
+        }
+
+        .test-info {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .test-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .test-button:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Prueba de Calendario - Safari y Chrome</h1>
+        
+        <div class="test-info">
+            <h3 class="font-semibold text-blue-800 mb-2">Instrucciones de Prueba:</h3>
+            <ol class="text-sm text-blue-700 space-y-1">
+                <li>1. Haz clic en el botón del calendario para abrirlo</li>
+                <li>2. Mueve el mouse sobre el input mientras el calendario está abierto</li>
+                <li>3. Verifica que el calendario NO se superponga con el input</li>
+                <li>4. Prueba en Safari y Chrome</li>
+            </ol>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Formulario de Prueba</h2>
+            
+            <!-- Campo de Fecha de Inicio -->
+            <div class="form-group mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-calendar-alt mr-2"></i>
+                    Fecha de Inicio <span class="text-red-500">*</span>
+                </label>
+                <div class="datetime-picker-container relative">
+                    <input type="text" id="fecha_inicio_display" class="datetime-display" readonly placeholder="Seleccionar fecha y hora">
+                    <button type="button" class="datetime-picker-toggle" id="fechaInicioToggle">
+                        <i class="fas fa-calendar-alt"></i>
+                    </button>
+                    
+                    <!-- DateTime Picker -->
+                    <div class="datetime-picker z-50" id="fechaInicioPicker">
+                        <div class="calendar-content">
+                            <h3 class="font-semibold mb-4">Calendario de Prueba</h3>
+                            <p class="text-gray-600 mb-4">Este es el contenido del calendario que debe estar por encima del input.</p>
+                            <p class="text-sm text-gray-500">Si puedes leer este texto sin que el input se superponga, la solución funciona correctamente.</p>
+                            <button class="test-button" onclick="closeCalendar()">Cerrar Calendario</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campo de Fecha de Fin -->
+            <div class="form-group mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-calendar-times mr-2"></i>
+                    Fecha de Fin <span class="text-red-500">*</span>
+                </label>
+                <div class="datetime-picker-container relative">
+                    <input type="text" id="fecha_fin_display" class="datetime-display" readonly placeholder="Seleccionar fecha y hora">
+                    <button type="button" class="datetime-picker-toggle" id="fechaFinToggle">
+                        <i class="fas fa-calendar-alt"></i>
+                    </button>
+                    
+                    <!-- DateTime Picker -->
+                    <div class="datetime-picker z-50" id="fechaFinPicker">
+                        <div class="calendar-content">
+                            <h3 class="font-semibold mb-4">Calendario de Prueba 2</h3>
+                            <p class="text-gray-600 mb-4">Segundo calendario para probar múltiples instancias.</p>
+                            <p class="text-sm text-gray-500">Verifica que ambos calendarios funcionen correctamente.</p>
+                            <button class="test-button" onclick="closeCalendar2()">Cerrar Calendario</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campo de Medio (para probar superposición) -->
+            <div class="form-group mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-broadcast-tower mr-2"></i>
+                    Medio <span class="text-red-500">*</span>
+                </label>
+                <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option>Seleccione uno o más medios...</option>
+                    <option>Televisión</option>
+                    <option>Radio</option>
+                    <option>Internet</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+            <h3 class="font-semibold text-green-800 mb-2">✅ Prueba Exitosa Si:</h3>
+            <ul class="text-sm text-green-700 space-y-1">
+                <li>• El calendario se abre correctamente</li>
+                <li>• Al pasar el mouse sobre el input, el calendario NO se superpone</li>
+                <li>• El calendario permanece visible y accesible</li>
+                <li>• Funciona igual en Safari y Chrome</li>
+            </ul>
+        </div>
+
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mt-4">
+            <h3 class="font-semibold text-red-800 mb-2">❌ Prueba Fallida Si:</h3>
+            <ul class="text-sm text-red-700 space-y-1">
+                <li>• El input se superpone al calendario al hacer hover</li>
+                <li>• El calendario desaparece o se oculta parcialmente</li>
+                <li>• Hay diferencias de comportamiento entre navegadores</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Funcionalidad básica para la prueba
+        document.getElementById('fechaInicioToggle').addEventListener('click', function() {
+            const picker = document.getElementById('fechaInicioPicker');
+            picker.classList.toggle('show');
+        });
+
+        document.getElementById('fechaFinToggle').addEventListener('click', function() {
+            const picker = document.getElementById('fechaFinPicker');
+            picker.classList.toggle('show');
+        });
+
+        function closeCalendar() {
+            document.getElementById('fechaInicioPicker').classList.remove('show');
+        }
+
+        function closeCalendar2() {
+            document.getElementById('fechaFinPicker').classList.remove('show');
+        }
+
+        // Cerrar calendarios al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.datetime-picker-container')) {
+                document.getElementById('fechaInicioPicker').classList.remove('show');
+                document.getElementById('fechaFinPicker').classList.remove('show');
+            }
+        });
+
+        // Información del navegador
+        console.log('Navegador:', navigator.userAgent);
+        console.log('Soporte para -webkit-transform:', CSS.supports('-webkit-transform', 'translateZ(0)'));
+        console.log('Soporte para transform:', CSS.supports('transform', 'translateZ(0)'));
+    </script>
+</body>
+</html>
