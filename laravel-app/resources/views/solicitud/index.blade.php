@@ -1606,7 +1606,7 @@
                     </div>
 
                     <!-- Tipo -->
-                    <div class="form-group full-width">
+                    <div class="form-group">
                         <label for="tipo" class="form-label">
                             <i class="fas fa-tag"></i>
                             Area <span class="required">*</span>
