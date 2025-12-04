@@ -1590,7 +1590,21 @@
                 <div class="form-grid">
                     <!-- Status (oculto) -->
                     <input type="hidden" id="status" name="status" value="PENDIENTE">
-        
+
+                    <!-- Estado -->
+                    <div class="form-group">
+                        <label for="estado" class="form-label">
+                            <i class="fas fa-flag"></i>
+                            Estado <span class="required">*</span>
+                        </label>
+                        <select id="estado" name="estado" class="form-select" required>
+                            <option value="">Seleccione un estado...</option>
+                        </select>
+                        <div class="loading" id="estadoLoading">
+                            <i class="fas fa-spinner fa-spin"></i> Cargando...
+                        </div>
+                    </div>
+
                     <!-- Tipo -->
                     <div class="form-group full-width">
                         <label for="tipo" class="form-label">
@@ -1963,6 +1977,9 @@
                 prioridad: '{{ route("api.options.prioridad") }}?type=prioridad',
                 medio: '{{ route("api.options.medio") }}?type=medio',
                 entidad: '{{ route("api.options.entidad") }}?type=entidad',
+                estado: '{{ route("api.options.estado") }}?type=estado',
+                ent_coahuila: '{{ route("api.options.ent_coahuila") }}?type=ent_coahuila',
+                ent_tamaulipas: '{{ route("api.options.ent_tamaulipas") }}?type=ent_tamaulipas',
                 submit: '{{ route("solicitud.store") }}'
             }
         };
@@ -2037,39 +2054,80 @@
 
 
 
-            // Setup Entidad field logic (conditional display based on Area selection)
+            // Setup Entidad field logic (conditional display based on Area AND Estado selection)
             setupEntidadLogic() {
                 const tipoSelect = document.getElementById('tipo');
+                const estadoSelect = document.getElementById('estado');
                 const entidadGroup = document.getElementById('entidadGroup');
                 const entidadSelect = document.getElementById('entidad');
 
-                // Listen for changes on tipo select
-                tipoSelect.addEventListener('change', async (e) => {
-                    const selectedValue = e.target.value;
-                    const selectedText = e.target.options[e.target.selectedIndex]?.text || '';
+                // Track currently loaded estado to avoid reloading same options
+                let currentLoadedEstado = null;
 
-                    // Check if "Relaciones Institucionales" is selected
-                    if (selectedText.toLowerCase().includes('relaciones institucionales')) {
+                // Helper function to get the correct endpoint based on estado
+                const getEntidadEndpoint = (estadoValue) => {
+                    const estadoUpper = estadoValue.toUpperCase();
+                    if (estadoUpper.includes('NUEVO LEON') || estadoUpper.includes('NUEVO LEÓN')) {
+                        return CONFIG.endpoints.entidad; // ENTIDAD column
+                    } else if (estadoUpper.includes('COAHUILA')) {
+                        return CONFIG.endpoints.ent_coahuila; // ENT COAHUILA column
+                    } else if (estadoUpper.includes('TAMAULIPAS')) {
+                        return CONFIG.endpoints.ent_tamaulipas; // ENT TAMAULIPAS column
+                    }
+                    return null;
+                };
+
+                // Helper function to check both conditions and update visibility
+                const checkEntidadVisibility = async () => {
+                    const tipoText = tipoSelect.options[tipoSelect.selectedIndex]?.text || '';
+                    const estadoValue = estadoSelect.value;
+                    const estadoText = estadoSelect.options[estadoSelect.selectedIndex]?.text || '';
+
+                    // Check if BOTH conditions are met:
+                    // 1. Area = "Relaciones Institucionales"
+                    // 2. Estado has any value selected
+                    const isRelacionesInstitucionales = tipoText.toLowerCase().includes('relaciones institucionales');
+                    const hasEstadoSelected = estadoValue !== '' && estadoValue !== null;
+
+                    if (isRelacionesInstitucionales && hasEstadoSelected) {
                         // Show entidad field
                         entidadGroup.style.display = 'block';
                         entidadSelect.setAttribute('required', 'required');
 
-                        // Load entidad options if not already loaded
-                        if (entidadSelect.options.length <= 1) {
-                            await this.loadSelectOptions('entidad', CONFIG.endpoints.entidad);
+                        // Get the correct endpoint based on estado
+                        const endpoint = getEntidadEndpoint(estadoText);
+
+                        // Only reload if estado changed
+                        if (endpoint && currentLoadedEstado !== estadoText) {
+                            currentLoadedEstado = estadoText;
+
+                            // Clear current options except the first one
+                            while (entidadSelect.options.length > 1) {
+                                entidadSelect.remove(1);
+                            }
+                            entidadSelect.value = ''; // Clear selection
+
+                            // Load new options based on estado
+                            await this.loadSelectOptions('entidad', endpoint);
                         }
                     } else {
                         // Hide entidad field and remove required
                         entidadGroup.style.display = 'none';
                         entidadSelect.removeAttribute('required');
                         entidadSelect.value = ''; // Clear selection
+                        currentLoadedEstado = null; // Reset loaded estado
                     }
-                });
+                };
+
+                // Listen for changes on both tipo and estado selects
+                tipoSelect.addEventListener('change', checkEntidadVisibility);
+                estadoSelect.addEventListener('change', checkEntidadVisibility);
             }
 
             // Cargar datos para los selects
             async loadSelectData() {
                 const selects = [
+                    { id: 'estado', endpoint: CONFIG.endpoints.estado },
                     { id: 'tipo', endpoint: CONFIG.endpoints.tipo },
                     { id: 'prioridad', endpoint: CONFIG.endpoints.prioridad }
                 ];
@@ -2393,6 +2451,7 @@
             getFieldDisplayName(field) {
                 const fieldNames = {
                     'tipo': 'Area',
+                    'estado': 'Estado',
                     'solicitante': 'Quien Solicita',
                     'indicaciones': 'Indicaciones a seguir (Título corto ¿Qué? ¿Cómo? y ¿Dónde?)',
                     'fecha_inicio': 'Fecha de Inicio',

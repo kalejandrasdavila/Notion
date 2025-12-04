@@ -114,6 +114,30 @@ class NotionService
     }
 
     /**
+     * Obtener opciones de estado
+     */
+    public function getEstadoOptions()
+    {
+        return $this->getSelectOptions('ESTADO');
+    }
+
+    /**
+     * Obtener opciones de entidad Coahuila
+     */
+    public function getEntCoahuilaOptions()
+    {
+        return $this->getSelectOptions('ENT COAHUILA');
+    }
+
+    /**
+     * Obtener opciones de entidad Tamaulipas
+     */
+    public function getEntTamaulipasOptions()
+    {
+        return $this->getSelectOptions('ENT TAMAULIPAS');
+    }
+
+    /**
      * Crear una nueva página en Notion
      */
     public function createPage($data)
@@ -233,6 +257,15 @@ class NotionService
             $properties['TIPO'] = [
                 'select' => [
                     'name' => $data['tipo']
+                ]
+            ];
+        }
+
+        // Estado
+        if (isset($data['estado']) && !empty($data['estado'])) {
+            $properties['ESTADO'] = [
+                'select' => [
+                    'name' => $data['estado']
                 ]
             ];
         }

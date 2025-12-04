@@ -33,6 +33,9 @@ Route::prefix('api/options')->name('api.options.')->group(function () {
     Route::get('/prioridad', [SolicitudController::class, 'getOptions'])->name('prioridad');
     Route::get('/medio', [SolicitudController::class, 'getOptions'])->name('medio');
     Route::get('/entidad', [SolicitudController::class, 'getOptions'])->name('entidad');
+    Route::get('/estado', [SolicitudController::class, 'getOptions'])->name('estado');
+    Route::get('/ent_coahuila', [SolicitudController::class, 'getOptions'])->name('ent_coahuila');
+    Route::get('/ent_tamaulipas', [SolicitudController::class, 'getOptions'])->name('ent_tamaulipas');
 });
 
 // Rutas de API para Notion

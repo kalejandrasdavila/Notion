@@ -52,6 +52,15 @@ class SolicitudController extends Controller
                 case 'entidad':
                     $options = $this->notionService->getEntidadOptions();
                     break;
+                case 'estado':
+                    $options = $this->notionService->getEstadoOptions();
+                    break;
+                case 'ent_coahuila':
+                    $options = $this->notionService->getEntCoahuilaOptions();
+                    break;
+                case 'ent_tamaulipas':
+                    $options = $this->notionService->getEntTamaulipasOptions();
+                    break;
                 default:
                     return response()->json([
                         'success' => false,
@@ -92,6 +101,7 @@ class SolicitudController extends Controller
         $validator = Validator::make($data, [
             'status' => 'sometimes|string|max:255',
             'tipo' => 'nullable|string|max:255',
+            'estado' => 'required|string|max:255',
             'entidad' => 'nullable|string|max:255',
             'solicitante' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
