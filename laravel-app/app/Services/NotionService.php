@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Exception;
@@ -26,29 +27,81 @@ class NotionService
      */
     public function getDatabase()
     {
-        try {
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiToken,
-                'Notion-Version' => $this->version,
-                'Content-Type' => 'application/json',
-            ])->get($this->baseUrl . '/databases/' . $this->databaseId);
+        return Cache::remember('notion_database_schema', now()->addMinutes(15), function () {
+            try {
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $this->apiToken,
+                    'Notion-Version' => $this->version,
+                    'Content-Type' => 'application/json',
+                ])->get($this->baseUrl . '/databases/' . $this->databaseId);
 
-            if ($response->successful()) {
-                return $response->json();
+                if ($response->successful()) {
+                    return $response->json();
+                }
+
+                Log::error('Error obteniendo base de datos de Notion', [
+                    'status' => $response->status(),
+                    'response' => $response->body()
+                ]);
+
+                return null;
+            } catch (Exception $e) {
+                Log::error('Excepción obteniendo base de datos de Notion', [
+                    'message' => $e->getMessage()
+                ]);
+                return null;
             }
+        });
+    }
 
-            Log::error('Error obteniendo base de datos de Notion', [
-                'status' => $response->status(),
-                'response' => $response->body()
-            ]);
+    /**
+     * Obtener todas las opciones de select/multi_select en una sola llamada
+     */
+    public function getAllOptions()
+    {
+        $database = $this->getDatabase();
 
-            return null;
-        } catch (Exception $e) {
-            Log::error('Excepción obteniendo base de datos de Notion', [
-                'message' => $e->getMessage()
-            ]);
-            return null;
+        if (!$database || !isset($database['properties'])) {
+            return [];
         }
+
+        $fields = [
+            'estado'        => 'ESTADO',
+            'tipo'          => 'TIPO',
+            'prioridad'     => 'PRIORIDAD',
+            'medio'         => 'MEDIO ',
+            'entidad'       => 'ENTIDAD',
+            'ent_coahuila'  => 'ENT COAHUILA',
+            'ent_tamaulipas' => 'ENT TAMAULIPAS',
+        ];
+
+        $result = [];
+
+        foreach ($fields as $key => $fieldName) {
+            $result[$key] = $this->extractOptions($database, $fieldName);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Extraer opciones de un campo del schema de base de datos ya cargado
+     */
+    protected function extractOptions($database, $fieldName)
+    {
+        if (!isset($database['properties'][$fieldName])) {
+            return [];
+        }
+
+        $field = $database['properties'][$fieldName];
+
+        if ($field['type'] === 'select') {
+            return $field['select']['options'] ?? [];
+        } elseif ($field['type'] === 'multi_select') {
+            return $field['multi_select']['options'] ?? [];
+        }
+
+        return [];
     }
 
     /**

@@ -29,6 +29,30 @@ class SolicitudController extends Controller
     }
 
     /**
+     * Obtener todas las opciones en una sola llamada
+     */
+    public function getAllOptions(): JsonResponse
+    {
+        try {
+            $options = $this->notionService->getAllOptions();
+
+            return response()->json([
+                'success' => true,
+                'data' => $options
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error obteniendo todas las opciones', [
+                'message' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener las opciones'
+            ], 500);
+        }
+    }
+
+    /**
      * Obtener opciones para los selects
      */
     public function getOptions(Request $request): JsonResponse

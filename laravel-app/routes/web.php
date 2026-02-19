@@ -26,6 +26,9 @@ Route::prefix('solicitud')->name('solicitud.')->group(function () {
     Route::get('/{solicitud}', [SolicitudController::class, 'show'])->name('show');
 });
 
+// Ruta para obtener todas las opciones en una sola llamada
+Route::get('/api/options/all', [SolicitudController::class, 'getAllOptions'])->name('api.options.all');
+
 // Rutas para obtener opciones de los selects
 Route::prefix('api/options')->name('api.options.')->group(function () {
     Route::get('/status', [SolicitudController::class, 'getOptions'])->name('status');

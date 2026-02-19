@@ -1972,14 +1972,7 @@
         // Configuración de la aplicación
         const CONFIG = {
             endpoints: {
-                status: '{{ route("api.options.status") }}?type=status',
-                tipo: '{{ route("api.options.tipo") }}?type=tipo',
-                prioridad: '{{ route("api.options.prioridad") }}?type=prioridad',
-                medio: '{{ route("api.options.medio") }}?type=medio',
-                entidad: '{{ route("api.options.entidad") }}?type=entidad',
-                estado: '{{ route("api.options.estado") }}?type=estado',
-                ent_coahuila: '{{ route("api.options.ent_coahuila") }}?type=ent_coahuila',
-                ent_tamaulipas: '{{ route("api.options.ent_tamaulipas") }}?type=ent_tamaulipas',
+                allOptions: '{{ route("api.options.all") }}',
                 submit: '{{ route("solicitud.store") }}'
             }
         };
@@ -1990,15 +1983,16 @@
                 this.form = document.getElementById('solicitudForm');
                 this.submitBtn = document.getElementById('submitBtn');
                 this.messageContainer = document.getElementById('messageContainer');
+                this.cachedOptions = {};
                 this.init();
             }
 
             init() {
                 this.setupEventListeners();
-                this.loadSelectData();
                 this.setupDateValidation();
                 this.setupMedioDropdown();
                 this.setupEntidadLogic();
+                this.loadSelectData();
             }
 
             setupEventListeners() {
@@ -2064,58 +2058,52 @@
                 // Track currently loaded estado to avoid reloading same options
                 let currentLoadedEstado = null;
 
-                // Helper function to get the correct endpoint based on estado
-                const getEntidadEndpoint = (estadoValue) => {
+                // Helper function to get the correct cached options key based on estado
+                const getEntidadOptionsKey = (estadoValue) => {
                     const estadoUpper = estadoValue.toUpperCase();
                     if (estadoUpper.includes('NUEVO LEON') || estadoUpper.includes('NUEVO LEÓN')) {
-                        return CONFIG.endpoints.entidad; // ENTIDAD column
+                        return 'entidad';
                     } else if (estadoUpper.includes('COAHUILA')) {
-                        return CONFIG.endpoints.ent_coahuila; // ENT COAHUILA column
+                        return 'ent_coahuila';
                     } else if (estadoUpper.includes('TAMAULIPAS')) {
-                        return CONFIG.endpoints.ent_tamaulipas; // ENT TAMAULIPAS column
+                        return 'ent_tamaulipas';
                     }
                     return null;
                 };
 
                 // Helper function to check both conditions and update visibility
-                const checkEntidadVisibility = async () => {
+                const checkEntidadVisibility = () => {
                     const tipoText = tipoSelect.options[tipoSelect.selectedIndex]?.text || '';
                     const estadoValue = estadoSelect.value;
                     const estadoText = estadoSelect.options[estadoSelect.selectedIndex]?.text || '';
 
-                    // Check if BOTH conditions are met:
-                    // 1. Area = "Relaciones Institucionales"
-                    // 2. Estado has any value selected
                     const isRelacionesInstitucionales = tipoText.toLowerCase().includes('relaciones institucionales');
                     const hasEstadoSelected = estadoValue !== '' && estadoValue !== null;
 
                     if (isRelacionesInstitucionales && hasEstadoSelected) {
-                        // Show entidad field
                         entidadGroup.style.display = 'block';
                         entidadSelect.setAttribute('required', 'required');
 
-                        // Get the correct endpoint based on estado
-                        const endpoint = getEntidadEndpoint(estadoText);
+                        const optionsKey = getEntidadOptionsKey(estadoText);
 
-                        // Only reload if estado changed
-                        if (endpoint && currentLoadedEstado !== estadoText) {
+                        if (optionsKey && currentLoadedEstado !== estadoText) {
                             currentLoadedEstado = estadoText;
 
                             // Clear current options except the first one
                             while (entidadSelect.options.length > 1) {
                                 entidadSelect.remove(1);
                             }
-                            entidadSelect.value = ''; // Clear selection
+                            entidadSelect.value = '';
 
-                            // Load new options based on estado
-                            await this.loadSelectOptions('entidad', endpoint);
+                            // Populate from cached data (no network request)
+                            const options = this.cachedOptions[optionsKey] || [];
+                            this.populateSelect(entidadSelect, options);
                         }
                     } else {
-                        // Hide entidad field and remove required
                         entidadGroup.style.display = 'none';
                         entidadSelect.removeAttribute('required');
-                        entidadSelect.value = ''; // Clear selection
-                        currentLoadedEstado = null; // Reset loaded estado
+                        entidadSelect.value = '';
+                        currentLoadedEstado = null;
                     }
                 };
 
@@ -2124,19 +2112,47 @@
                 estadoSelect.addEventListener('change', checkEntidadVisibility);
             }
 
-            // Cargar datos para los selects
+            // Cargar datos para los selects (una sola llamada API)
             async loadSelectData() {
-                const selects = [
-                    { id: 'estado', endpoint: CONFIG.endpoints.estado },
-                    { id: 'tipo', endpoint: CONFIG.endpoints.tipo },
-                    { id: 'prioridad', endpoint: CONFIG.endpoints.prioridad }
-                ];
-
-                // Cargar todos los selects en paralelo
-                const promises = selects.map(select => this.loadSelectOptions(select.id, select.endpoint));
-                
                 try {
-                    await Promise.all(promises);
+                    const response = await fetch(CONFIG.endpoints.allOptions, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (!data.success || !data.data) {
+                        throw new Error(data.message || 'Error en la respuesta del servidor');
+                    }
+
+                    // Store all options for later use (entidad on estado change)
+                    this.cachedOptions = data.data;
+
+                    // Populate regular selects
+                    const selectFields = ['estado', 'tipo', 'prioridad'];
+                    for (const id of selectFields) {
+                        const select = document.getElementById(id);
+                        const loading = document.getElementById(`${id}Loading`);
+                        if (select && data.data[id]) {
+                            this.showLoading(loading, true);
+                            this.populateSelect(select, data.data[id]);
+                            this.showLoading(loading, false);
+                        }
+                    }
+
+                    // Populate medio checkboxes
+                    if (data.data.medio) {
+                        this.showLoading(this.medioLoading, true);
+                        this.populateMedioOptions(data.data.medio);
+                        this.showLoading(this.medioLoading, false);
+                    }
                 } catch (error) {
                     console.error('Error cargando datos de los selects:', error);
                     this.showMessage('Error al cargar los datos del formulario. Por favor, recargue la página.', 'error');
@@ -2150,43 +2166,10 @@
                 this.medioLoading = document.getElementById('medioLoading');
                 this.medioHiddenInput = document.getElementById('medio');
                 this.medioError = document.getElementById('medioError');
-                
+
                 this.selectedMediosList = [];
-                
-                // Cargar opciones de medios
-                this.loadMedioOptions();
-            }
 
-
-            async loadMedioOptions() {
-                try {
-                    this.showLoading(this.medioLoading, true);
-                    
-                    const response = await fetch(CONFIG.endpoints.medio, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                        },
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    const data = await response.json();
-                    
-                    if (data.success && Array.isArray(data.data)) {
-                        this.populateMedioOptions(data.data);
-                    } else {
-                        throw new Error(data.message || 'Error en la respuesta del servidor');
-                    }
-                } catch (error) {
-                    console.error('Error cargando opciones de medios:', error);
-                    this.medioOptions.innerHTML = '<div class="dropdown-option">Error cargando opciones</div>';
-                } finally {
-                    this.showLoading(this.medioLoading, false);
-                }
+                // Medio options are loaded in loadSelectData() along with all other options
             }
 
             populateMedioOptions(options) {
