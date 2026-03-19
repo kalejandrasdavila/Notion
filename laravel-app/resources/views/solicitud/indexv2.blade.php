@@ -429,54 +429,64 @@
             margin-top: 5px;
         }
 
-        /* Estilos para el grupo de checkboxes de Medio */
+        /* Estilos para el grupo de pills de Medio */
         .checkbox-group {
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 15px;
-            background-color: #fafafa;
-            min-height: 60px;
+            border: none;
+            background-color: #d1d5db;
+            border-radius: 30px;
+            padding: 6px;
+            min-height: 50px;
         }
 
         .checkbox-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
+            display: flex;
+            gap: 4px;
         }
 
         .checkbox-option {
             display: flex;
             align-items: center;
-            padding: 8px 12px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
+            justify-content: center;
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 24px;
             cursor: pointer;
             transition: all 0.2s ease;
+            flex: 1;
         }
 
         .checkbox-option:hover {
-            background-color: #f3f4f6;
-            border-color: #667eea;
+            background-color: rgba(255, 255, 255, 0.6);
         }
 
         .checkbox-option input[type="checkbox"] {
-            margin-right: 10px;
-            transform: scale(1.2);
+            display: none;
         }
 
         .checkbox-option label {
             cursor: pointer;
             margin: 0;
-            flex: 1;
             font-size: 14px;
+            font-weight: 700;
             color: #374151;
+            text-align: center;
+            user-select: none;
         }
 
         .checkbox-option.checked {
-            background-color: #e0f2fe;
-            border-color: #0ea5e9;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .checkbox-group.valid {
+            border-color: transparent !important;
+            background-color: #d1d5db !important;
+            box-shadow: none !important;
+        }
+
+        .checkbox-group.invalid {
+            background-color: #d1d5db !important;
         }
 
         /* Mejoras adicionales para compatibilidad */
@@ -1424,7 +1434,10 @@
                     optionDiv.appendChild(checkbox);
                     optionDiv.appendChild(label);
 
-                    checkbox.addEventListener('change', () => {
+                    // Click on the whole pill to toggle
+                    optionDiv.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        checkbox.checked = !checkbox.checked;
                         this.handleMedioSelection(option.name || option.value, checkbox.checked);
                         this.updateCheckboxVisualState(optionDiv, checkbox.checked);
                     });
