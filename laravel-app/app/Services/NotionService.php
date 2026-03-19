@@ -66,13 +66,16 @@ class NotionService
         }
 
         $fields = [
-            'estado'        => 'ESTADO',
-            'tipo'          => 'TIPO',
-            'prioridad'     => 'PRIORIDAD',
-            'medio'         => 'MEDIO ',
-            'entidad'       => 'ENTIDAD',
-            'ent_coahuila'  => 'ENT COAHUILA',
-            'ent_tamaulipas' => 'ENT TAMAULIPAS',
+            'estado'          => 'ESTADO',
+            'tipo'            => 'TIPO',
+            'prioridad'       => 'PRIORIDAD',
+            'medio'           => 'MEDIO ',
+            'entidad'         => 'ENTIDAD',
+            'ent_coahuila'    => 'ENT COAHUILA',
+            'ent_tamaulipas'  => 'ENT TAMAULIPAS',
+            'tipo_cobertura'  => 'TIPO',
+            'relevancia'      => 'RELEVANCIA',
+            'tono_editorial'  => 'TONO EDITORIAL',
         ];
 
         $result = [];
@@ -372,11 +375,55 @@ class NotionService
             ];
         }
 
-        // Notificación (checkbox) - siempre true por defecto
-        // Commented out until field is added to Notion database
-        // $properties['NOTIFICACIÓN'] = [
-        //     'checkbox' => true
-        // ];
+        // Municipio (maps to ENTIDAD multi_select in Notion)
+        if (isset($data['municipio']) && !empty($data['municipio'])) {
+            $properties['ENTIDAD'] = [
+                'multi_select' => [
+                    ['name' => $data['municipio']]
+                ]
+            ];
+        }
+
+        // Tipo de Cobertura (maps to TIPO select in Notion)
+        if (isset($data['tipo_cobertura']) && !empty($data['tipo_cobertura'])) {
+            $properties['TIPO'] = [
+                'select' => [
+                    'name' => $data['tipo_cobertura']
+                ]
+            ];
+        }
+
+        // Relevancia (maps to RELEVANCIA select in Notion)
+        if (isset($data['relevancia']) && !empty($data['relevancia'])) {
+            $properties['RELEVANCIA'] = [
+                'select' => [
+                    'name' => $data['relevancia']
+                ]
+            ];
+        }
+
+        // Actor principal (maps to ACTOR PRINCIPAL rich_text in Notion)
+        if (isset($data['actor_principal']) && !empty($data['actor_principal'])) {
+            $properties['ACTOR PRINCIPAL'] = [
+                'rich_text' => [
+                    [
+                        'type' => 'text',
+                        'text' => [
+                            'content' => $data['actor_principal']
+                        ]
+                    ]
+                ]
+            ];
+        }
+
+        // Tono editorial (maps to TONO EDITORIAL select in Notion)
+        if (isset($data['tono_editorial']) && !empty($data['tono_editorial'])) {
+            $properties['TONO EDITORIAL'] = [
+                'select' => [
+                    'name' => $data['tono_editorial']
+                ]
+            ];
+        }
 
         // Redacción (Redacción complementaria) - Split across 3 columns if needed
         if (isset($data['redaccion_complementaria']) && !empty($data['redaccion_complementaria'])) {

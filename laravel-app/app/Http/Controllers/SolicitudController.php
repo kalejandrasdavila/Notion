@@ -29,6 +29,14 @@ class SolicitudController extends Controller
     }
 
     /**
+     * Mostrar el formulario de peticiones v2 (mesa de informacion)
+     */
+    public function indexV2(): View
+    {
+        return view('solicitud.indexv2');
+    }
+
+    /**
      * Obtener todas las opciones en una sola llamada
      */
     public function getAllOptions(): JsonResponse
@@ -127,14 +135,14 @@ class SolicitudController extends Controller
             'tipo' => 'nullable|string|max:255',
             'estado' => 'required|string|max:255',
             'entidad' => 'nullable|string|max:255',
-            'solicitante' => 'required|string|max:255',
+            'solicitante' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
             'indicaciones' => 'nullable|string|max:1990',
             'redaccion_complementaria' => 'nullable|string|max:5000',
             'link_descarga' => 'nullable|string|max:1990',
-            'fecha_inicio' => 'required|string',
-            'fecha_fin' => 'required|string',
-            'prioridad' => 'required|string|max:255',
+            'fecha_inicio' => 'nullable|string',
+            'fecha_fin' => 'nullable|string',
+            'prioridad' => 'nullable|string|max:255',
             'medio' => 'required|array|min:1',
             'medio.*' => 'required|string|max:255',
         ]);
@@ -277,13 +285,13 @@ class SolicitudController extends Controller
 
             // Guardar en la base de datos local
             $solicitud = Solicitud::create([
-                'status' => $data['status'],
-                'tipo' => $data['tipo'] ?? null, // Campo opcional
-                'solicitante' => $data['solicitante'],
-                'indicaciones' => $data['indicaciones'],
-                'fecha_planeada' => $data['fecha_planeada'],
-                'prioridad' => $data['prioridad'],
-                'medio' => $data['medio'], // Ya es un array desde el frontend
+                'status' => $data['status'] ?? 'PENDIENTE',
+                'tipo' => $data['tipo'] ?? $data['tipo_cobertura'] ?? 'N/A',
+                'solicitante' => $data['solicitante'] ?? 'N/A',
+                'indicaciones' => $data['indicaciones'] ?? 'N/A',
+                'fecha_planeada' => $data['fecha_planeada'] ?? now(),
+                'prioridad' => $data['prioridad'] ?? 'N/A',
+                'medio' => $data['medio'] ?? '[]',
                 'notion_page_id' => $notionResult['data']['id'] ?? null,
             ]);
 

@@ -21,6 +21,7 @@ Route::get('/', [SolicitudController::class, 'index'])->name('solicitud.index');
 // Rutas para el formulario de solicitud
 Route::prefix('solicitud')->name('solicitud.')->group(function () {
     Route::get('/', [SolicitudController::class, 'index'])->name('index');
+    Route::get('/v2', [SolicitudController::class, 'indexV2'])->name('indexv2');
     Route::post('/', [SolicitudController::class, 'store'])->name('store');
     Route::get('/list', [SolicitudController::class, 'list'])->name('list');
     Route::get('/{solicitud}', [SolicitudController::class, 'show'])->name('show');
