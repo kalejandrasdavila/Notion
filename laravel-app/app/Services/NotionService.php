@@ -73,7 +73,7 @@ class NotionService
             'entidad'         => 'ENTIDAD',
             'ent_coahuila'    => 'ENT COAHUILA',
             'ent_tamaulipas'  => 'ENT TAMAULIPAS',
-            'tipo_cobertura'  => 'TIPO',
+            'tipo_cobertura'  => 'TIPO DE SOLICITUD',
             'relevancia'      => 'RELEVANCIA',
             'tono_editorial'  => 'TONO EDITORIAL',
         ];

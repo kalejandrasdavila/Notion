@@ -970,9 +970,9 @@
                             <i class="fas fa-users"></i>
                             Actor principal <span class="label-hint">(Persona o Empresa)</span>
                         </label>
-                        <textarea id="actor_principal" name="actor_principal" class="form-textarea"
-                                  placeholder="Nombre de la persona o empresa..."
-                                  rows="2" maxlength="1990"></textarea>
+                        <input type="text" id="actor_principal" name="actor_principal" class="form-input"
+                               placeholder="Nombre de la persona o empresa..."
+                               maxlength="1990">
                     </div>
 
                     <!-- Tono editorial (dropdown) -->
@@ -1380,6 +1380,14 @@
                     return null;
                 };
 
+                // Build a set of names from Coahuila and Tamaulipas to exclude from NL
+                const getExcludeNames = () => {
+                    const exclude = new Set();
+                    (this.cachedOptions['ent_coahuila'] || []).forEach(o => exclude.add((o.name || o.value).toUpperCase()));
+                    (this.cachedOptions['ent_tamaulipas'] || []).forEach(o => exclude.add((o.name || o.value).toUpperCase()));
+                    return exclude;
+                };
+
                 const updateMunicipios = () => {
                     const estadoValue = estadoSelect.value;
                     const estadoText = estadoSelect.options[estadoSelect.selectedIndex]?.text || '';
@@ -1391,7 +1399,6 @@
                     municipioSelect.value = '';
 
                     if (!estadoValue) {
-                        // No estado selected - disable municipio
                         municipioSelect.disabled = true;
                         municipioSelect.options[0].text = 'Seleccione un estado primero...';
                         return;
@@ -1399,14 +1406,21 @@
 
                     const optionsKey = getEntidadOptionsKey(estadoText);
                     if (optionsKey && this.cachedOptions[optionsKey] && this.cachedOptions[optionsKey].length > 0) {
-                        // Estado has municipio/entidad data - enable and populate
                         municipioSelect.disabled = false;
                         municipioSelect.options[0].text = 'Seleccione un municipio...';
                         this.showLoading(municipioLoading, true);
-                        this.populateSelect(municipioSelect, this.cachedOptions[optionsKey]);
+
+                        let options = this.cachedOptions[optionsKey];
+
+                        // If Nuevo Leon, filter out Coahuila and Tamaulipas municipalities
+                        if (optionsKey === 'entidad') {
+                            const excludeNames = getExcludeNames();
+                            options = options.filter(o => !excludeNames.has((o.name || o.value).toUpperCase()));
+                        }
+
+                        this.populateSelect(municipioSelect, options);
                         this.showLoading(municipioLoading, false);
                     } else {
-                        // Estado has no municipio data - disable and grey out
                         municipioSelect.disabled = true;
                         municipioSelect.options[0].text = 'No disponible para este estado';
                     }
