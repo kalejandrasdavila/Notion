@@ -113,6 +113,20 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'sqlsrv_notion' => [
+            'driver' => 'sqlsrv',
+            'host' => env('SQLSRV_NOTION_HOST', 'localhost'),
+            'port' => env('SQLSRV_NOTION_PORT', '1433'),
+            'database' => env('SQLSRV_NOTION_DATABASE', 'NotionDB'),
+            'username' => env('SQLSRV_NOTION_USERNAME', 'sa'),
+            'password' => env('SQLSRV_NOTION_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'encrypt' => env('SQLSRV_NOTION_ENCRYPT', 'no'),
+            'trust_server_certificate' => env('SQLSRV_NOTION_TRUST_CERT', 'true'),
+        ],
+
     ],
 
     /*

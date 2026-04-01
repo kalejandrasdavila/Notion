@@ -10,6 +10,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class SolicitudController extends Controller
 {
@@ -272,36 +273,45 @@ class SolicitudController extends Controller
                 ]);
             }
             
-            // Crear la página en Notion
-            $notionResult = $this->notionService->createPage($data);
-            
-            if (!$notionResult['success']) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $notionResult['message'],
-                    'details' => $notionResult['details'] ?? null
-                ], 500);
+            // Insertar en SQL Server dbo.Notion_Q (ya no se envía a Notion API)
+            $medioString = is_array($data['medio'] ?? []) ? implode(',', $data['medio']) : ($data['medio'] ?? '');
+            $fechaInicio = null;
+            if (isset($data['fecha_planeada']) && !empty($data['fecha_planeada'])) {
+                try {
+                    $date = new \DateTime($data['fecha_planeada'], new \DateTimeZone('America/Mexico_City'));
+                    $fechaInicio = $date->format('Y-m-d H:i:s');
+                } catch (\Exception $e) {
+                    $fechaInicio = $data['fecha_planeada'];
+                }
             }
 
-            // Guardar en la base de datos local
-            $solicitud = Solicitud::create([
-                'status' => $data['status'] ?? 'PENDIENTE',
-                'tipo' => $data['tipo'] ?? $data['tipo_cobertura'] ?? 'N/A',
-                'solicitante' => $data['solicitante'] ?? 'N/A',
-                'indicaciones' => $data['indicaciones'] ?? 'N/A',
-                'fecha_planeada' => $data['fecha_planeada'] ?? now(),
-                'prioridad' => $data['prioridad'] ?? 'N/A',
-                'medio' => $data['medio'] ?? '[]',
-                'notion_page_id' => $notionResult['data']['id'] ?? null,
+            $archivoUrl = isset($data['archivo_url'])
+                ? (is_array($data['archivo_url']) ? implode(',', $data['archivo_url']) : $data['archivo_url'])
+                : null;
+
+            DB::connection('sqlsrv_notion')->table('Notion_Q')->insert([
+                'Status'                  => $data['status'] ?? 'PENDIENTE',
+                'Estado'                  => $data['estado'] ?? null,
+                'Municipio'               => $data['municipio'] ?? $data['entidad'] ?? null,
+                'TipoDeCobertura'         => $data['tipo_cobertura'] ?? $data['tipo'] ?? null,
+                'Relevancia'              => $data['relevancia'] ?? $data['prioridad'] ?? null,
+                'ActorPrincipal'          => $data['actor_principal'] ?? null,
+                'TonoEditorial'           => $data['tono_editorial'] ?? null,
+                'Indicaciones'            => $data['indicaciones'] ?? null,
+                'RedaccionComplementaria' => $data['redaccion_complementaria'] ?? null,
+                'FechaInicio'             => $fechaInicio,
+                'Medio'                   => $medioString,
+                'LinkDescarga'            => $data['link_descarga'] ?? null,
+                'ArchivoURL'              => $archivoUrl,
+                'Solicitante'             => $data['solicitante'] ?? null,
+                'Email'                   => $data['email'] ?? null,
             ]);
+
+            Log::info('V1: Inserted into dbo.Notion_Q');
 
             return response()->json([
                 'success' => true,
-                'message' => 'Solicitud creada exitosamente',
-                'data' => [
-                    'id' => $solicitud->id,
-                    'notion_page_id' => $solicitud->notion_page_id
-                ]
+                'message' => 'Solicitud creada exitosamente'
             ]);
 
         } catch (\Exception $e) {
@@ -314,6 +324,143 @@ class SolicitudController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error interno del servidor'
+            ], 500);
+        }
+    }
+
+    /**
+     * Crear una nueva solicitud V2 - inserta en SQL Server dbo.Notion_Q
+     */
+    public function storeV2(Request $request): JsonResponse
+    {
+        $data = $request->all();
+
+        // Procesar el campo medio si viene como JSON string
+        if (isset($data['medio']) && is_string($data['medio'])) {
+            $data['medio'] = json_decode($data['medio'], true) ?? [];
+        }
+
+        $validator = Validator::make($data, [
+            'status' => 'sometimes|string|max:255',
+            'estado' => 'required|string|max:255',
+            'municipio' => 'nullable|string|max:255',
+            'tipo_cobertura' => 'nullable|string|max:255',
+            'relevancia' => 'nullable|string|max:255',
+            'actor_principal' => 'nullable|string|max:500',
+            'tono_editorial' => 'nullable|string|max:255',
+            'indicaciones' => 'nullable|string|max:2000',
+            'redaccion_complementaria' => 'nullable|string|max:5970',
+            'fecha_inicio' => 'nullable|string',
+            'medio' => 'required|array|min:1',
+            'medio.*' => 'required|string|max:255',
+            'link_descarga' => 'nullable|string|max:2000',
+            'solicitante' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            Log::error('Errores de validación V2', [
+                'errors' => $validator->errors(),
+                'data' => $request->all()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Datos de validación incorrectos',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            // Handle file upload if present
+            $archivoUrl = null;
+            if ($request->hasFile('archivo')) {
+                try {
+                    $fileUrls = [];
+                    $files = $request->file('archivo');
+
+                    if (!is_array($files)) {
+                        $files = [$files];
+                    }
+
+                    $files = array_values(array_filter($files, function($file) {
+                        return $file !== null && is_object($file);
+                    }));
+
+                    foreach ($files as $file) {
+                        if ($file->isValid()) {
+                            $path = $file->store('uploads', 'public');
+                            $fileUrls[] = asset('storage/' . $path);
+                        }
+                    }
+
+                    if (!empty($fileUrls)) {
+                        $archivoUrl = implode(',', $fileUrls);
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Error processing files V2:', [
+                        'message' => $e->getMessage()
+                    ]);
+                }
+            }
+
+            // Set defaults
+            $status = $data['status'] ?? 'PENDIENTE';
+            $medioString = is_array($data['medio']) ? implode(',', $data['medio']) : $data['medio'];
+
+            // Convert fecha_inicio to datetime format for SQL Server
+            $fechaInicio = null;
+            if (isset($data['fecha_inicio']) && !empty($data['fecha_inicio'])) {
+                try {
+                    $date = new \DateTime($data['fecha_inicio'], new \DateTimeZone('America/Mexico_City'));
+                    $fechaInicio = $date->format('Y-m-d H:i:s');
+                } catch (\Exception $e) {
+                    $fechaInicio = $data['fecha_inicio'];
+                }
+            }
+
+            // Insert into SQL Server dbo.Notion_Q
+            $insertData = [
+                'Status'                  => $status,
+                'Estado'                  => $data['estado'] ?? null,
+                'Municipio'               => $data['municipio'] ?? null,
+                'TipoDeCobertura'         => $data['tipo_cobertura'] ?? null,
+                'Relevancia'              => $data['relevancia'] ?? null,
+                'ActorPrincipal'          => $data['actor_principal'] ?? null,
+                'TonoEditorial'           => $data['tono_editorial'] ?? null,
+                'Indicaciones'            => $data['indicaciones'] ?? null,
+                'RedaccionComplementaria' => $data['redaccion_complementaria'] ?? null,
+                'FechaInicio'             => $fechaInicio,
+                'Medio'                   => $medioString,
+                'LinkDescarga'            => $data['link_descarga'] ?? null,
+                'ArchivoURL'              => $archivoUrl,
+                'Solicitante'             => $data['solicitante'] ?? null,
+                'Email'                   => $data['email'] ?? null,
+            ];
+
+            Log::info('=== INSERTING INTO dbo.Notion_Q ===', $insertData);
+
+            DB::connection('sqlsrv_notion')
+                ->table('Notion_Q')
+                ->insert($insertData);
+
+            Log::info('Successfully inserted into dbo.Notion_Q');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Solicitud creada exitosamente',
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error insertando en dbo.Notion_Q', [
+                'data' => $request->all(),
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error interno del servidor: ' . $e->getMessage()
             ], 500);
         }
     }

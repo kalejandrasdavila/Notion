@@ -2311,7 +2311,12 @@
             // Validación de campos
             validateField(field) {
                 let value, isValid, errorMessage = '';
-                
+
+                // Skip file inputs — files are handled separately
+                if (field.type === 'file') {
+                    return true;
+                }
+
                 if (field.type === 'select-multiple') {
                     // Para multi-select, verificar que al menos una opción esté seleccionada
                     const selectedOptions = Array.from(field.selectedOptions);

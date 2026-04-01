@@ -1244,7 +1244,7 @@
         const CONFIG = {
             endpoints: {
                 allOptions: '{{ route("api.options.all") }}',
-                submit: '{{ route("solicitud.store") }}'
+                submit: '{{ route("solicitud.storeV2") }}'
             }
         };
 
