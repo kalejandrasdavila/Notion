@@ -27,7 +27,7 @@ class NotionService
      */
     public function getDatabase()
     {
-        return Cache::remember('notion_database_schema', now()->addMinutes(15), function () {
+        return Cache::remember('notion_database_schema', now()->addHours(6), function () {
             try {
                 $response = Http::withHeaders([
                     'Authorization' => 'Bearer ' . $this->apiToken,
