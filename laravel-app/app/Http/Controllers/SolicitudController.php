@@ -213,8 +213,11 @@ class SolicitudController extends Controller
                         }
 
                         if ($file->isValid()) {
-                            // Store file in public storage
-                            $path = $file->store('uploads', 'public');
+                            // Store file with hashed name + timestamp
+                            $hash = md5_file($file->getRealPath());
+                            $extension = $file->getClientOriginalExtension();
+                            $hashedName = $hash . '_' . time() . '.' . $extension;
+                            $path = $file->storeAs('uploads', $hashedName, 'public');
 
                             // Generate public URL
                             $url = asset('storage/' . $path);
@@ -389,7 +392,10 @@ class SolicitudController extends Controller
 
                     foreach ($files as $file) {
                         if ($file->isValid()) {
-                            $path = $file->store('uploads', 'public');
+                            $hash = md5_file($file->getRealPath());
+                            $extension = $file->getClientOriginalExtension();
+                            $hashedName = $hash . '_' . time() . '.' . $extension;
+                            $path = $file->storeAs('uploads', $hashedName, 'public');
                             $fileUrls[] = asset('storage/' . $path);
                         }
                     }
