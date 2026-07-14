@@ -22,8 +22,10 @@ Route::get('/', [SolicitudController::class, 'index'])->name('solicitud.index');
 Route::prefix('solicitud')->name('solicitud.')->group(function () {
     Route::get('/', [SolicitudController::class, 'index'])->name('index');
     Route::get('/v2', [SolicitudController::class, 'indexV2'])->name('indexv2');
+    Route::get('/v3', [SolicitudController::class, 'indexV3'])->name('indexv3');
     Route::post('/', [SolicitudController::class, 'store'])->name('store');
     Route::post('/v2', [SolicitudController::class, 'storeV2'])->name('storeV2');
+    Route::post('/v3', [SolicitudController::class, 'storeV3'])->name('storeV3');
     Route::get('/list', [SolicitudController::class, 'list'])->name('list');
     Route::get('/{solicitud}', [SolicitudController::class, 'show'])->name('show');
 });
