@@ -941,6 +941,20 @@
                                placeholder="Nombre del reportero..." maxlength="100" required>
                     </div>
 
+                    <!-- Estado (dropdown) -->
+                    <div class="form-group">
+                        <label for="estado" class="form-label">
+                            <span>&#127474;&#127485;</span>
+                            Estado <span class="required">*</span>
+                        </label>
+                        <select id="estado" name="estado" class="form-select" required>
+                            <option value="">Seleccione un estado...</option>
+                        </select>
+                        <div class="loading" id="estadoLoading">
+                            <i class="fas fa-spinner fa-spin"></i> Cargando...
+                        </div>
+                    </div>
+
                     <!-- Formato -->
                     <div class="form-group">
                         <label for="formato" class="form-label">
@@ -1046,6 +1060,20 @@
                         </select>
                     </div>
 
+                    <!-- Estado (dropdown) -->
+                    <div class="form-group">
+                        <label for="estado" class="form-label">
+                            <span>&#127474;&#127485;</span>
+                            Estado <span class="required">*</span>
+                        </label>
+                        <select id="estado" name="estado" class="form-select" required>
+                            <option value="">Seleccione un estado...</option>
+                        </select>
+                        <div class="loading" id="estadoLoading">
+                            <i class="fas fa-spinner fa-spin"></i> Cargando...
+                        </div>
+                    </div>
+
                     <!-- Tipo de peticion -->
                     <div class="form-group">
                         <label for="tipo_cobertura" class="form-label">
@@ -1130,6 +1158,20 @@
                                   rows="3" maxlength="2000" required></textarea>
                         <div class="character-counter text-muted small mt-1">
                             <span id="indicaciones-counter">0</span> / 2000 caracteres
+                        </div>
+                    </div>
+
+                    <!-- Estado (dropdown) -->
+                    <div class="form-group">
+                        <label for="estado" class="form-label">
+                            <span>&#127474;&#127485;</span>
+                            Estado <span class="required">*</span>
+                        </label>
+                        <select id="estado" name="estado" class="form-select" required>
+                            <option value="">Seleccione un estado...</option>
+                        </select>
+                        <div class="loading" id="estadoLoading">
+                            <i class="fas fa-spinner fa-spin"></i> Cargando...
                         </div>
                     </div>
 
