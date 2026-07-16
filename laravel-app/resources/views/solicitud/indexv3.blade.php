@@ -897,9 +897,21 @@
                             @elseif($template === 'RI') Peticion de Relaciones Institucionales
                             @endif
                         </p>
+                        @if(!empty($canPick))
+                        <div style="text-align: center; margin-top: 10px;">
+                            <label for="plantillaPicker" style="font-size: 0.9rem; color: #555; margin-right: 6px;">Plantilla:</label>
+                            <select id="plantillaPicker" onchange="cambiarPlantilla(this.value)"
+                                    style="padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem;">
+                                <option value="REPORTEROS" @if($template === 'REPORTEROS') selected @endif>Reporteros</option>
+                                <option value="PRODUCCION" @if($template === 'PRODUCCION') selected @endif>Produccion</option>
+                                <option value="COMERCIAL" @if($template === 'COMERCIAL') selected @endif>Comercial</option>
+                                <option value="RI" @if($template === 'RI') selected @endif>Relaciones Institucionales</option>
+                            </select>
+                        </div>
+                        @endif
                     </div>
                     <div style="flex: 1; text-align: right;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/2048px-Notion-logo.svg.png" alt="Notion" class="logo-notion">
+                        <img src="https://vmdash.mx/img/vanta_logo.png" alt="Vanta Media" class="logo-notion">
                     </div>
                 </div>
             </div>
@@ -1491,6 +1503,14 @@
     </div>
 
     <script>
+        // Dirección: switch template by reloading with ?plantilla=, preserving
+        // solicitante/email/departamento (and anything else in the query).
+        function cambiarPlantilla(plantilla) {
+            const params = new URLSearchParams(window.location.search);
+            params.set('plantilla', plantilla);
+            window.location.search = params.toString();
+        }
+
         // Character counter for textareas
         function setupCharacterCounter(textareaId, counterId) {
             const textarea = document.getElementById(textareaId);

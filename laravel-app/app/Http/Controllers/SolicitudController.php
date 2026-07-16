@@ -505,11 +505,31 @@ class SolicitudController extends Controller
     public function indexV3(\Illuminate\Http\Request $request): View
     {
         $departamento = $request->query('departamento', '');
-        $template = $this->resolveTemplate($departamento);
+
+        // Dirección puede elegir cualquiera de las 4 plantillas (?plantilla=).
+        $canPick = $this->isDireccion($departamento);
+        $valid = ['REPORTEROS', 'PRODUCCION', 'COMERCIAL', 'RI'];
+
+        if ($canPick) {
+            $plantilla = strtoupper((string) $request->query('plantilla', ''));
+            $template = in_array($plantilla, $valid, true) ? $plantilla : 'REPORTEROS';
+        } else {
+            $template = $this->resolveTemplate($departamento);
+        }
+
         return view('solicitud.indexv3', [
             'template' => $template,
             'departamento' => $departamento,
+            'canPick' => $canPick,
         ]);
+    }
+
+    /** True when the departamento is Dirección (accent/case-insensitive). */
+    private function isDireccion(?string $departamento): bool
+    {
+        $d = trim(mb_strtolower($departamento ?? ''));
+        $d = strtr($d, ['á'=>'a','é'=>'e','í'=>'i','ó'=>'o','ú'=>'u','ü'=>'u','ñ'=>'n']);
+        return $d === 'direccion';
     }
 
     /**
