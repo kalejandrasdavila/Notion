@@ -1187,6 +1187,20 @@
                         </div>
                     </div>
 
+                    <!-- Tipo de cobertura (dynamic, from Notion TIPO) -->
+                    <div class="form-group">
+                        <label for="tipo_cobertura_dyn" class="form-label">
+                            <i class="fas fa-tag"></i>
+                            Tipo de cobertura <span class="required">*</span>
+                        </label>
+                        <select id="tipo_cobertura_dyn" name="tipo_cobertura" class="form-select" required>
+                            <option value="">Seleccione un tipo...</option>
+                        </select>
+                        <div class="loading" id="tipoCoberturaLoading">
+                            <i class="fas fa-spinner fa-spin"></i> Cargando...
+                        </div>
+                    </div>
+
                     <!-- Fecha, hora y lugar del evento -->
                     <div class="form-group">
                         <label for="fecha_inicio" class="form-label">
@@ -1378,6 +1392,20 @@
                             <option value="">Seleccione un estado primero...</option>
                         </select>
                         <div class="loading" id="municipioLoading">
+                            <i class="fas fa-spinner fa-spin"></i> Cargando...
+                        </div>
+                    </div>
+
+                    <!-- Tipo de cobertura (dynamic, from Notion TIPO) -->
+                    <div class="form-group">
+                        <label for="tipo_cobertura_dyn" class="form-label">
+                            <i class="fas fa-tag"></i>
+                            Tipo de cobertura <span class="required">*</span>
+                        </label>
+                        <select id="tipo_cobertura_dyn" name="tipo_cobertura" class="form-select" required>
+                            <option value="">Seleccione un tipo...</option>
+                        </select>
+                        <div class="loading" id="tipoCoberturaLoading">
                             <i class="fas fa-spinner fa-spin"></i> Cargando...
                         </div>
                     </div>
@@ -1733,6 +1761,16 @@
                         this.showLoading(estadoLoading, true);
                         this.populateSelect(estadoSelect, data.data.estado);
                         this.showLoading(estadoLoading, false);
+                    }
+
+                    // Tipo de cobertura (dynamic, from Notion TIPO) — only on
+                    // templates that render a #tipo_cobertura_dyn dropdown.
+                    const tipoSelect = document.getElementById('tipo_cobertura_dyn');
+                    const tipoLoading = document.getElementById('tipoCoberturaLoading');
+                    if (tipoSelect && data.data.tipo) {
+                        this.showLoading(tipoLoading, true);
+                        this.populateSelect(tipoSelect, data.data.tipo);
+                        this.showLoading(tipoLoading, false);
                     }
 
                     // Municipio - populated based on Estado selection using ENTIDAD data
